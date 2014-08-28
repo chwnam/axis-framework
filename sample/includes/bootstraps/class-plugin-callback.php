@@ -6,6 +6,10 @@ use axis_framework\includes\bootstraps\Base_Plugin_Callback;
 
 class Plugin_Callback extends Base_Plugin_Callback {
 
+    public function __construct() {
+        parent::__construct();
+    }
+
     public function localize() {
 
     }

@@ -2,6 +2,16 @@
 
 namespace axis_framework\includes\bootstraps;
 
+require_once( AXIS_INC_CORE_PATH . '/class-singleton.php' );
+require_once( AXIS_INC_CORE_PATH . '/class-loader.php' );
+require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-ajax-callback.php');
+require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-menu-callback.php');
+require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-plugin-callback.php');
+require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-settings-callback.php');
+require_once( AXIS_INC_CONTROL_PATH . '/class-base-control.php');
+
+use axis_framework\includes\core;
+
 class Bootstrap {
 
     private $plugin_callback        = NULL;
@@ -12,6 +22,57 @@ class Bootstrap {
 
     public function __construct() {
 
+    }
+
+    public function auto_discover_and_run($main_file_namespace, $main_file) {
+        $this->auto_discover($main_file_namespace, $main_file);
+        $this->run();
+    }
+
+    /**
+     *  Automatic setting when files are arranged under the rule.
+     */
+    public function auto_discover($main_file_namespace, $main_file) {
+
+        $this->set_main_file($main_file);
+
+        $plugin_root_path = realpath(dirname($main_file));
+        $plugin_include_bootstrap = $plugin_root_path . '/includes/bootstraps';
+
+        // initialize loader
+        $loader = core\Loader::get_instance();
+        $loader->set_plugin_namespace($main_file_namespace);
+        $loader->set_plugin_root($plugin_root_path);
+
+        // all callback objects initialization
+        $ajax_callback_path     = $plugin_include_bootstrap . '/class-ajax-callback.php';
+        $menu_callback_path     = $plugin_include_bootstrap . '/class-menu-callback.php';
+        $plugin_callback_path   = $plugin_include_bootstrap . '/class-plugin-callback.php';
+        $settings_callback_path = $plugin_include_bootstrap . '/class-settings-callback.php';
+
+        if (file_exists($ajax_callback_path)) {
+            require_once($ajax_callback_path);
+            $fqn = $main_file_namespace . '\\' . 'Ajax_Callback';
+            $this->set_ajax_callback($fqn::get_instance());
+        }
+
+        if (file_exists($menu_callback_path)) {
+            require_once($menu_callback_path);
+            $fqn = $main_file_namespace . '\\' . 'Menu_Callback';
+            $this->set_menu_callback($fqn::get_instance());
+        }
+
+        if (file_exists($plugin_callback_path)) {
+            require_once($plugin_callback_path);
+            $fqn = $main_file_namespace . '\\' . 'Plugin_Callback';
+            $this->set_plugin_callback($fqn::get_instance());
+        }
+
+        if (file_exists($settings_callback_path)) {
+            require_once($settings_callback_path);
+            $fqn = $main_file_namespace . '\\' . 'Settings_Callback';
+            $this->set_settings_callback($fqn::get_instance());
+        }
     }
 
     public function set_plugin_callback( $plugin_callback ) {
@@ -70,19 +131,23 @@ class Bootstrap {
      */
     private function add_settings_pages() {
 
+        add_action( 'admin_init', array( $this->settings_callback, 'register_settings' ) );
+        add_action( 'admin_init', array( $this->settings_callback, 'add_settings_sections' ) );
+        add_action( 'admin_init', array( $this->settings_callback, 'add_settings_fields' ) );
+
     }
 
     /**
      * Localization hook
      */
     private function localize() {
-
+        add_action( 'init', array( $this->plugin_callback, 'localize' ) );
     }
 
     /**
      * Prepare all ajax callbacks
      */
     private function add_ajax_actions() {
-
+        $this->ajax_callback->add_ajax_actions();
     }
 }
