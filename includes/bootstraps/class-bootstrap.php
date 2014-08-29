@@ -135,6 +135,8 @@ class Bootstrap {
         add_action( 'admin_init', array( $this->settings_callback, 'add_settings_sections' ) );
         add_action( 'admin_init', array( $this->settings_callback, 'add_settings_fields' ) );
 
+        add_action( 'admin_menu', array( $this->settings_callback, 'add_option_page') );
+
     }
 
     /**
