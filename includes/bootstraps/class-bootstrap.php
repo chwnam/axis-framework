@@ -4,6 +4,7 @@ namespace axis_framework\includes\bootstraps;
 
 require_once( AXIS_INC_CORE_PATH . '/class-singleton.php' );
 require_once( AXIS_INC_CORE_PATH . '/class-loader.php' );
+require_once( AXIS_INC_CORE_PATH . '/utils.php');
 require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-ajax-callback.php');
 require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-menu-callback.php');
 require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-plugin-callback.php');
@@ -12,13 +13,16 @@ require_once( AXIS_INC_CONTROL_PATH . '/class-base-control.php');
 
 use axis_framework\includes\core;
 
+core\utils\check_abspath();
+
+
 class Bootstrap {
 
-    private $plugin_callback        = NULL;
-    private $ajax_callback          = NULL;
-    private $menu_callback          = NULL;
-    private $settings_callback      = NULL;
-    private $main_file              = NULL;
+    protected $plugin_callback        = NULL;
+    protected $ajax_callback          = NULL;
+    protected $menu_callback          = NULL;
+    protected $settings_callback      = NULL;
+    protected $main_file              = NULL;
 
     public function __construct() {
 
@@ -31,6 +35,7 @@ class Bootstrap {
 
     /**
      *  Automatic setting when files are arranged under the rule.
+     *  TODO: Hardcoded parts should be replaceable.
      */
     public function auto_discover($main_file_namespace, $main_file) {
 
@@ -39,7 +44,7 @@ class Bootstrap {
         $plugin_root_path = realpath(dirname($main_file));
         $plugin_include_bootstrap = $plugin_root_path . '/includes/bootstraps';
 
-        // initialize loader
+        // initialize loader.
         $loader = core\Loader::get_instance();
         $loader->set_plugin_namespace($main_file_namespace);
         $loader->set_plugin_root($plugin_root_path);
@@ -108,7 +113,7 @@ class Bootstrap {
     /**
      * Activation, deactivation, uninstall hook
      */
-    private function register_hooks() {
+    protected function register_hooks() {
 
         if ($this->plugin_callback && $this->main_file) {
             register_activation_hook( $this->main_file,   array( $this->plugin_callback, 'on_activated' ) );
@@ -121,7 +126,7 @@ class Bootstrap {
     /**
      * Menu hook
      */
-    private function add_admin_menus() {
+    protected function add_admin_menus() {
 
         add_action( 'admin_menu', array( $this->menu_callback, 'add_admin_menu' ) );
     }
@@ -129,7 +134,7 @@ class Bootstrap {
     /**
      * Create option page by using WordPress Option API
      */
-    private function add_settings_pages() {
+    protected function add_settings_pages() {
 
         add_action( 'admin_init', array( $this->settings_callback, 'register_settings' ) );
         add_action( 'admin_init', array( $this->settings_callback, 'add_settings_sections' ) );
@@ -142,14 +147,14 @@ class Bootstrap {
     /**
      * Localization hook
      */
-    private function localize() {
+    protected function localize() {
         add_action( 'init', array( $this->plugin_callback, 'localize' ) );
     }
 
     /**
      * Prepare all ajax callbacks
      */
-    private function add_ajax_actions() {
+    protected function add_ajax_actions() {
         $this->ajax_callback->add_ajax_actions();
     }
 }

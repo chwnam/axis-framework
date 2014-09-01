@@ -23,4 +23,4 @@ define('AXIS_SAMPLE_JS_URL',   AXIS_SAMPLE_VIEW_URL  . '/js' );
 
 // THIS IS REALLY IMPORTANT! PLEASE SET IT PROPERLY!!//
 define( 'AXIS_FRAMEWORK_PATH', realpath(AXIS_SAMPLE_ABSPATH . '/..'));
-require_once( AXIS_FRAMEWORK_PATH . '/defines.php');
+require_once( AXIS_FRAMEWORK_PATH . '/defines.php' );
