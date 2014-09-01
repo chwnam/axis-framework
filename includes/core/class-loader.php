@@ -4,29 +4,16 @@ namespace axis_framework\includes\core;
 
 class Loader extends Singleton {
 
-    private $plugin_namespace;
     private $plugin_root;
-
-    public function set_plugin_namespace( $namespace ) {
-        $this->plugin_namespace = $namespace;
-    }
 
     public function set_plugin_root( $root_path ) {
         $this->plugin_root = $root_path;
     }
 
-
-    /**
-     * Dynamically create instance by control name.
-     *
-     * @param string $control_name
-     *
-     * @return mixed control instance
-     */
-    public function control( $control_name ) {
+    public function control( $namespace, $control_name ) {
 
         $control_path  = $this->get_control_path( $control_name );
-        $control_class = $this->get_control_class( $control_name );
+        $control_class = $this->get_control_class( $namespace, $control_name );
 
         // dynamic instance creation
         require_once( $control_path );
@@ -52,16 +39,9 @@ class Loader extends Singleton {
             $view_name );
     }
 
-    /**
-     * get class name by fixed rule.
-     *
-     * @param string $component_name
-     *
-     * @return string fully qualified control class name
-     */
-    private function get_control_class( $component_name ) {
+    private function get_control_class( $namespace, $component_name ) {
 
-        $fq_class_name = $this->plugin_namespace . '\\';
+        $fq_class_name = $namespace . '\\';
         $component_name = str_replace('_', '-', $component_name );
         foreach ( explode( '-', $component_name ) as $element ) {
             $fq_class_name .= ucfirst( $element );
@@ -73,13 +53,6 @@ class Loader extends Singleton {
 
     }
 
-    /**
-     * get class file name by fixed rule.
-     *
-     * @param string $component_name
-     *
-     * @return string full path of control
-     */
     private function get_control_path( $component_name ) {
         return sprintf(
             '%s/class-%s-control.php',

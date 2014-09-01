@@ -46,7 +46,6 @@ class Bootstrap {
 
         // initialize loader.
         $loader = core\Loader::get_instance();
-        $loader->set_plugin_namespace($main_file_namespace);
         $loader->set_plugin_root($plugin_root_path);
 
         // all callback objects initialization

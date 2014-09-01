@@ -17,3 +17,4 @@ define( 'AXIS_INC_MODEL_PATH',     AXIS_INC_PATH . '/models' );
 define( 'AXIS_INC_VIEW_PATH',      AXIS_INC_PATH . '/views' );
 
 require_once(AXIS_INC_BOOTSTRAP_PATH . '/class-bootstrap.php');
+require_once(AXIS_INC_CORE_PATH      . '/utils.php');
