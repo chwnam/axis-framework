@@ -7,7 +7,7 @@
   }
 
 
-  function fe_pre( $text, $tag = '' ) {
+  function axis_dump_pre( $text, $tag = '' ) {
 
     echo "<pre>";
 
