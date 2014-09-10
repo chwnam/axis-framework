@@ -9,7 +9,7 @@ abstract class Base_Ajax_Callback extends core\Singleton {
 
     protected $loader;
 
-    public function __construct() {
+    protected function __construct() {
         $this->loader = core\Loader::get_instance();
     }
 
