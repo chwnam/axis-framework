@@ -45,7 +45,7 @@ class Menu_Page_Item {
     }
 
     function add() {
-        add_menu_page(
+        return add_menu_page(
             $this->page_title,
             $this->menu_title,
             $this->capability,
@@ -87,7 +87,7 @@ class Submenu_Page_Item {
 
     public function add() {
         if ( $this->show) {
-            add_submenu_page(
+            return add_submenu_page(
                 $this->parent_slug,
                 $this->page_title,
                 $this->menu_title,

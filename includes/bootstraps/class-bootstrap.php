@@ -37,7 +37,7 @@ class Bootstrap {
      *  Automatic setting when files are arranged under the rule.
      *  TODO: Hardcoded parts should be replaceable.
      */
-    public function auto_discover($main_file_namespace, $main_file) {
+    public function auto_discover( $main_file_namespace, $main_file ) {
 
         $this->set_main_file($main_file);
 
