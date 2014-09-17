@@ -134,7 +134,9 @@
 		 */
 		protected function add_admin_menus() {
 
-			add_action( 'admin_menu', array( $this->menu_callback, 'add_admin_menu' ) );
+			if( $this->menu_callback ) {
+				add_action( 'admin_menu', array( $this->menu_callback, 'add_admin_menu' ) );
+			}
 		}
 
 		/**
