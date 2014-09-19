@@ -64,10 +64,10 @@ class Ajax_Action {
     }
 
     public function has_priv() {
-        return $this->option & Ajax_Action::PRIV;
+        return $this->option && Ajax_Action::PRIV;
     }
 
     public function has_nopriv() {
-        return $this->option & Ajax_Action::NOPRIV;
+        return $this->option && Ajax_Action::NOPRIV;
     }
-}
+z}
