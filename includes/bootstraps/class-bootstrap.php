@@ -131,8 +131,10 @@
 				register_activation_hook( $this->main_file, array( $this->plugin_callback, 'on_activated' ) );
 				register_deactivation_hook( $this->main_file, array( $this->plugin_callback, 'on_deactivated' ) );
 				register_uninstall_hook( $this->main_file, array( $this->plugin_callback, 'on_uninstall' ) );
-			}
 
+				// register other hooks
+				$this->plugin_callback->register_hooks();
+			}
 		}
 
 		/**

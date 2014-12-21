@@ -16,5 +16,6 @@ abstract class Base_Plugin_Callback extends Base_Callback {
     abstract public function on_activated();
     abstract public function on_deactivated();
     abstract public function on_uninstall();
+    abstract public function register_hooks();
 
 }
