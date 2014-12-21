@@ -23,9 +23,10 @@
 		protected $menu_callback = NULL;
 		protected $settings_callback = NULL;
 		protected $main_file = NULL;
+		protected $loader = NULL;
 
 		public function __construct() {
-
+			$this->loader = new core\Loader();
 		}
 
 		public function auto_discover_and_run( $main_file_namespace, $main_file ) {
@@ -46,8 +47,10 @@
 			$plugin_include_bootstrap = $plugin_root_path . '/includes/bootstraps';
 
 			// initialize loader.
-			$loader = core\Loader::get_instance();
-			$loader->set_plugin_root( $plugin_root_path );
+			if( $this->loader === NULL ) {
+				$this->loader = new core\Loader();
+				$loader->set_plugin_root( $plugin_root_path );
+			}
 
 			// all callback objects initialization
 			$ajax_callback_path     = $plugin_include_bootstrap . '/class-ajax-callback.php';
@@ -83,21 +86,25 @@
 		public function set_plugin_callback( $plugin_callback ) {
 
 			$this->plugin_callback = $plugin_callback;
+			$this->plugin_callback->set_loader( $this->loader );
 		}
 
 		public function set_ajax_callback( $ajax_callback ) {
 
 			$this->ajax_callback = $ajax_callback;
+			$this->ajax_callback->set_loader( $this->loader );
 		}
 
 		public function set_menu_callback( $menu_callback ) {
 
 			$this->menu_callback = $menu_callback;
+			$this->menu_callback->set_loader( $this->loader );
 		}
 
 		public function set_settings_callback( $settings_callback ) {
 
 			$this->settings_callback = $settings_callback;
+			$this->plugin_callback->set_loader( $this->loader );
 		}
 
 		public function set_main_file( $main_file ) {
@@ -112,7 +119,6 @@
 			$this->add_settings_pages();
 			$this->localize();
 			$this->add_ajax_actions();
-
 		}
 
 		/**

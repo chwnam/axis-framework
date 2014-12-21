@@ -14,7 +14,7 @@ class Sample_Test_Control extends controls\Base_Control {
         $this->register_scripts();
         $this->register_css();
 
-        $view = $this->loader->view('sample-test');
+        $view = $this->loader->view( '', 'sample-test' );
 
     }
 

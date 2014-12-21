@@ -1,16 +1,15 @@
 <?php
 
 namespace axis_framework\includes\bootstraps;
-
+require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-callback.php');
 use \axis_framework\includes\core;
 
 
-abstract class Base_Ajax_Callback extends core\Singleton {
-
-    protected $loader;
+abstract class Base_Ajax_Callback extends Base_Callback {
 
     protected function __construct() {
-        $this->loader = core\Loader::get_instance();
+
+        parent::__construct();
     }
 
     public abstract function add_ajax_actions();
