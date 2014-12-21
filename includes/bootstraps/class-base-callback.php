@@ -6,7 +6,7 @@ use \axis_framework\includes\core;
 
 class Base_Callback extends core\Singleton {
 
-    private $loader;
+    protected $loader;
 
     protected function __construct() {
     }
