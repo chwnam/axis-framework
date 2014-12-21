@@ -2,7 +2,7 @@
 
 namespace axis_framework\includes\core;
 
-class Loader extends Singleton {
+class Loader{
 
     private $plugin_root;
 
