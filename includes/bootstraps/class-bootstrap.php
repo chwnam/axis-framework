@@ -49,8 +49,8 @@
 			// initialize loader.
 			if( $this->loader === NULL ) {
 				$this->loader = new core\Loader();
-				$loader->set_plugin_root( $plugin_root_path );
 			}
+			$this->loader->set_plugin_root( $plugin_root_path );
 
 			// all callback objects initialization
 			$ajax_callback_path     = $plugin_include_bootstrap . '/class-ajax-callback.php';
@@ -182,3 +182,4 @@
 			}
 		}
 	}
+

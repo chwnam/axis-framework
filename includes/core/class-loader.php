@@ -19,7 +19,9 @@ class Loader{
 
         // dynamic instance creation
         require_once( $control_path );
-        return new $control_class();
+        $inst = new $control_class;
+        $inst->set_loader( $this );
+        return $inst;
     }
 
     public function view( $view_name, $data = NULL ) {

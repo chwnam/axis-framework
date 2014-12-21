@@ -9,8 +9,10 @@ abstract class Base_Control {
     protected $loader;
 
     public function __construct() {
-        $this->loader = core\Loader::get_instance();
+    }
 
+    public function set_loader( &$loader) {
+        $this->loader = $loader;
     }
 
     public abstract function run();
