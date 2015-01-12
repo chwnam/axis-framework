@@ -76,9 +76,7 @@ class Script_Item {
         );
 
         wp_enqueue_script( $this->handle );
-
     }
-
 }
 
 Script_Item::$ajax_object = 'ajax_object';
@@ -127,7 +125,5 @@ class Css_Item {
         wp_enqueue_style(
             $this->handle
         );
-
     }
-
 }

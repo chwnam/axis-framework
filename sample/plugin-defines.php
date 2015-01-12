@@ -3,7 +3,7 @@
 /**
  * Definitions
  *
- * Declare all defines here
+ * Declare all defines here!
  */
 
 // RECOMMENDED DEFINITIONS //
@@ -14,7 +14,7 @@ define('AXIS_SAMPLE_VERSION',      '0.1');
 define('AXIS_SAMPLE_ABSPATH',      dirname(__FILE__));
 define('AXIS_SAMPLE_MAIN_FILE',    AXIS_SAMPLE_ABSPATH . '/axis-sample-main.php');  // used in hooks
 
-define('AXIS_SAMPLE_URL', plugin_dir_url(__FILE__));
+define('AXIS_SAMPLE_URL',      plugin_dir_url(__FILE__));
 define('AXIS_SAMPLE_INC_URL',  AXIS_SAMPLE_URL       . 'includes' );
 define('AXIS_SAMPLE_VIEW_URL', AXIS_SAMPLE_INC_URL   . '/views' );
 define('AXIS_SAMPLE_CSS_URL',  AXIS_SAMPLE_VIEW_URL  . '/css' );
