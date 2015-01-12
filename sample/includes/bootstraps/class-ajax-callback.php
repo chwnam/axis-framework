@@ -1,4 +1,5 @@
 <?php
+namespace axis_sample; // The namespace should be equal to all callback classes!
 
 require_once(AXIS_INC_BOOTSTRAP_PATH . '/class-base-ajax-callback.php');
 
@@ -19,16 +20,15 @@ class Ajax_Callback extends bootstraps\Base_Ajax_Callback {
                 array($this, 'axis_sample_test_action'),
                 bootstraps\Ajax_Action::PRIV
             ),
-
         );
 
         $this->accept_wish_list($wish_list);
-
     }
 
     public function axis_sample_test_action() {
-        echo 'test is successful!';
+
+        $param = esc_attr( $_GET['param'] );
+        echo "You said $param";
         die();
     }
-
 }
