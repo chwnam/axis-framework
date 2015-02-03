@@ -8,11 +8,11 @@ abstract class Base_Control {
 
     protected $loader;
 
-    public function __construct() {
+    public function __construct( $params = array() ) {
     }
 
     public function set_loader( &$loader) {
-        $this->loader = $loader;
+        $this->loader = &$loader;
     }
 
     public abstract function run();
@@ -43,10 +43,10 @@ class Script_Item {
     public function __construct(
         $handle,
         $src,
-        $name,
-        array $data,
+        $name = NULL,
+        array $data = array(),
         array $deps = array(),
-        $ver = FALSE,
+        $ver = NULL,
         $in_footer = FALSE
     ) {
         $this->handle    = $handle;
@@ -69,11 +69,14 @@ class Script_Item {
             $this->in_footer
         );
 
-        wp_localize_script(
-            $this->handle,
-            $this->name,
-            $this->data
-        );
+        if( NULL !== $this->name ) {
+
+            wp_localize_script(
+                $this->handle,
+                $this->name,
+                $this->data
+            );
+        }
 
         wp_enqueue_script( $this->handle );
     }

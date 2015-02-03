@@ -7,11 +7,30 @@ use axis_framework\includes\core;
 abstract class Base_Model {
 
 	protected $loader;
+	protected $control = NULL;
 
-	public function __construct() {
+	public function __construct( $params = array() ) {
+
+		if( isset( $params['control'] ) ) {
+
+			$this->control = &$params['control'];
+		}
 	}
 
 	public function set_loader( &$loader) {
-		$this->loader = $loader;
+		$this->loader = &$loader;
+	}
+
+	public function set_control( &$control ) {
+
+		$this->control = &$control;
+	}
+
+	public function notify_to_control( $signal, $param = array() ) {
+
+		if( $this->control && is_string( $signal ) && is_array( $param ) ) {
+
+			call_user_func_array( array( &$this->control, &$signal ), $param );
+		}
 	}
 }

@@ -18,5 +18,4 @@ abstract class Base_Settings_Callback extends Base_Callback {
     public abstract function register_settings();
     public abstract function add_settings_sections();
     public abstract function add_settings_fields();
-
 }

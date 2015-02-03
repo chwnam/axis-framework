@@ -45,14 +45,14 @@ class Loader{
         unset( $this->component_path[ $criteria ] );
     }
 
-    public function control( $namespace, $control_name ) {
+    public function control( $namespace, $control_name, $construct_param = array() ) {
 
         $control_path  = $this->get_component_path( $control_name, 'control' );
         $control_class = $this->get_component_class( $namespace, $control_name, 'control' );
 
         // dynamic instance creation
         require_once( $control_path );
-        $inst = new $control_class;
+        $inst = new $control_class( $construct_param );
         $inst->set_loader( $this );
         return $inst;
     }
@@ -69,15 +69,15 @@ class Loader{
         require_once( $this->get_view_path( $view_name ) );
     }
 
-    public function model( $namespace, $model_name ) {
+    public function model( $namespace, $model_name, $construct_param = array() ) {
 
         $model_path = $this->get_component_path( $model_name, 'model' );
         $model_class = $this->get_component_class( $namespace, $model_name, 'model' );
 
         require_once( $model_path );
-        $inst = new $model_class;
+        $inst = new $model_class( $construct_param );
         $inst->set_loader( $this );
-        return new $inst;
+        return $inst;
     }
 
     private function get_view_path( $view_name ) {

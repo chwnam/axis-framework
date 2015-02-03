@@ -15,7 +15,7 @@ class Settings_Callback extends Base_Settings_Callback {
     public $section_general;
     public $page;
 
-    public function __construct() {
+    protected function __construct() {
         parent::__construct();
 
         $this->build_option_model_hierarchy();
