@@ -5,7 +5,8 @@
 	require_once( AXIS_INC_CORE_PATH . '/class-singleton.php' );
 	require_once( AXIS_INC_CORE_PATH . '/class-loader.php' );
 	require_once( AXIS_INC_CORE_PATH . '/utils.php' );
-	require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-ajax-callback.php' );
+	require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-admin-post-callback.php' );
+    require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-ajax-callback.php' );
 	require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-menu-callback.php' );
 	require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-plugin-callback.php' );
 	require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-settings-callback.php' );
@@ -20,6 +21,7 @@
 	class Bootstrap {
 
 		protected $plugin_callback = NULL;
+        protected $admin_post_callback = NULL;
 		protected $ajax_callback = NULL;
 		protected $menu_callback = NULL;
 		protected $settings_callback = NULL;
@@ -51,10 +53,17 @@
 			}
 
 			// all callback objects initialization
-			$ajax_callback_path     = $plugin_include_bootstraps_path . '/class-ajax-callback.php';
-			$menu_callback_path     = $plugin_include_bootstraps_path . '/class-menu-callback.php';
-			$plugin_callback_path   = $plugin_include_bootstraps_path . '/class-plugin-callback.php';
-			$settings_callback_path = $plugin_include_bootstraps_path . '/class-settings-callback.php';
+            $admin_post_callback_path     = $plugin_include_bootstraps_path . '/class-admin-post-callback.php';
+			$ajax_callback_path           = $plugin_include_bootstraps_path . '/class-ajax-callback.php';
+			$menu_callback_path           = $plugin_include_bootstraps_path . '/class-menu-callback.php';
+			$plugin_callback_path         = $plugin_include_bootstraps_path . '/class-plugin-callback.php';
+			$settings_callback_path       = $plugin_include_bootstraps_path . '/class-settings-callback.php';
+
+            if ( file_exists( $admin_post_callback_path ) ) {
+                require_once( $admin_post_callback_path );
+                $fqn = $callback_namespace . '\\' . 'Admin_Post_Callback';
+                $this->set_admin_post_callback( $fqn::get_instance() );
+            }
 
 			if ( file_exists( $ajax_callback_path ) ) {
 				require_once( $ajax_callback_path );
@@ -87,11 +96,17 @@
 			$this->plugin_callback->set_loader( $this->loader );
 		}
 
-		public function set_ajax_callback( $ajax_callback ) {
+		public function set_admin_post_callback( $admin_post_callback ) {
 
-			$this->ajax_callback = $ajax_callback;
-			$this->ajax_callback->set_loader( $this->loader );
+			$this->admin_post_callback = $admin_post_callback;
+			$this->admin_post_callback->set_loader( $this->loader );
 		}
+
+        public function set_ajax_callback( $ajax_callback ) {
+
+            $this->ajax_callback = $ajax_callback;
+            $this->ajax_callback->set_loader( $this->loader );
+        }
 
 		public function set_menu_callback( $menu_callback ) {
 
@@ -116,6 +131,7 @@
 			$this->add_admin_menus();
 			$this->add_settings_pages();
 			$this->localize();
+            $this->add_admin_post_actions();
 			$this->add_ajax_actions();
 		}
 
@@ -181,5 +197,16 @@
 				$this->ajax_callback->add_ajax_actions();
 			}
 		}
+
+        /**
+         * Prepare all admin post callbacks
+         */
+        protected function add_admin_post_actions() {
+
+            if( $this->admin_post_callback ) {
+
+                $this->admin_post_callback->add_admin_post_actions();
+            }
+        }
 	}
 
