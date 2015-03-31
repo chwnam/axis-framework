@@ -58,7 +58,10 @@ class Loader{
         $control_path  = $this->get_component_path( $control_name, 'control' );
         $control_class = $this->get_component_class( $namespace, $control_name, 'control' );
 
-		$construct_param['loader'] = &$this;
+		if( !isset( $construct_param['loader'] ) ) {
+
+			$construct_param['loader'] = &$this;
+		}
 
         // dynamic instance creation
         require_once( $control_path );
@@ -84,7 +87,10 @@ class Loader{
 		$view_path = $this->get_component_path( $view_name, 'view' );
 		$view_class = $this->get_component_class( $namespace, $view_name, 'view' );
 
-		$construct_param['loader'] = &$this;
+		if( !isset( $construct_param['loader'] ) ) {
+
+			$construct_param['loader'] = &$this;
+		}
 
 		require_once( $view_path );
 		$instance = new $view_class( $construct_param );
@@ -97,7 +103,10 @@ class Loader{
         $model_path = $this->get_component_path( $model_name, 'model' );
         $model_class = $this->get_component_class( $namespace, $model_name, 'model' );
 
-	    $construct_param['loader'] = &$this;
+	    if( !isset( $construct_param['loader'] ) ) {
+
+		    $construct_param['loader'] = &$this;
+	    }
 
         require_once( $model_path );
         $instance = new $model_class( $construct_param );
