@@ -68,7 +68,14 @@ class Script_Item {
 
 	public function enqueue() {
 
-		wp_enqueue_script( $this->handle, $this->src, $this->deps, $this->ver, $this->in_footer );
+		if( !$this->name ) {
+
+			$this->localize_enqueue();
+
+		} else {
+
+			wp_enqueue_script( $this->handle, $this->src, $this->deps, $this->ver, $this->in_footer );
+		}
 	}
 
     public function localize_enqueue() {
