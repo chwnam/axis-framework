@@ -69,7 +69,7 @@ class Script_Item {
 
 	public function enqueue() {
 
-		if( !$this->name ) {
+		if( $this->name ) {
 
 			$this->localize_enqueue();
 
