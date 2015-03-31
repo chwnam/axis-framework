@@ -6,6 +6,7 @@ use axis_framework\includes\core;
 
 abstract class Base_Control {
 
+	/** @var  core\Loader loader */
     protected $loader;
 
     public function __construct( $params = array() ) {

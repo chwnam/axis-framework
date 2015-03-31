@@ -6,6 +6,7 @@ use axis_framework\includes\core;
 
 abstract class Base_Model {
 
+	/** @var  core\Loader loader */
 	protected $loader;
 	protected $control = NULL;
 
