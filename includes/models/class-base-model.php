@@ -22,7 +22,7 @@ abstract class Base_Model {
 		}
 	}
 
-	public function set_loader( &$loader) {
+	public function set_loader( core\Loader &$loader) {
 
 		$this->loader = &$loader;
 	}

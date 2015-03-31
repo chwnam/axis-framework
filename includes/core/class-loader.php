@@ -79,6 +79,19 @@ class Loader{
         require_once( $this->get_view_path( $view_name ) );
     }
 
+	public function view_class( $namespace, $view_name, $construct_param = array() ) {
+
+		$view_path = $this->get_component_path( $view_name, 'view' );
+		$view_class = $this->get_component_class( $namespace, $view_name, 'view' );
+
+		$construct_param['loader'] = &$this;
+
+		require_once( $view_path );
+		$instance = new $view_class( $construct_param );
+
+		return $instance;
+	}
+
     public function model( $namespace, $model_name, $construct_param = array() ) {
 
         $model_path = $this->get_component_path( $model_name, 'model' );
@@ -103,7 +116,7 @@ class Loader{
 
         $fq_class_name = $namespace . '\\';
         $component_name = str_replace('_', '-', $component_name );
-        foreach ( explode( '-', $component_name ) as $element ) {
+        foreach ( explode( '-', $component_name ) as &$element ) {
             $fq_class_name .= ucfirst( $element );
             $fq_class_name .= '_';
         }

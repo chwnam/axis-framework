@@ -16,7 +16,7 @@ abstract class Base_Control {
 	    }
     }
 
-    public function set_loader( &$loader) {
+    public function set_loader( core\Loader &$loader) {
 
         $this->loader = &$loader;
     }

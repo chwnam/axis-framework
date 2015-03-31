@@ -12,10 +12,12 @@ class Base_Callback extends core\Singleton {
     }
 
     public function get_loader() {
+
         return $this->loader;
     }
 
-    public function set_loader( &$loader ) {
+    public function set_loader(  core\Loader &$loader ) {
+
         $this->loader = $loader;
     }
 }

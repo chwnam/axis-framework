@@ -1,27 +1,35 @@
 <?php
 
 namespace axis_framework\includes\bootstraps;
-require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-callback.php');
+require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-callback.php' );
 use \axis_framework\includes\core;
 
 
 abstract class Base_Admin_Post_Callback extends Base_Callback {
 
-    protected function __construct() {
+	protected function __construct() {
 
-        parent::__construct();
-    }
+		parent::__construct();
+	}
 
-    public abstract function add_admin_post_actions();
+	/**
+	 * Complete your admin-post actions with Admin_Post_Action class
+	 *
+	 * @return void
+	 */
+	public abstract function add_admin_post_actions();
 
-    protected function accept_wish_list($wish_list) {
+	/**
+	 * @param array $wish_list array of Admin_Post_Action
+	 */
+	protected function accept_wish_list( array $wish_list ) {
 
-        foreach ( $wish_list as $w ) {
+		foreach ( $wish_list as $w ) {
 
-            add_action( $w->get_hook(), $w->get_callback() );
-
-        }
-    }
+			/** @var Admin_Post_Action $w */
+			add_action( $w->get_hook(), $w->get_callback() );
+		}
+	}
 }
 
 
@@ -30,22 +38,22 @@ abstract class Base_Admin_Post_Callback extends Base_Callback {
  */
 class Admin_Post_Action {
 
-    private $hook;
-    private $callback;
+	private $hook;
+	private $callback;
 
-    function __construct( $hook, $callback ) {
+	function __construct( $hook, $callback ) {
 
-        $this->hook     = $hook;
-        $this->callback = $callback;
-    }
+		$this->hook     = $hook;
+		$this->callback = $callback;
+	}
 
-    public function get_hook() {
+	public function get_hook() {
 
-        return 'admin_post_' . $this->hook;
-    }
+		return 'admin_post_' . $this->hook;
+	}
 
-    public function get_callback() {
+	public function get_callback() {
 
-        return $this->callback;
-    }
+		return $this->callback;
+	}
 }
