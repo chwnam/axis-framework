@@ -125,7 +125,7 @@ class Loader{
 
         $fq_class_name = $namespace . '\\';
         $component_name = str_replace('_', '-', $component_name );
-        foreach ( explode( '-', $component_name ) as &$element ) {
+        foreach ( explode( '-', $component_name ) as $element ) {
             $fq_class_name .= ucfirst( $element );
             $fq_class_name .= '_';
         }
