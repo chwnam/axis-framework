@@ -15,9 +15,15 @@ abstract class Base_Model {
 
 			$this->control = &$params['control'];
 		}
+
+		if( isset( $params['loader'] ) ) {
+
+			$this->set_loader( $params['loader'] );
+		}
 	}
 
 	public function set_loader( &$loader) {
+
 		$this->loader = &$loader;
 	}
 

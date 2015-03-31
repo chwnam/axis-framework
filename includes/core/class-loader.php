@@ -6,6 +6,7 @@ class Loader{
 
     private $plugin_root;
     private $component_path = array(
+
         'view'     => '',
         'control'  => '',
         'model'    => '',
@@ -45,16 +46,25 @@ class Loader{
         unset( $this->component_path[ $criteria ] );
     }
 
-    public function control( $namespace, $control_name, $construct_param = array() ) {
+	/**
+	 * @param string $namespace
+	 * @param string $control_name
+	 * @param array  $construct_param
+	 *
+	 * @return mixed control class
+	 */
+	public function control( $namespace, $control_name, $construct_param = array() ) {
 
         $control_path  = $this->get_component_path( $control_name, 'control' );
         $control_class = $this->get_component_class( $namespace, $control_name, 'control' );
 
+		$construct_param['loader'] = &$this;
+
         // dynamic instance creation
         require_once( $control_path );
-        $inst = new $control_class( $construct_param );
-        $inst->set_loader( $this );
-        return $inst;
+        $instance = new $control_class( $construct_param );
+
+        return $instance;
     }
 
     public function view( $view_name, $context = array() ) {
@@ -74,10 +84,12 @@ class Loader{
         $model_path = $this->get_component_path( $model_name, 'model' );
         $model_class = $this->get_component_class( $namespace, $model_name, 'model' );
 
+	    $construct_param['loader'] = &$this;
+
         require_once( $model_path );
-        $inst = new $model_class( $construct_param );
-        $inst->set_loader( $this );
-        return $inst;
+        $instance = new $model_class( $construct_param );
+
+        return $instance;
     }
 
     private function get_view_path( $view_name ) {

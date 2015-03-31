@@ -9,16 +9,23 @@ abstract class Base_Control {
     protected $loader;
 
     public function __construct( $params = array() ) {
+
+	    if( isset( $params['loader'] ) ) {
+
+		    $this->set_loader( $params['loader'] );
+	    }
     }
 
     public function set_loader( &$loader) {
+
         $this->loader = &$loader;
     }
 
     public abstract function run();
-    protected abstract function register_scripts();
-    protected abstract function register_css();
 
+	// register_scripts(), and register_css do not have to be abstract.
+    // protected function register_scripts();
+    // protected function register_css();
 }
 
 /**
@@ -59,7 +66,12 @@ class Script_Item {
         $this->data = $data;
     }
 
-    public function enqueue() {
+	public function enqueue() {
+
+		wp_enqueue_script( $this->handle, $this->src, $this->deps, $this->ver, $this->in_footer );
+	}
+
+    public function localize_enqueue() {
 
         wp_register_script(
             $this->handle,
