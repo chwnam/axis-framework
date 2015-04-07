@@ -5,61 +5,70 @@ namespace axis_sample;
 use axis_framework\includes\controls;
 use axis_framework\includes\core;
 
+
 class Sample_Test_Control extends controls\Base_Control {
 
-    public function __construct() {
-        parent::__construct();
-    }
+	public function __construct( array $args = array() ) {
 
-    private function prepare_data() {
-        $model = $this->loader->model( 'axis_sample', 'sample-test' );
-        $data = $model->prepare_data();
-        return $data;
-    }
+		parent::__construct( $args );
+	}
 
-    public function run() {
+	private function prepare_data() {
 
-        $this->register_scripts();
-        $this->register_css();
+		/** @var Sample_Test_Model $model */
+		$model = $this->loader->model( 'axis_sample', 'sample-test' );
+		$data  = $model->prepare_data();
 
-        $data = array(
-            'output_text' => $this->prepare_data(),    // 항상 key-value 쌍이어야 하며 key는 변수 이름으로 쓸 수 있어야 합니다.
-        );
+		return $data;
+	}
 
-        $view = $this->loader->view( 'sample-test', $data );
-    }
+	public function run() {
 
-    public function register_scripts() {
+		$this->register_scripts();
+		$this->register_css();
 
-        $wish_list = array(
+		$data = array(
+			'output_text' => $this->prepare_data(),    // 항상 key-value 쌍이어야 하며 key는 변수 이름으로 쓸 수 있어야 합니다.
+		);
 
-            new controls\Script_Item(
-                'sample_test_script_handle',
-                AXIS_SAMPLE_JS_URL . '/sample_test.js',
-                controls\Script_Item::$ajax_object,
-                controls\Script_Item::$ajax_url,
-                array('jquery'),
-                NULL
-            ),
-        );
+		$this->loader->view( 'sample-test', $data );
+	}
 
-        foreach($wish_list as $w) {
-            $w->enqueue();
-        }
-    }
+	public function register_scripts() {
 
-    public function register_css() {
+		$wish_list = array(
 
-        $wish_list = array(
+			new controls\Script_Item(
+				'sample_test_script_handle',
+				AXIS_SAMPLE_JS_URL . '/sample_test.js',
+				controls\Script_Item::$ajax_object,
+				controls\Script_Item::$ajax_url,
+				array( 'jquery' ),
+				NULL
+			),
+		);
 
-            new controls\Css_Item(
-                'test_css_handle',
-                AXIS_SAMPLE_CSS_URL . '/sample_test.css'
-            )
-        );
+		foreach ( $wish_list as &$w ) {
 
-        foreach($wish_list as $w) {
-            $w->enqueue();
-        }
-    }
+			/** @var controls\Script_Item $w */
+			$w->enqueue();
+		}
+	}
+
+	public function register_css() {
+
+		$wish_list = array(
+
+			new controls\Css_Item(
+				'test_css_handle',
+				AXIS_SAMPLE_CSS_URL . '/sample_test.css'
+			)
+		);
+
+		foreach ( $wish_list as &$w ) {
+
+			/** @var controls\Css_Item $w */
+			$w->enqueue();
+		}
+	}
 }

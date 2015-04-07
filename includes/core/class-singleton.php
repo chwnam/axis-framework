@@ -3,6 +3,11 @@
 namespace axis_framework\includes\core;
 
 
+/**
+ * Class Singleton
+ *
+ * @package axis_framework\includes\core
+ */
 class Singleton {
 
     public static function get_instance() {
