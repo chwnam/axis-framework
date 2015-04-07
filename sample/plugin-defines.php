@@ -24,6 +24,9 @@ define( 'AXIS_SAMPLE_JS_URL',   AXIS_SAMPLE_VIEW_URL . '/js' );
 // value not considered.
 define( 'AXIS_ENABLE_DUMP_PRE', NULL );
 
+// Sketch: showing debug toolbar?
+define( 'AXIS_DEV_TOOLBAR', TRUE );
+
 // THIS IS REALLY IMPORTANT! PLEASE SET IT PROPERLY!!//
 define( 'AXIS_FRAMEWORK_PATH', realpath( AXIS_SAMPLE_ABSPATH . '/..' ) );
 require_once( AXIS_FRAMEWORK_PATH . '/defines.php' );

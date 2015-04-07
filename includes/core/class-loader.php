@@ -74,8 +74,8 @@ class Loader{
 
         if ( !empty( $context ) ) {
             $keys = array_keys( $context );
-            foreach ( $keys as $key ) {
-                $$key = $context[ $key ];
+            foreach ( $keys as &$key ) {
+                $$key = &$context[ $key ];
             }
         }
 

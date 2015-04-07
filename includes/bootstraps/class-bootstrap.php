@@ -184,6 +184,8 @@ class Bootstrap {
 		$this->localize();
 		$this->add_admin_post_actions();
 		$this->add_ajax_actions();
+
+		$this->dev_toolbar();
 	}
 
 	/**
@@ -258,6 +260,17 @@ class Bootstrap {
 		if ( $this->admin_post_callback ) {
 
 			$this->admin_post_callback->add_admin_post_actions();
+		}
+	}
+
+	protected function dev_toolbar() {
+
+		if( defined( 'AXIS_DEV_TOOLBAR' ) && AXIS_DEV_TOOLBAR ) {
+
+			require_once( AXIS_INC_CORE_PATH . '/dev-toolbar/class-axis-dev-toolbar.php' );
+
+			add_action( 'wp_footer', '\axis_framework\includes\core\init_axis_dev_toolbar' );
+			add_action( 'admin_footer', '\axis_framework\includes\core\init_axis_dev_toolbar' );
 		}
 	}
 }
