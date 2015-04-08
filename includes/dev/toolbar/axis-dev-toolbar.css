@@ -8,10 +8,13 @@
     bottom:0;
     left:0;
     z-index: 9999;
+    overflow-y: visible;
+    padding: 1px;
 }
 
 .axis-dev-toolbar-logging-div {
 
-    margin: 5px 2px 2px 2px;
-    border: 1px solid #FF0000;
+    margin: 5px 2px 1px 2px;
+    height: 93%;
+    overflow: scroll;
 }

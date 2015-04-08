@@ -1,6 +1,6 @@
 <?php
 
-namespace axis_framework\includes\core;
+namespace axis_framework\includes\dev;
 
 use axis_framework\includes\controls;
 
@@ -15,7 +15,7 @@ class Axis_Dev_Toolbar extends controls\Base_Control {
 
 		$script = new controls\Script_Item(
 			'axis_dev_toolbar_js_handle',
-			content_url( 'axis/includes/core/dev-toolbar/axis-dev-toolbar.js' ),
+			content_url( 'axis/includes/dev/toolbar/axis-dev-toolbar.js' ),
 			NULL,
 			array(),
 			array( 'jquery', 'jquery-ui-resizable' ),
@@ -30,15 +30,15 @@ class Axis_Dev_Toolbar extends controls\Base_Control {
 
 		$css = new controls\Css_Item(
 			'axis_dev_toolbar_css_handle',
-			content_url( 'axis/includes/core/dev-toolbar/axis-dev-toolbar.css' ),
+			content_url( 'axis/includes/dev/toolbar/axis-dev-toolbar.css' ),
 			array(),
 			NULL
 		);
 
 
 		global $wp_scripts;
-
 		// get the jquery ui object
+		/** @var \_WP_Dependency $query_ui */
 		$query_ui = $wp_scripts->query('jquery-ui-core');
 
 		// load the jquery ui theme
@@ -60,18 +60,22 @@ class Axis_Dev_Toolbar extends controls\Base_Control {
 		$this->register_scripts();
 		$this->register_css();
 
-		if ( !empty( $context ) ) {
-			$keys = array_keys( $context );
+		$log_array = axis_get_logger()->get_logging();
+		$n_context = array_merge( $context, array( 'log_array' => $log_array ) );
+
+		if ( !empty( $n_context ) ) {
+
+			$keys = array_keys( $n_context );
 			foreach ( $keys as &$key ) {
-				$$key = &$context[ $key ];
+				$$key = &$n_context[ $key ];
 			}
 		}
 
 		// this object will not have loader object reference.
 		require_once( 'toolbar-view.php' );
 
-		if ( !empty( $context ) ) {
-			$keys = array_keys( $context );
+		if ( !empty( $n_context ) ) {
+			$keys = array_keys( $n_context );
 			foreach ( $keys as &$key ) {
 				if( isset( $$key ) ) {
 					unset( $$key );

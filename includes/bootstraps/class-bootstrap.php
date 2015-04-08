@@ -200,6 +200,7 @@ class Bootstrap {
 			register_uninstall_hook( $this->main_file, array( $this->plugin_callback, 'on_uninstall' ) );
 
 			// register other hooks
+			/** @noinspection PhpUndefinedMethodInspection */
 			$this->plugin_callback->register_hooks();
 		}
 	}
@@ -248,6 +249,7 @@ class Bootstrap {
 
 		if ( $this->ajax_callback ) {
 
+			/** @noinspection PhpUndefinedMethodInspection */
 			$this->ajax_callback->add_ajax_actions();
 		}
 	}
@@ -259,18 +261,21 @@ class Bootstrap {
 
 		if ( $this->admin_post_callback ) {
 
+			/** @noinspection PhpUndefinedMethodInspection */
 			$this->admin_post_callback->add_admin_post_actions();
 		}
 	}
 
 	protected function dev_toolbar() {
 
+		require_once( AXIS_INC_PATH . '/dev/toolbar/class-axis-dev-logging.php');
+
 		if( defined( 'AXIS_DEV_TOOLBAR' ) && AXIS_DEV_TOOLBAR ) {
 
-			require_once( AXIS_INC_CORE_PATH . '/dev-toolbar/class-axis-dev-toolbar.php' );
+			require_once( AXIS_INC_PATH . '/dev/toolbar/class-axis-dev-toolbar.php' );
 
-			add_action( 'wp_footer', '\axis_framework\includes\core\init_axis_dev_toolbar' );
-			add_action( 'admin_footer', '\axis_framework\includes\core\init_axis_dev_toolbar' );
+			add_action( 'wp_footer', '\axis_framework\includes\dev\init_axis_dev_toolbar' );
+			add_action( 'admin_footer', '\axis_framework\includes\dev\init_axis_dev_toolbar' );
 		}
 	}
 }

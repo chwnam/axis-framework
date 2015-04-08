@@ -4,7 +4,7 @@ namespace axis_sample;
 
 use axis_framework\includes\controls;
 use axis_framework\includes\core;
-
+use axis_framework\includes\dev;
 
 class Sample_Test_Control extends controls\Base_Control {
 
@@ -30,6 +30,15 @@ class Sample_Test_Control extends controls\Base_Control {
 		$data = array(
 			'output_text' => $this->prepare_data(),    // 항상 key-value 쌍이어야 하며 key는 변수 이름으로 쓸 수 있어야 합니다.
 		);
+
+		if( AXIS_DEV_TOOLBAR ) {
+			$logger = dev\axis_get_logger();
+			for( $i = 0; $i < 1; ++$i ) {
+				$logger->info( "this is info $i level log!" );
+			}
+			$logger->log( 'CUSTOM_TAG', "this is custom tag log!" );
+			$logger->log( 'DEBUG', print_r( $this, TRUE ) );
+		}
 
 		$this->loader->view( 'sample-test', $data );
 	}
