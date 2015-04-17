@@ -18,16 +18,13 @@ class Menu_Callback extends bootstraps\Base_Menu_Callback {
 		$menu_slug  = 'axis_sample_menu';
 		$capability = 'manage_options';
 
-		$submenu_slug_prefix     = $menu_slug . '_';
-		$submenu_callback_prefix = $menu_slug . '_';
-
 		// main menu. If the item is not shown, check add_menu_page: $position value.
 		$menu_item = new bootstraps\Menu_Page_Item(
 			AXIS_SAMPLE_FULL_NAME,            // page_title
 			AXIS_SAMPLE_SHORT_NAME,           // menu title
 			$capability,
 			$menu_slug
-		// callback, icon_url, position
+		    // callback, icon_url, position
 		);
 		$menu_item->add();
 
@@ -38,10 +35,10 @@ class Menu_Callback extends bootstraps\Base_Menu_Callback {
 				TRUE,                                                    // show
 				$menu_slug,                                              // parent_slug
 				'Sample Test - ' . AXIS_SAMPLE_FULL_NAME,                // page title (top side of web browser)
-				__( 'Axis Sample Test ', 'axis_sample' ),     // menu title
+				__( 'Axis Sample Test ', 'axis_sample' ),                // menu title
 				$capability,                                             // capability
-				$submenu_slug_prefix . 'sample_test',                    // menu slug
-				array( $this, $submenu_callback_prefix . 'sample_test' ) // callback
+				'axis_sample_menu_sample_test',                          // menu slug
+				array( $this, 'axis_sample_menu_sample_test' )           // callback
 			),
 		);
 
