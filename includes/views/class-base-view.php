@@ -21,4 +21,6 @@ abstract class Base_View {
 
 		$this->loader = &$loader;
 	}
+
+    public abstract function render( array $context = array() );
 }

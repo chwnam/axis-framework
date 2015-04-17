@@ -40,6 +40,16 @@ class Menu_Callback extends bootstraps\Base_Menu_Callback {
 				'axis_sample_menu_sample_test',                          // menu slug
 				array( $this, 'axis_sample_menu_sample_test' )           // callback
 			),
+
+            new bootstraps\Submenu_Page_Item(
+                TRUE,
+                $menu_slug,
+                'View Class Test - ' . AXIS_SAMPLE_FULL_NAME,
+                'View Class Test',
+                $capability,
+                'axis_sample_menu_view_class_test',
+                array( &$this, 'axis_sample_menu_view_class_test' )
+            ),
 		);
 
 		foreach ( $submenu_page_wish_list as &$item ) {
@@ -57,4 +67,10 @@ class Menu_Callback extends bootstraps\Base_Menu_Callback {
 		$control = $this->loader->control( 'axis_sample', 'sample-test' );
 		$control->run();
 	}
+
+    public function axis_sample_menu_view_class_test() {
+
+        $control = $this->loader->control( 'axis_sample', 'view-class-test' );
+        $control->run();
+    }
 }

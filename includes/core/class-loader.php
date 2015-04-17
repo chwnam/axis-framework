@@ -10,6 +10,7 @@ class Loader{
         'view'     => '',
         'control'  => '',
         'model'    => '',
+        'template' => '',
     );
 
     public function __construct( $plugin_root_path, $default_component_path = NULL ) {
@@ -26,9 +27,10 @@ class Loader{
     public function init_component_path() {
 
         $this->component_path = array(
-            'view'    => $this->plugin_root . '/includes/views',
-            'control' => $this->plugin_root . '/includes/controls',
-            'model'   => $this->plugin_root . '/includes/models',
+            'view'     => $this->plugin_root . '/includes/views',
+            'control'  => $this->plugin_root . '/includes/controls',
+            'model'    => $this->plugin_root . '/includes/models',
+            'template' => $this->plugin_root . '/includes/templates',
         );
     }
 
@@ -114,11 +116,30 @@ class Loader{
         return $instance;
     }
 
+    public function template( $template_name, &$view_class, array $context = array() ) {
+
+        foreach ( $context as $key => &$value ) {
+            $$key = &$value;
+        }
+
+        $view = &$view_class;
+
+        require_once( $this->get_template_path( $template_name ) );
+    }
+
     private function get_view_path( $view_name ) {
         return sprintf(
             '%s/%s.php',
             $this->plugin_root . '/includes/views',
             $view_name );
+    }
+
+    private function get_template_path( $template_name ) {
+        return sprintf(
+            '%s/%s.php',
+            $this->component_path['template'],
+            $template_name
+        );
     }
 
     private function get_component_class( $namespace, $component_name, $component_criteria ) {
