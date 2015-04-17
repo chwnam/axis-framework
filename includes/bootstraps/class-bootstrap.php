@@ -79,6 +79,7 @@ class Bootstrap {
 
 		if ( file_exists( $admin_post_callback_path ) ) {
 
+            /** @noinspection PhpIncludeInspection */
 			require_once( $admin_post_callback_path );
 			/** @var Base_Admin_Post_Callback $fqn fully-qualified name of Admin Post callback class. */
 			$fqn = $callback_namespace . '\\' . 'Admin_Post_Callback';
@@ -87,6 +88,7 @@ class Bootstrap {
 
 		if ( file_exists( $ajax_callback_path ) ) {
 
+            /** @noinspection PhpIncludeInspection */
 			require_once( $ajax_callback_path );
 			/** @var Base_Ajax_Callback $fqn fully-qualified name of Ajax callback class. */
 			$fqn = $callback_namespace . '\\' . 'Ajax_Callback';
@@ -95,6 +97,7 @@ class Bootstrap {
 
 		if ( file_exists( $menu_callback_path ) ) {
 
+            /** @noinspection PhpIncludeInspection */
 			require_once( $menu_callback_path );
 			/** @var Base_Menu_Callback $fqn fully-qualified name of Menu callback class. */
 			$fqn = $callback_namespace . '\\' . 'Menu_Callback';
@@ -103,6 +106,7 @@ class Bootstrap {
 
 		if ( file_exists( $plugin_callback_path ) ) {
 
+            /** @noinspection PhpIncludeInspection */
 			require_once( $plugin_callback_path );
 			/** @var Base_Plugin_Callback $fqn fully-qualified name of Plugin callback class. */
 			$fqn = $callback_namespace . '\\' . 'Plugin_Callback';
@@ -111,6 +115,7 @@ class Bootstrap {
 
 		if ( file_exists( $settings_callback_path ) ) {
 
+            /** @noinspection PhpIncludeInspection */
 			require_once( $settings_callback_path );
 			/** @var Base_Settings_Callback $fqn fully-qualified name of Settings callback class. */
 			$fqn = $callback_namespace . '\\' . 'Settings_Callback';
@@ -198,6 +203,7 @@ class Bootstrap {
 			register_uninstall_hook( $this->main_file, array( $this->plugin_callback, 'on_uninstall' ) );
 
 			// register other hooks
+            /** @noinspection PhpUndefinedMethodInspection */
 			$this->plugin_callback->register_hooks();
 		}
 	}
@@ -246,6 +252,7 @@ class Bootstrap {
 
 		if ( $this->ajax_callback ) {
 
+            /** @noinspection PhpUndefinedMethodInspection */
 			$this->ajax_callback->add_ajax_actions();
 		}
 	}
@@ -257,6 +264,7 @@ class Bootstrap {
 
 		if ( $this->admin_post_callback ) {
 
+            /** @noinspection PhpUndefinedMethodInspection */
 			$this->admin_post_callback->add_admin_post_actions();
 		}
 	}
