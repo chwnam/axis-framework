@@ -14,18 +14,18 @@ class View_Class_Test_Control extends controls\Base_Control {
 
     public function run() {
 
-        $v = new \stdClass();
-        $v->var1 = 'a';
-        $v->var2 = 'b';
+        $post = new \stdClass();
+        $post->title = 'post title';
+        $post->body  = 'post body!';
 
         $context = array(
             'val'      => 1,
             'arr'      => array( 1, 2, 3, 4, 5 ),
-            'cls'      => &$v,
+            'post'     => $post,
         );
 
         /** @var View_Class_Test_View $view */
         $view = $this->loader->view_class( 'axis_sample', 'view-class-test' );
-        $view->render( $context );
+        echo $view->render( 'test-template', $context );
     }
 }

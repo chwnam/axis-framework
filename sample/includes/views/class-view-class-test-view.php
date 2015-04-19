@@ -11,9 +11,4 @@ class View_Class_Test_View extends views\Base_View {
 
         parent::__construct( $args );
     }
-
-    public function render( array $context = array() ) {
-
-        $this->loader->template( 'test-template', $this, $context );
-    }
 }

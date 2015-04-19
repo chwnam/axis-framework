@@ -116,15 +116,12 @@ class Loader{
         return $instance;
     }
 
-    public function template( $template_name, &$view_class, array $context = array() ) {
+    public function template( $template_name, &$view, array $context = array() ) {
 
-        foreach ( $context as $key => &$value ) {
-            $$key = &$value;
-        }
+        extract( $context );
 
-        $view = &$view_class;
-
-        require_once( $this->get_template_path( $template_name ) );
+        /** @noinspection PhpIncludeInspection */
+        require( $this->get_template_path( $template_name ) );
     }
 
     private function get_view_path( $view_name ) {
@@ -134,7 +131,7 @@ class Loader{
             $view_name );
     }
 
-    private function get_template_path( $template_name ) {
+    public function get_template_path( $template_name ) {
         return sprintf(
             '%s/%s.php',
             $this->component_path['template'],
