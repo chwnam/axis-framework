@@ -14,9 +14,9 @@ abstract class Base_View {
 
     protected $block;
 
-    protected $current_template_path = '';
+    protected $current_template = '';
 
-    protected $parent_template_paths = array();
+    protected $parent_templates = array();
 
     protected $_template_stack = array();
 
@@ -35,24 +35,21 @@ abstract class Base_View {
 		$this->loader = &$loader;
 	}
 
-    public function extend( $template_name ) {
-
-        $template_path = $this->loader->get_template_path( $template_name );
+    public function extend( $template ) {
 
         // parent must be different from current template
-        if( $template_path == $this->current_template_path ) {
-            throw new \LogicException();
+        if( $template == $this->current_template ) {
+            throw new \LogicException( 'You cannot have views extend themselves.' );
         }
 
         // the parent's parent: current, and the current template's parent: the parent
         // cyclic condition.
-        if( isset( $this->parent_template_paths[ $template_path ] ) &&
-            $this->$template_path[ $template_path ] == $this->current_template_path ) {
-            throw new \LogicException();
+        if( isset( $this->parent_templates[ $template ] ) &&
+            $this->parent_templates == $this->$current_template ) {
+            throw new \LogicException( 'You cannot have views extend in a loop.' );
         }
 
-        $this->parent_template_paths[ $this->current_template_path ] = $template_name;
-        $this->current_template_path = $template_path;
+        $this->parent_templates[ $this->current_template ] = $template;
     }
 
     public function assign( $name, $value ) {
@@ -90,22 +87,30 @@ abstract class Base_View {
         return $this->block->exists( $name );
     }
 
-    public function render( $template, array $context = array() ) {
+	public function render( $template, array $context = array() ) {
 
-        $this->current_template_path = $this->loader->get_template_path( $template );
+		$this->current_template = $template;
+		$this->block->set( 'content', $this->_render( $template, $context ) );
+		$this->current_template = $template;
 
+		return $this->block->get( 'content' );
+	}
+
+    public function _render( $template, array $context = array() ) {
+
+	    $this->current_template = $template;
         $initial_blocks = count( $this->block->unfinished() );
 
         ob_start();
         $this->loader->template( $template, $this, $context );
         $content = ob_get_clean();
 
-        if( isset( $this->parent_template_paths[ $this->current_template_path ] ) ) {
+        if( isset( $this->parent_templates[ $template ] ) ) {
 
             $this->_template_stack[] = $this->fetch( 'content' );
             $this->assign( 'content', $content );
 
-            $content = $this->render( $this->parent_template_paths[ $this->current_template_path ], $context );
+            $content = $this->_render( $this->parent_templates[ $template ] );
             $this->assign( 'content', array_pop( $this->_template_stack ) );
         }
 

@@ -18,4 +18,5 @@ $view->begin_block( 'sidebar' );
     </li>
 <?php $view->end_block(); ?>
 
-<?= $post->body ?>
+<?= $post->body ?><br>
+여기는 test-template!
