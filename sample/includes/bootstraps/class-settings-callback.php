@@ -47,11 +47,11 @@ class Settings_Callback extends Base_Settings_Callback {
         // 섹션은 페이지 아래 존재합니다.
         $this->section_general = new settings\Settings_Section(
             'axis_sample_section_general',                     // id. html 코드를 확인하세요.
-            __('General Section', AXIS_SAMPLE_LANG_CONTEXT),   // title
+            __('General Section', 'axis_sample'),   // title
             // callback
             function( $args ) {
                 // $args는 UI 위젯으로 전달되는 값입니다. generic_section_callback()을 참고하세요.
-                $args['description'] = __('General settings sample description', AXIS_SAMPLE_LANG_CONTEXT);
+                $args['description'] = __('General settings sample description', 'axis_sample');
                 settings\Settings_Helper::generic_section_callback($args);
             },
             $this->page                                        // page. 여기서 이 섹션의 상위 페이지가 누구인지 지정합니다.
@@ -60,7 +60,7 @@ class Settings_Callback extends Base_Settings_Callback {
         // 각 섹션은 필드들을 가지고 있습니다.
         $this->field_value_1 = new settings\Settings_Field(
             'axis_sample_field_1',                           // id. html 코드를 확인하세요.
-            __('Field Value 1', AXIS_SAMPLE_LANG_CONTEXT),   // title
+            __('Field Value 1', 'axis_sample'),   // title
             function( $args ) { // callback
                 settings\Settings_Helper::generic_text_input_callback( $args );
             },
@@ -69,7 +69,7 @@ class Settings_Callback extends Base_Settings_Callback {
                 'id'            => 'axis_sample_field_1',         // be the same as the first argument
                 'name'          => $this->option_value_1->name,
                 'value'         => esc_attr( get_option( $this->option_value_1->name ) ),
-                'description'   => __('Sample value 1 description', AXIS_SAMPLE_LANG_CONTEXT),
+                'description'   => __('Sample value 1 description', 'axis_sample'),
                 'autocompelte'  => TRUE,
             )
         );
@@ -84,8 +84,8 @@ class Settings_Callback extends Base_Settings_Callback {
         $capability = 'manage_options';
 
         add_options_page(
-            __( 'axis sample options', AXIS_SAMPLE_LANG_CONTEXT ) . ' - ' . AXIS_SAMPLE_FULL_NAME,     // page_title
-            __( 'axis sample options', AXIS_SAMPLE_LANG_CONTEXT ),                                     // menu_title
+            __( 'axis sample options', 'axis_sample' ) . ' - ' . AXIS_SAMPLE_FULL_NAME,     // page_title
+            __( 'axis sample options', 'axis_sample' ),                                     // menu_title
             $capability,                                                                               // capability
             $this->page->name,                                            // menu_slug
             array( $this, $this->page->name )                             // callback_function
