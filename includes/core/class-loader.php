@@ -4,6 +4,10 @@ namespace axis_framework\includes\core;
 
 class Loader {
 
+	const COMPONENT_RULE_SIMPLE   = 'simple';
+	const COMPONENT_RULE_COMPLETE = 'complete';
+	const COMPONENT_RULE_CUSTOM   = 'custom';
+
 	private $plugin_root;
 	private $component_path = array(
 
@@ -24,16 +28,40 @@ class Loader {
 		$this->plugin_root = $root_path;
 	}
 
-	public function init_component_path() {
+	/**
+	 * initialize default component path.
+	 *
+	 * @param array $override rule to override.
+	 */
+	public function init_component_path( array $override = array() ) {
 
-		$this->component_path = array(
-			'view'     => $this->plugin_root . '/includes/views',
-			'control'  => $this->plugin_root . '/includes/controls',
-			'model'    => $this->plugin_root . '/includes/models',
-			'template' => $this->plugin_root . '/includes/templates',
-		);
+		if( empty( $override ) ) {
+
+			$this->component_path = array(
+				'view'     => $this->plugin_root . '/includes/views',
+				'control'  => $this->plugin_root . '/includes/controls',
+				'model'    => $this->plugin_root . '/includes/models',
+				'template' => $this->plugin_root . '/includes/templates',
+			);
+
+		} else {
+
+			$this->component_path = $override;
+		}
 	}
 
+	/**
+	 * @return array current component path list
+	 */
+	public function component_paths() {
+
+		return $this->component_path;
+	}
+
+	/**
+	 * @param string $criteria criteria name. e.g. view, control, model, template, ...
+	 * @param string $path     path to component root. Must exist.
+	 */
 	public function update_component_path( $criteria, $path ) {
 
 		$p = realpath( $path );
@@ -43,6 +71,9 @@ class Loader {
 		$this->component_path[ $criteria ] = $p;
 	}
 
+	/**
+	 * @param string $criteria criteria name to remove
+	 */
 	public function remove_component_path( $criteria ) {
 
 		unset( $this->component_path[ $criteria ] );
@@ -84,7 +115,7 @@ class Loader {
 		extract( $context );
 
 		/** @noinspection PhpIncludeInspection */
-		require_once( $this->get_component_path( $view_name, 'view' ) );
+		require_once( $this->get_component_path( $view_name, 'view', self::COMPONENT_RULE_SIMPLE ) );
 	}
 
 	/**
@@ -152,29 +183,68 @@ class Loader {
 		extract( $context );
 
 		/** @noinspection PhpIncludeInspection */
-		require( $this->get_component_path( $template_name, 'template' ) );
+		require( $this->get_component_path( $template_name, 'template', self::COMPONENT_RULE_SIMPLE ) );
 	}
 
-	private function get_component_class( $namespace, $component_name, $component_criteria ) {
+	/**
+	 * @param        $namespace
+	 * @param        $component_name
+	 * @param        $component_criteria
+	 * @param string $component_rule
+	 * @param null   $naming_override
+	 *
+	 * @return mixed|string full-qualified class name.
+	 */
+	public function get_component_class(
+		$namespace,
+		$component_name,
+		$component_criteria,
+		$component_rule = self::COMPONENT_RULE_COMPLETE,
+		$naming_override = NULL
+	) {
 
-		$fq_class_name  = $namespace . '\\';
-		$component_name = str_replace( '_', '-', $component_name );
-		foreach ( explode( '-', $component_name ) as $element ) {
-			$fq_class_name .= ucfirst( $element );
-			$fq_class_name .= '_';
+		switch( $component_rule ) {
+
+			case self::COMPONENT_RULE_COMPLETE:
+				$fq_class_name  = $namespace === '\\' ? $namespace : $namespace . '\\';
+				$element_array  = explode( '-', str_replace( '_', '-', $component_name ) );
+				foreach ( $element_array as &$element ) {
+					$fq_class_name .= ucfirst( $element ) . '_';
+				}
+				$fq_class_name .= ucfirst( strtolower( $component_criteria ) );
+				break;
+
+			case self::COMPONENT_RULE_CUSTOM:
+				$fq_class_name = call_user_func(
+					$naming_override,
+					array( $namespace, $component_name, $component_criteria )
+				);
+				break;
+
+			default:
+				throw new \LogicException(
+					sprintf(
+						'component name %s of namespace \'%s\' not found in criteria %s',
+						$component_name, $namespace, $component_criteria
+					)
+				);
 		}
-		$fq_class_name .= ucfirst( strtolower( $component_criteria ) );
 
 		return $fq_class_name;
 	}
 
-	private function get_component_path( $component_name, $component_criteria ) {
+	public function get_component_path(
+		$component_name,
+		$component_criteria,
+		$component_rule = self::COMPONENT_RULE_COMPLETE,
+		$naming_override = NULL
+	) {
 
 		$path_to_component = &$this->component_path[ $component_criteria ];
 
-		if ( ! file_exists( $path_to_component ) ) {
+		if ( !file_exists( $path_to_component ) ) {
 
-			throw new \LogicException(
+			throw new \RuntimeException(
 				sprintf(
 					"component path '%s' by criteria '%s' does not exist!",
 					$path_to_component,
@@ -183,11 +253,34 @@ class Loader {
 			);
 		}
 
-		return sprintf(
-			'%s/class-%s-%s.php',
-			$path_to_component,
-			str_replace( '_', '-', $component_name ),
-			$component_criteria
-		);
+		switch( $component_rule ) {
+
+			case self::COMPONENT_RULE_COMPLETE:
+				$path = sprintf(
+					'%s/class-%s-%s.php',
+					$path_to_component,
+					str_replace( '_', '-', $component_name ),
+					$component_criteria
+				);
+				break;
+
+			case self::COMPONENT_RULE_SIMPLE:
+				$path = sprintf( '%s/%s.php', $this->component_path[ $component_criteria ], $component_name );
+				break;
+
+			case self::COMPONENT_RULE_CUSTOM:
+				$path = call_user_func_array( $naming_override, array( $component_name, $component_criteria, ) );
+				break;
+
+			default:
+				throw new \LogicException(
+					sprintf(
+						'component name %s not found in criteria %s',
+						$component_name, $component_criteria
+					)
+				);
+		}
+
+		return $path;
 	}
 }
