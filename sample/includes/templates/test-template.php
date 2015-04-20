@@ -18,7 +18,8 @@ $view->begin_block( 'sidebar' );
     <li>
         do you like template?
     </li>
+	<button id="ajax-return">AJAX Return Test</button>
+	<div id="output"></div>
 <?php $view->end_block(); ?>
 
 <?= $post->body ?><br>
-여기는 test-template!

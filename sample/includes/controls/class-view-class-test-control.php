@@ -24,8 +24,21 @@ class View_Class_Test_Control extends controls\Base_Control {
             'post'     => $post,
         );
 
+	    $this->prepare_script();
+
         /** @var View_Class_Test_View $view */
-        $view = $this->loader->view_class( 'axis_sample', 'view-class-test' );
-        echo $view->render( 'test-template', $context );
+        $view = $this->loader->view( 'axis_sample', 'view-class-test' );
+        $view->render( 'test-template', $context );
     }
+
+	public function prepare_script() {
+
+		$script = new controls\Script_Item(
+			'ajax_return_script_handle',
+			AXIS_SAMPLE_JS_URL . '/ajax_return.js',
+			controls\Script_Item::$ajax_object,
+			controls\Script_Item::$ajax_url
+		);
+		$script->enqueue();
+	}
 }

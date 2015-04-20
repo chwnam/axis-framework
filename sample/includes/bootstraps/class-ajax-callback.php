@@ -20,6 +20,11 @@ class Ajax_Callback extends bootstraps\Base_Ajax_Callback {
                 array($this, 'axis_sample_test_action'),
                 bootstraps\Ajax_Action::PRIV
             ),
+
+	        new bootstraps\Ajax_Action(
+		        'axis_sample_ajax_return',
+		        $this->control_helper( '', 'ajax-return', array(), TRUE )
+	        )
         );
 
         $this->accept_wish_list($wish_list);

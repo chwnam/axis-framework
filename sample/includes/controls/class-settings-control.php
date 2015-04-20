@@ -12,7 +12,7 @@ class Settings_Control extends controls\Base_Control {
 
         $settings_callback = Settings_Callback::get_instance();
 
-        $this->loader->view(
+        $this->loader->simple_view(
             'settings',
             array(
                 'group_name'  => $settings_callback->group_general->name,

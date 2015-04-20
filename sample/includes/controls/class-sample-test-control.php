@@ -31,7 +31,7 @@ class Sample_Test_Control extends controls\Base_Control {
 			'output_text' => $this->prepare_data(),    // 항상 key-value 쌍이어야 하며 key는 변수 이름으로 쓸 수 있어야 합니다.
 		);
 
-		$this->loader->view( 'sample-test', $data );
+		$this->loader->simple_view( 'sample-test', $data );
 	}
 
 	public function register_scripts() {

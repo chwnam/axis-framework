@@ -48,7 +48,7 @@ class Menu_Callback extends bootstraps\Base_Menu_Callback {
                 'View Class Test',
                 $capability,
                 'axis_sample_menu_view_class_test',
-                array( &$this, 'axis_sample_menu_view_class_test' )
+                $this->control_helper( 'axis_sample', 'view-class-test' ) // using helper function
             ),
 		);
 
@@ -67,10 +67,4 @@ class Menu_Callback extends bootstraps\Base_Menu_Callback {
 		$control = $this->loader->control( 'axis_sample', 'sample-test' );
 		$control->run();
 	}
-
-    public function axis_sample_menu_view_class_test() {
-
-        $control = $this->loader->control( 'axis_sample', 'view-class-test' );
-        $control->run();
-    }
 }
