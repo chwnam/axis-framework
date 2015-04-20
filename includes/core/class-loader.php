@@ -79,17 +79,12 @@ class Loader {
 	 * @param string $view_name view name
 	 * @param array  $context   context to deliver
 	 */
-	public function view( $view_name, $context = array() ) {
+	public function view( $view_name, array $context = array() ) {
 
-		if ( ! empty( $context ) ) {
-			$keys = array_keys( $context );
-			foreach ( $keys as $key ) {
-				$$key = $context[ $key ];
-			}
-		}
+		extract( $context );
 
 		/** @noinspection PhpIncludeInspection */
-		require_once( $this->get_view_path( $view_name ) );
+		require_once( $this->get_component_path( $view_name, 'view' ) );
 	}
 
 	/**
@@ -157,24 +152,7 @@ class Loader {
 		extract( $context );
 
 		/** @noinspection PhpIncludeInspection */
-		require( $this->get_template_path( $template_name ) );
-	}
-
-	private function get_view_path( $view_name ) {
-
-		return sprintf(
-			'%s/%s.php',
-			$this->plugin_root . '/includes/views',
-			$view_name );
-	}
-
-	public function get_template_path( $template_name ) {
-
-		return sprintf(
-			'%s/%s.php',
-			$this->component_path['template'],
-			$template_name
-		);
+		require( $this->get_component_path( $template_name, 'template' ) );
 	}
 
 	private function get_component_class( $namespace, $component_name, $component_criteria ) {
@@ -196,7 +174,7 @@ class Loader {
 
 		if ( ! file_exists( $path_to_component ) ) {
 
-			throw new \RuntimeException(
+			throw new \LogicException(
 				sprintf(
 					"component path '%s' by criteria '%s' does not exist!",
 					$path_to_component,
