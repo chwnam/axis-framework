@@ -119,7 +119,7 @@ class Loader{
     public function template( $template_name, &$view, array $context = array() ) {
 
         extract( $context );
-
+		
         /** @noinspection PhpIncludeInspection */
         require( $this->get_template_path( $template_name ) );
     }
