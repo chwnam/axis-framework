@@ -4,30 +4,85 @@ namespace axis_framework\includes\controls;
 
 use axis_framework\includes\core;
 
+
 abstract class Base_Control {
 
 	/** @var  core\Loader loader */
-    protected $loader;
+	protected $loader;
 
-    public function __construct( $params = array() ) {
+	/** @var bool using output buffer. */
+	protected $output_buffer_used = FALSE;
 
-	    if( isset( $params['loader'] ) ) {
+	public function __construct( $params = array() ) {
 
-		    $this->set_loader( $params['loader'] );
-	    }
-    }
+		if ( isset( $params['loader'] ) ) {
 
-    public function set_loader( core\Loader &$loader) {
+			$this->set_loader( $params['loader'] );
+		}
+	}
 
-        $this->loader = &$loader;
-    }
+	public function set_loader( core\Loader &$loader ) {
 
-    public abstract function run();
+		$this->loader = &$loader;
+	}
 
-	// register_scripts(), and register_css do not have to be abstract.
-    // protected function register_scripts();
-    // protected function register_css();
+	/**
+	 * Enable output buffer. Useful when callback for shortcodes.
+	 */
+	public function enable_output_buffer() {
+
+		if ( $this->output_buffer_used == FALSE ) {
+
+			if ( ! ob_start() ) {
+				throw new \RuntimeException( 'Enabling output buffer failed!' );
+			}
+
+			$this->output_buffer_used = TRUE;
+
+		} else {
+
+			throw new \LogicException( 'Output buffer already opened!' );
+		}
+	}
+
+	/**
+	 * @return string cleanup buffer and get the content
+	 */
+	public function get_output_buffer() {
+
+		if ( ! $this->output_buffer_used ) {
+
+			throw new \LogicException( 'Output buffer not enabled!' );
+		}
+
+		$output                   = ob_get_clean();
+		$this->output_buffer_used = FALSE;
+
+		return $output;
+	}
+
+	/**
+	 * Simple view helper function
+	 *
+	 * @param string $namespace
+	 * @param string $view_name
+	 * @param array  $construct_param
+	 * @param array  $context
+	 */
+	public function view_helper( $namespace, $view_name, array $construct_param = array(), array $context = array() ) {
+
+		$view = $this->loader->view( $namespace, $view_name, $construct_param );
+		echo $view->render( 'test-template', $context );
+	}
+
+	/**
+	 * @return void keep the return value of control::run() as void, end use "echo" inside.
+	 *              To return output, use enable_output_buffer() before run(),
+	 *              and call get_output_buffer() after run().
+	 */
+	public abstract function run();
 }
+
 
 /**
  * Class Script_Item
@@ -36,40 +91,41 @@ abstract class Base_Control {
  */
 class Script_Item {
 
-    public static $ajax_url;
-    public static $ajax_object;
+	public static $ajax_url;
+	public static $ajax_object;
 
-    public $handle;           // unique name. default: none
-    public $src;              // script path. default: none
-    public $deps;             // dependency.  default: array()
-    public $ver;              // version.     default: false
-    public $in_footer;        //              default: false
+	public $handle;           // unique name. default: none
+	public $src;              // script path. default: none
+	public $deps;             // dependency.  default: array()
+	public $ver;              // version.     default: false
+	public $in_footer;        //              default: false
 
-    public $name;             // name of the variable which will contain the data. default: none
-    public $data;             // array.                                            default: None
+	public $name;             // name of the variable which will contain the data. default: none
+	public $data;             // array.                                            default: None
 
-    public function __construct(
-        $handle,
-        $src,
-        $name = NULL,
-        array $data = array(),
-        array $deps = array(),
-        $ver = NULL,
-        $in_footer = FALSE
-    ) {
-        $this->handle    = $handle;
-        $this->src       = $src;
-        $this->deps      = $deps;
-        $this->ver       = $ver;
-        $this->in_footer = $in_footer;
+	public function __construct(
+		$handle,
+		$src,
+		$name = NULL,
+		array $data = array(),
+		array $deps = array(),
+		$ver = NULL,
+		$in_footer = FALSE
+	) {
 
-        $this->name = $name;
-        $this->data = $data;
-    }
+		$this->handle    = $handle;
+		$this->src       = $src;
+		$this->deps      = $deps;
+		$this->ver       = $ver;
+		$this->in_footer = $in_footer;
+
+		$this->name = $name;
+		$this->data = $data;
+	}
 
 	public function enqueue() {
 
-		if( $this->name ) {
+		if ( $this->name ) {
 
 			$this->localize_enqueue();
 
@@ -79,28 +135,29 @@ class Script_Item {
 		}
 	}
 
-    public function localize_enqueue() {
+	public function localize_enqueue() {
 
-        wp_register_script(
-            $this->handle,
-            $this->src,
-            $this->deps,
-            $this->ver,
-            $this->in_footer
-        );
+		wp_register_script(
+			$this->handle,
+			$this->src,
+			$this->deps,
+			$this->ver,
+			$this->in_footer
+		);
 
-        if( NULL !== $this->name ) {
+		if ( NULL !== $this->name ) {
 
-            wp_localize_script(
-                $this->handle,
-                $this->name,
-                $this->data
-            );
-        }
+			wp_localize_script(
+				$this->handle,
+				$this->name,
+				$this->data
+			);
+		}
 
-        wp_enqueue_script( $this->handle );
-    }
+		wp_enqueue_script( $this->handle );
+	}
 }
+
 
 Script_Item::$ajax_object = 'ajax_object';
 Script_Item::$ajax_url    = array( 'ajax_url' => admin_url( 'admin-ajax.php' ) );
@@ -113,40 +170,40 @@ Script_Item::$ajax_url    = array( 'ajax_url' => admin_url( 'admin-ajax.php' ) )
  */
 class Css_Item {
 
-    public $handle;   //
-    public $src;      //
-    public $deps;     // default: array()
-    public $ver;      // default: false
-    public $media;    // default: all
+	public $handle;   //
+	public $src;      //
+	public $deps;     // default: array()
+	public $ver;      // default: false
+	public $media;    // default: all
 
-    public function __construct(
-        $handle,
-        $src,
-        $deps = array(),
-        $ver = FALSE,
-        $media = 'all'
-    ) {
+	public function __construct(
+		$handle,
+		$src,
+		$deps = array(),
+		$ver = FALSE,
+		$media = 'all'
+	) {
 
-        $this->handle = $handle;
-        $this->src    = $src;
-        $this->deps   = $deps;
-        $this->ver    = $ver;
-        $this->media  = $media;
+		$this->handle = $handle;
+		$this->src    = $src;
+		$this->deps   = $deps;
+		$this->ver    = $ver;
+		$this->media  = $media;
 
-    }
+	}
 
-    public function enqueue() {
+	public function enqueue() {
 
-        wp_register_style(
-            $this->handle,
-            $this->src,
-            $this->deps,
-            $this->ver,
-            $this->media
-        );
+		wp_register_style(
+			$this->handle,
+			$this->src,
+			$this->deps,
+			$this->ver,
+			$this->media
+		);
 
-        wp_enqueue_style(
-            $this->handle
-        );
-    }
+		wp_enqueue_style(
+			$this->handle
+		);
+	}
 }

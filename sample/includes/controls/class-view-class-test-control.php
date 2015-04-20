@@ -25,10 +25,7 @@ class View_Class_Test_Control extends controls\Base_Control {
         );
 
 	    $this->prepare_script();
-
-        /** @var View_Class_Test_View $view */
-        $view = $this->loader->view( 'axis_sample', 'view-class-test' );
-        $view->render( 'test-template', $context );
+	    $this->view_helper( 'axis_sample', 'view-class-test', array(), $context );
     }
 
 	public function prepare_script() {

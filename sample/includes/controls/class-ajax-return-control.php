@@ -1,5 +1,7 @@
 <?php
 
+namespace axis_sample;
+
 use axis_framework\includes\controls\Base_Control;
 
 

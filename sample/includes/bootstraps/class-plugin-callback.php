@@ -41,5 +41,6 @@ class Plugin_Callback extends Base_Plugin_Callback {
     public function register_hooks() {
 
         // register your own hooks here.
+	    add_shortcode( 'axis_shortcode', $this->control_helper( 'axis_sample', 'shortcode-test', array(), TRUE ) );
     }
 }

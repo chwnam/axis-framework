@@ -23,7 +23,7 @@ class Ajax_Callback extends bootstraps\Base_Ajax_Callback {
 
 	        new bootstraps\Ajax_Action(
 		        'axis_sample_ajax_return',
-		        $this->control_helper( '', 'ajax-return', array(), TRUE )
+		        $this->control_helper( 'axis_sample', 'ajax-return', array(), FALSE, TRUE )
 	        )
         );
 
