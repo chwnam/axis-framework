@@ -35,9 +35,10 @@ class Singleton {
     }
 
     /**
-     * prevent unserializing
+     * prevent un-serializing
      */
-    private function __wakeup() {
+	/** @noinspection PhpUnusedPrivateMethodInspection */
+	private function __wakeup() {
     }
 
 }

@@ -66,6 +66,7 @@ class Loader{
 		}
 
         // dynamic instance creation
+		/** @noinspection PhpIncludeInspection */
         require_once( $control_path );
         $instance = new $control_class( $construct_param );
 
@@ -81,6 +82,7 @@ class Loader{
             }
         }
 
+	    /** @noinspection PhpIncludeInspection */
         require_once( $this->get_view_path( $view_name ) );
     }
 
@@ -94,6 +96,7 @@ class Loader{
 			$construct_param['loader'] = &$this;
 		}
 
+		/** @noinspection PhpIncludeInspection */
 		require_once( $view_path );
 		$instance = new $view_class( $construct_param );
 
@@ -110,13 +113,15 @@ class Loader{
 		    $construct_param['loader'] = &$this;
 	    }
 
+	    /** @noinspection PhpIncludeInspection */
         require_once( $model_path );
         $instance = new $model_class( $construct_param );
 
         return $instance;
     }
 
-    public function template( $template_name, &$view, array $context = array() ) {
+    public function template( $template_name, /** @noinspection PhpUnusedParameterInspection */
+	    &$view, array $context = array() ) {
 
         extract( $context );
 		
