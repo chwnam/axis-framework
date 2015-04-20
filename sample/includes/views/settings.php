@@ -9,9 +9,10 @@
 ?>
 
 <div class="wrap">
-    <h2><?php echo __( AXIS_SAMPLE_FULL_NAME . ' Settings', AXIS_SAMPLE_LANG_CONTEXT ); ?></h2>
+    <h2><?php echo __( AXIS_SAMPLE_FULL_NAME . ' Settings', 'axis_sample' ); ?></h2>
 
-    <form action="options.php" method="post" id="general_settings_form">
+    <!--suppress HtmlUnknownTarget -->
+	<form action="options.php" method="post" id="general_settings_form">
         <?php
             // http://codex.wordpress.org/Function_Reference/settings_fields
             // none 필드와 옵션 폼을 구성하기 위한 필드들을 출력하는 곳으로 반드시 불려야 합니다.
