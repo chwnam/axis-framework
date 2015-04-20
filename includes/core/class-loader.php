@@ -110,7 +110,7 @@ class Loader {
 	 * @param string $view_name view name
 	 * @param array  $context   context to deliver
 	 */
-	public function view( $view_name, array $context = array() ) {
+	public function simple_view( $view_name, array $context = array() ) {
 
 		extract( $context );
 
@@ -127,7 +127,7 @@ class Loader {
 	 *
 	 * @return mixed View Class instance
 	 */
-	public function view_class( $namespace, $view_name, $construct_param = array() ) {
+	public function view( $namespace, $view_name, $construct_param = array() ) {
 
 		$view_path  = $this->get_component_path( $view_name, 'view' );
 		$view_class = $this->get_component_class( $namespace, $view_name, 'view' );
@@ -191,9 +191,9 @@ class Loader {
 	 * @param        $component_name
 	 * @param        $component_criteria
 	 * @param string $component_rule
-	 * @param null   $naming_override
+	 * @param callable   $naming_override
 	 *
-	 * @return mixed|string full-qualified class name.
+	 * @return string full-qualified class name.
 	 */
 	public function get_component_class(
 		$namespace,
@@ -233,6 +233,14 @@ class Loader {
 		return $fq_class_name;
 	}
 
+	/**
+	 * @param        $component_name
+	 * @param        $component_criteria
+	 * @param string $component_rule
+	 * @param callable   $naming_override
+	 *
+	 * @return string component path
+	 */
 	public function get_component_path(
 		$component_name,
 		$component_criteria,
