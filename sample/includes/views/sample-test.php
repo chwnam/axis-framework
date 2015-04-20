@@ -1,5 +1,5 @@
 <?php
-
+/** @var string $output_text */
 ?>
 <div class="css1" id="div1">
     <?php echo $output_text; ?>

@@ -6,8 +6,9 @@
 //\axis_framework\includes\core\utils\axis_dump_pre( $post, '$post' );
 
 /** @var \axis_sample\View_Class_Test_View $view */
-$view->extend( '/common/common-template' );
+/** @var \stdClass $post */
 
+$view->extend( '/common/common-template' );
 $view->assign( 'title', $post->title );
 $view->begin_block( 'sidebar' );
 ?>
