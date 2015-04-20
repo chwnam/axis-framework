@@ -17,7 +17,7 @@ class Plugin_Callback extends Base_Plugin_Callback {
         $rel_path = plugin_basename( AXIS_SAMPLE_MAIN_FILE ) . '/lang';
 
         // localization code. returns false when language file is not found.
-        if( !load_plugin_textdomain( AXIS_SAMPLE_LANG_CONTEXT, FALSE, $rel_path ) ) {
+        if( !load_plugin_textdomain( 'axis_sample', FALSE, $rel_path ) ) {
 
             //die( "load_plugin_textdomain() error!" );
         }
