@@ -4,29 +4,81 @@ namespace axis_framework\includes\controls;
 
 use axis_framework\includes\core;
 
+
 abstract class Base_Control {
 
-	/** @var  core\Loader loader */
+    /** @var  core\Loader loader */
     protected $loader;
 
+    /** @var bool using output buffer. */
+    protected $output_buffer_used = FALSE;
+
     public function __construct( $params = array() ) {
-
-	    if( isset( $params['loader'] ) ) {
-
-		    $this->set_loader( $params['loader'] );
-	    }
+        if ( isset( $params['loader'] ) ) {
+            $this->set_loader( $params['loader'] );
+        }
     }
 
-    public function set_loader( core\Loader &$loader) {
-
+    public function set_loader( core\Loader &$loader ) {
         $this->loader = &$loader;
     }
 
-    public abstract function run();
+    /**
+     * Enable output buffer. Useful when callback for shortcodes.
+     */
+    public function enable_output_buffer() {
 
-	// register_scripts(), and register_css do not have to be abstract.
-    // protected function register_scripts();
-    // protected function register_css();
+        if ( $this->output_buffer_used == FALSE ) {
+
+            if ( ! ob_start() ) {
+
+                throw new \RuntimeException( 'Enabling output buffer failed!' );
+            }
+
+            $this->output_buffer_used = TRUE;
+
+        } else {
+
+            throw new \LogicException( 'Output buffer already opened!' );
+        }
+    }
+
+    /**
+     * @return string cleanup buffer and get the content
+     */
+    public function get_output_buffer() {
+
+        if ( ! $this->output_buffer_used ) {
+
+            throw new \LogicException( 'Output buffer not enabled!' );
+        }
+
+        $output                   = ob_get_clean();
+        $this->output_buffer_used = FALSE;
+
+        return $output;
+    }
+
+    /**
+     * Simple view helper function
+     *
+     * @param string $namespace
+     * @param string $view_name
+     * @param array  $construct_param
+     * @param array  $context
+     */
+    public function view_helper( $namespace, $view_name, array $construct_param = array(), array $context = array() ) {
+
+        $view = $this->loader->view( $namespace, $view_name, $construct_param );
+        echo $view->render( 'test-template', $context );
+    }
+
+    /**
+     * @return void keep the return value of control::run() as void, end use "echo" inside.
+     *              To return output, use enable_output_buffer() before run(),
+     *              and call get_output_buffer() after run().
+     */
+    public abstract function run();
 }
 
 /**
