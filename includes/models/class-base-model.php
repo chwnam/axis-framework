@@ -4,22 +4,26 @@ namespace axis_framework\includes\models;
 
 use axis_framework\includes\core;
 
-abstract class Base_Model {
+abstract class Base_Model implements Model_Interface {
 
 	/** @var  core\Loader loader */
 	protected $loader;
+
+	/** @noinspection PhpUndefinedClassInspection */
+	/** @noinspection PhpUndefinedNamespaceInspection */
+	/** @var axis_framework\includes\controls\Base_Control */
 	protected $control = NULL;
 
-	public function __construct( $params = array() ) {
+	public function __construct( $args = array() ) {
 
-		if( isset( $params['control'] ) ) {
+		if( isset( $args['control'] ) ) {
 
-			$this->control = &$params['control'];
+			$this->control = &$args['control'];
 		}
 
-		if( isset( $params['loader'] ) ) {
+		if( isset( $args['loader'] ) ) {
 
-			$this->set_loader( $params['loader'] );
+			$this->set_loader( $args['loader'] );
 		}
 	}
 
