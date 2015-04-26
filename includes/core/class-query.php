@@ -19,12 +19,57 @@ class Query {
 
 	protected $search_fields = array();
 
+	/** @var string $model Model's class name */
 	protected $model;
 
 	protected $primary_key;
 
-	public function __construct() {
+	public function __construct( $model ) {
 
+		$this->model = $model;
+	}
+
+	public function set_searchable_fields( array &$fields ) {
+
+		$this->search_fields = $fields;
+	}
+
+	public function set_primary_key( $primary_key ) {
+
+		$this->primary_key = $primary_key;
+		$this->order_by    = $primary_key;
+	}
+
+	public function reset() {
+
+		$this->limit = 0;
+		$this->offset = 0;
+		$this->where = array();
+		$this->order = self::ORDER_ASC;
+		$search_term = NULL;
+
+		return $this;
+	}
+
+	public function limit( $limit ) {
+
+		$this->limit = (int) $limit;
+
+		return $this;
+	}
+
+	public function offset( $offset ) {
+
+		$this->offset = (int) $offset;
+
+		return $this;
+	}
+
+	public function order_by( $order_by ) {
+
+		$this->order_by = $order_by;
+
+		return $this;
 	}
 
 	public function where( $column, $value ) {
@@ -111,15 +156,162 @@ class Query {
 		return $this;
 	}
 
-	public function compose() {
+	public function search( $search_term ) {
 
+		$this->search_term = $search_term;
+
+		return $this;
+	}
+
+	public function find( $for_row_counting = FALSE ) {
+
+		/** @var \wpdb $wpdb */
+		global $wpdb;
+
+		$query = $this->compose_query( $for_row_counting );
+
+		if( $for_row_counting ) {
+
+			return (int) $wpdb->get_var( $query );
+		}
+
+		$results = $wpdb->get_results( $query );
+		if( $results ) {
+
+			/** @var \axis_framework\includes\models\Base_Entity_Model $model */
+			$model = $this->model;
+
+			foreach( $results as $index => &$result ) {
+				$results[ $index ] = $model::create( (array) $result );
+			}
+		}
+
+		return $results;
+	}
+
+	/**
+	 * @param bool $query_for_row_counting
+	 *
+	 * @return string
+	 */
+	public function compose_query( $query_for_row_counting = FALSE ) {
+
+		/** @var \axis_framework\includes\models\Base_Entity_Model $model */
 		$model = $this->model;
-		$table = $model->get_table();
-		$where = '';
-		$order = '';
-		$limit = '';
+		$table = $model::get_table();
+
+		$where  = '';
+		// $order  = '';
+		$limit  = '';
 		$offset = '';
 
+		// Search
+		if ( ! empty( $this->search_term ) ) {
 
+			$where .= ' AND (';
+
+			foreach ( $this->search_fields as $field ) {
+
+				$where .= '`' . $field . '` LIKE "%' . esc_sql( $this->search_term ) . '%" OR ';
+			}
+
+			$where = substr( $where, 0, - 4 ) . ')';
+		}
+
+		// Where
+		foreach ( $this->where as $q ) {
+
+			switch ( $q['type'] ) {
+
+				case 'where':
+					$where .= ' AND `' . $q['column'] . '` = "' . esc_sql($q['value']) . '"';
+					break;
+				case 'not':
+					$where .= ' AND `' . $q['column'] . '` != "' . esc_sql($q['value']) . '"';
+					break;
+				case 'like':
+					$where .= ' AND `' . $q['column'] . '` LIKE "' . esc_sql($q['value']) . '"';
+					break;
+				case 'not_like':
+					$where .= ' AND `' . $q['column'] . '` NOT LIKE "' . esc_sql($q['value']) . '"';
+					break;
+				case 'lt':
+					$where .= ' AND `' . $q['column'] . '` < "' . esc_sql($q['value']) . '"';
+					break;
+				case 'lte':
+					$where .= ' AND `' . $q['column'] . '` <= "' . esc_sql($q['value']) . '"';
+					break;
+				case 'gt':
+					$where .= ' AND `' . $q['column'] . '` > "' . esc_sql($q['value']) . '"';
+					break;
+				case 'gte':
+					$where .= ' AND `' . $q['column'] . '` >= "' . esc_sql($q['value']) . '"';
+					break;
+
+				case 'in':
+					$where .= ' AND `' . $q['column'] . '` IN (';
+					foreach ( $q['value'] as $value ) {
+						$where .= '"' . esc_sql( $value ) . '",';
+					}
+					$where = substr( $where, 0, - 1 ) . ')';
+					break;
+
+				case 'not in':
+					$where .= ' AND `' . $q['column'] . '` NOT IN (';
+					foreach ($q['value'] as $value) {
+						$where .= '"' . esc_sql($value) . '",';
+					}
+					$where = substr($where, 0, -1) . ')';
+					break;
+
+				case 'all':
+					$where .= ' AND (';
+					foreach ( $q['where'] as $column => $value ) {
+						$where .= '`' . $column . '` = "' . esc_sql( $value ) . '" AND ';
+					}
+					$where = substr( $where, 0, - 5 ) . ')';
+					break;
+
+                case 'any':
+	                $where .= ' AND (';
+
+	                foreach ( $q['where'] as $column => $value ) {
+		                $where .= '`' . $column . '` = "' . esc_sql( $value ) . '" OR ';
+	                }
+	                $where = substr( $where, 0, - 5 ) . ')';
+					break;
+			}
+		}
+
+		// Finish where clause
+		if ( ! empty( $where ) ) {
+			$where = ' WHERE ' . substr( $where, 5 );
+		}
+
+		// Order
+		if ( strstr( $this->order_by, '(' ) !== FALSE && strstr( $this->order_by, ')' ) !== FALSE ) {
+			// The sort column contains () so we assume its a function, therefore
+			// don't quote it
+			$order = ' ORDER BY ' . $this->order_by . ' ' . $this->order;
+		} else {
+			$order = ' ORDER BY `' . $this->order_by . '` ' . $this->order;
+		}
+
+		// Limit
+		if ( $this->limit > 0 ) {
+			$limit = ' LIMIT ' . $this->limit;
+		}
+
+		// Offset
+		if ( $this->offset > 0 ) {
+			$offset = ' OFFSET ' . $this->offset;
+		}
+
+		// Query
+		if ( $query_for_row_counting ) {
+			return "SELECT COUNT(*) FROM `{$table}`{$where}";
+		}
+
+		return "SELECT * FROM `{$table}`{$where}{$order}{$limit}{$offset}";
 	}
 }
