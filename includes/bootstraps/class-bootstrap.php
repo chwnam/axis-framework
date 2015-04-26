@@ -30,15 +30,26 @@ class Bootstrap {
 	 * @var string                   $main_file           Full path of your plug-in's path.
 	 * @var core\Loader              $loader              Loader object.
 	 */
-	protected $plugin_callback;
-	protected $admin_post_callback;
-	protected $ajax_callback;
-	protected $menu_callback;
-	protected $settings_callback;
+
+	const CALLBACK_ADMIN_POST = 'admin-post';
+	const CALLBACK_AJAX       = 'ajax';
+	const CALLBACK_MENU       = 'menu';
+	const CALLBACK_PLUGIN     = 'plugin';
+	const CALLBACK_SETTINGS   = 'settings';
+
+	protected $callback_objects;
 	protected $main_file;
 	protected $loader;
 
 	public function __construct( array $arg = array() ) {
+
+		$this->callback_objects = array(
+			self::CALLBACK_ADMIN_POST => NULL,
+			self::CALLBACK_AJAX       => NULL,
+			self::CALLBACK_MENU       => NULL,
+			self::CALLBACK_PLUGIN     => NULL,
+			self::CALLBACK_SETTINGS   => NULL,
+		);
 	}
 
 	/**
@@ -46,10 +57,11 @@ class Bootstrap {
 	 *
 	 * @param string $main_file_namespace the namespace of callback objects.
 	 * @param string $main_file           full path of your plug-in's main file.
+	 * @param mixed  $custom_discover     additional discover function
 	 */
-	public function auto_discover_and_run( $main_file_namespace, $main_file ) {
+	public function auto_discover_and_run( $main_file_namespace, $main_file, $custom_discover = NULL ) {
 
-		$this->auto_discover( $main_file_namespace, $main_file );
+		$this->auto_discover( $main_file_namespace, $main_file, $custom_discover );
 		$this->run();
 	}
 
@@ -58,115 +70,63 @@ class Bootstrap {
 	 *
 	 * @param string $callback_namespace the namespace of callback objects.
 	 * @param string $main_file          full path of your plug-in's main file.
+	 * @param mixed  $custom_discover    additional discover function
 	 */
-	public function auto_discover( $callback_namespace, $main_file ) {
+	public function auto_discover( $callback_namespace, $main_file, $custom_discover = NULL ) {
 
 		$this->set_main_file( $main_file );
 
-		$plugin_root_path               = realpath( dirname( $main_file ) );
-		$plugin_include_bootstraps_path = $plugin_root_path . '/includes/bootstraps';
-
 		// initialize loader with default settings.
-		if ( $this->loader === NULL ) {
+		if ( $this->loader == NULL ) {
+
+			$plugin_root_path = realpath( dirname( $main_file ) );
 			$this->loader = new core\Loader( $plugin_root_path );
 		}
 
-		// all callback objects initialization
-		$admin_post_callback_path = $plugin_include_bootstraps_path . '/class-admin-post-callback.php';
-		$ajax_callback_path       = $plugin_include_bootstraps_path . '/class-ajax-callback.php';
-		$menu_callback_path       = $plugin_include_bootstraps_path . '/class-menu-callback.php';
-		$plugin_callback_path     = $plugin_include_bootstraps_path . '/class-plugin-callback.php';
-		$settings_callback_path   = $plugin_include_bootstraps_path . '/class-settings-callback.php';
+		// callback objects initialization
+		$callback_targets = array(
+			self::CALLBACK_ADMIN_POST,
+			self::CALLBACK_AJAX,
+			self::CALLBACK_MENU,
+			self::CALLBACK_PLUGIN,
+			self::CALLBACK_SETTINGS
+		);
 
-		if ( file_exists( $admin_post_callback_path ) ) {
+		foreach( $callback_targets as $callback_target ) {
 
-            /** @noinspection PhpIncludeInspection */
-			require_once( $admin_post_callback_path );
-			/** @var Base_Admin_Post_Callback $fqn fully-qualified name of Admin Post callback class. */
-			$fqn = $callback_namespace . '\\' . 'Admin_Post_Callback';
-			$this->set_admin_post_callback( $fqn::get_instance() );
+			/** @var Base_Callback $callback fully-qualified name of the callback class. */
+			$callback = $this->loader->bootstrap_callback( $callback_namespace, $callback_target );
+
+			if( $callback ) {
+				$this->set_callback_object( $callback_target, $callback::get_instance() );
+			}
 		}
 
-		if ( file_exists( $ajax_callback_path ) ) {
+		if( $custom_discover ) {
 
-            /** @noinspection PhpIncludeInspection */
-			require_once( $ajax_callback_path );
-			/** @var Base_Ajax_Callback $fqn fully-qualified name of Ajax callback class. */
-			$fqn = $callback_namespace . '\\' . 'Ajax_Callback';
-			$this->set_ajax_callback( $fqn::get_instance() );
-		}
-
-		if ( file_exists( $menu_callback_path ) ) {
-
-            /** @noinspection PhpIncludeInspection */
-			require_once( $menu_callback_path );
-			/** @var Base_Menu_Callback $fqn fully-qualified name of Menu callback class. */
-			$fqn = $callback_namespace . '\\' . 'Menu_Callback';
-			$this->set_menu_callback( $fqn::get_instance() );
-		}
-
-		if ( file_exists( $plugin_callback_path ) ) {
-
-            /** @noinspection PhpIncludeInspection */
-			require_once( $plugin_callback_path );
-			/** @var Base_Plugin_Callback $fqn fully-qualified name of Plugin callback class. */
-			$fqn = $callback_namespace . '\\' . 'Plugin_Callback';
-			$this->set_plugin_callback( $fqn::get_instance() );
-		}
-
-		if ( file_exists( $settings_callback_path ) ) {
-
-            /** @noinspection PhpIncludeInspection */
-			require_once( $settings_callback_path );
-			/** @var Base_Settings_Callback $fqn fully-qualified name of Settings callback class. */
-			$fqn = $callback_namespace . '\\' . 'Settings_Callback';
-			$this->set_settings_callback( $fqn::get_instance() );
+			call_user_func( $custom_discover, $this );
 		}
 	}
 
-	/**
-	 * @param Base_Plugin_Callback $plugin_callback
-	 */
-	public function set_plugin_callback( Base_Plugin_Callback $plugin_callback ) {
+	public function get_loader() {
 
-		$this->plugin_callback = $plugin_callback;
-		$this->plugin_callback->set_loader( $this->loader );
+		return $this->loader;
 	}
 
 	/**
-	 * @param Base_Admin_Post_Callback $admin_post_callback
+	 * @param string $callback_category
+	 * @param object $plugin_callback
 	 */
-	public function set_admin_post_callback( Base_Admin_Post_Callback $admin_post_callback ) {
+	public function set_callback_object( $callback_category, $plugin_callback ) {
 
-		$this->admin_post_callback = $admin_post_callback;
-		$this->admin_post_callback->set_loader( $this->loader );
+		$this->callback_objects[ $callback_category ] = $plugin_callback;
+		/** @noinspection PhpUndefinedMethodInspection */
+		$this->callback_objects[ $callback_category ]->set_loader( $this->loader );
 	}
 
-	/**
-	 * @param Base_Ajax_Callback $ajax_callback
-	 */
-	public function set_ajax_callback( Base_Ajax_Callback $ajax_callback ) {
+	public function get_callback_object( $callback_category ) {
 
-		$this->ajax_callback = $ajax_callback;
-		$this->ajax_callback->set_loader( $this->loader );
-	}
-
-	/**
-	 * @param Base_Menu_Callback $menu_callback
-	 */
-	public function set_menu_callback( Base_Menu_Callback $menu_callback ) {
-
-		$this->menu_callback = $menu_callback;
-		$this->menu_callback->set_loader( $this->loader );
-	}
-
-	/**
-	 * @param Base_Settings_Callback $settings_callback
-	 */
-	public function set_settings_callback( Base_Settings_Callback $settings_callback ) {
-
-		$this->settings_callback = $settings_callback;
-		$this->settings_callback->set_loader( $this->loader );
+		return $this->callback_objects[ $callback_category ];
 	}
 
 	/**
@@ -197,15 +157,17 @@ class Bootstrap {
 	 */
 	protected function register_hooks() {
 
-		if ( $this->plugin_callback && $this->main_file ) {
+		$plugin_callback = &$this->callback_objects[ self::CALLBACK_PLUGIN ];
 
-			register_activation_hook( $this->main_file, array( $this->plugin_callback, 'on_activated' ) );
-			register_deactivation_hook( $this->main_file, array( $this->plugin_callback, 'on_deactivated' ) );
-			register_uninstall_hook( $this->main_file, array( $this->plugin_callback, 'on_uninstall' ) );
+		if ( $plugin_callback && $this->main_file ) {
+
+			register_activation_hook( $this->main_file, array( $plugin_callback, 'on_activated' ) );
+			register_deactivation_hook( $this->main_file, array( $plugin_callback, 'on_deactivated' ) );
+			register_uninstall_hook( $this->main_file, array( $plugin_callback, 'on_uninstall' ) );
 
 			// register other hooks
             /** @noinspection PhpUndefinedMethodInspection */
-			$this->plugin_callback->register_hooks();
+			$plugin_callback->register_hooks();
 		}
 	}
 
@@ -214,9 +176,11 @@ class Bootstrap {
 	 */
 	protected function add_admin_menus() {
 
-		if ( $this->menu_callback ) {
+		$menu_callback = &$this->callback_objects[ self::CALLBACK_MENU ];
 
-			add_action( 'admin_menu', array( $this->menu_callback, 'add_admin_menu' ) );
+		if ( $menu_callback ) {
+
+			add_action( 'admin_menu', array( $menu_callback, 'add_admin_menu' ) );
 		}
 	}
 
@@ -225,13 +189,14 @@ class Bootstrap {
 	 */
 	protected function add_settings_pages() {
 
-		if ( $this->settings_callback ) {
+		$settings_callback = &$this->callback_objects[ self::CALLBACK_SETTINGS ];
 
-			add_action( 'admin_init', array( $this->settings_callback, 'register_settings' ) );
-			add_action( 'admin_init', array( $this->settings_callback, 'add_settings_sections' ) );
-			add_action( 'admin_init', array( $this->settings_callback, 'add_settings_fields' ) );
+		if ( $settings_callback ) {
 
-			add_action( 'admin_menu', array( $this->settings_callback, 'add_option_page' ) );
+			add_action( 'admin_init', array( $settings_callback, 'register_settings' ) );
+			add_action( 'admin_init', array( $settings_callback, 'add_settings_sections' ) );
+			add_action( 'admin_init', array( $settings_callback, 'add_settings_fields' ) );
+			add_action( 'admin_menu', array( $settings_callback, 'add_option_page' ) );
 		}
 	}
 
@@ -240,9 +205,11 @@ class Bootstrap {
 	 */
 	protected function localize() {
 
-		if ( $this->plugin_callback ) {
+		$plugin_callback = &$this->callback_objects[ self::CALLBACK_PLUGIN ];
 
-			add_action( 'plugins_loaded', array( $this->plugin_callback, 'localize' ) );
+		if ( $plugin_callback ) {
+
+			add_action( 'plugins_loaded', array( $plugin_callback, 'localize' ) );
 		}
 	}
 
@@ -251,10 +218,12 @@ class Bootstrap {
 	 */
 	protected function add_ajax_actions() {
 
-		if ( $this->ajax_callback ) {
+		$ajax_callback = &$this->callback_objects[ self::CALLBACK_AJAX ];
+
+		if ( $ajax_callback ) {
 
             /** @noinspection PhpUndefinedMethodInspection */
-			$this->ajax_callback->add_ajax_actions();
+			$ajax_callback->add_ajax_actions();
 		}
 	}
 
@@ -263,10 +232,12 @@ class Bootstrap {
 	 */
 	protected function add_admin_post_actions() {
 
-		if ( $this->admin_post_callback ) {
+		$admin_post_callback = &$this->callback_objects[ self::CALLBACK_ADMIN_POST ];
+
+		if ( $admin_post_callback ) {
 
             /** @noinspection PhpUndefinedMethodInspection */
-			$this->admin_post_callback->add_admin_post_actions();
+			$admin_post_callback->add_admin_post_actions();
 		}
 	}
 }
