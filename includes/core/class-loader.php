@@ -4,24 +4,24 @@ namespace axis_framework\includes\core;
 
 class Loader {
 
-	const COMPONENT_NAME_BOOTSTRAP_CALLBACK = 'callback';
-	const COMPONENT_NAME_CONTROL            = 'control';
-	const COMPONENT_NAME_MODEL              = 'model';
-	const COMPONENT_NAME_TEMPLATE           = 'template';
-	const COMPONENT_NAME_VIEW               = 'view';
+	const BOOTSTRAP_CALLBACK = 'callback';
+	const CONTROL            = 'control';
+	const MODEL              = 'model';
+	const TEMPLATE           = 'template';
+	const VIEW               = 'view';
 
-	const COMPONENT_RULE_SIMPLE   = 'simple';
-	const COMPONENT_RULE_COMPLETE = 'complete';
-	const COMPONENT_RULE_CUSTOM   = 'custom';
+	const RULE_SIMPLE   = 'simple';
+	const RULE_COMPLETE = 'complete';
+	const RULE_CUSTOM   = 'custom';
 
 	private $plugin_root;
 
 	private $component_path = array(
-		self::COMPONENT_NAME_BOOTSTRAP_CALLBACK => '',
-		self::COMPONENT_NAME_CONTROL            => '',
-		self::COMPONENT_NAME_MODEL              => '',
-		self::COMPONENT_NAME_TEMPLATE           => '',
-		self::COMPONENT_NAME_VIEW               => '',
+		self::BOOTSTRAP_CALLBACK => '',
+		self::CONTROL            => '',
+		self::MODEL              => '',
+		self::TEMPLATE           => '',
+		self::VIEW               => '',
 	);
 
 	public function __construct( $plugin_root_path, $default_component_path = NULL ) {
@@ -45,11 +45,11 @@ class Loader {
 		if ( empty( $override ) ) {
 
 			$this->component_path = array(
-				self::COMPONENT_NAME_BOOTSTRAP_CALLBACK => $this->plugin_root . '/includes/bootstraps',
-				self::COMPONENT_NAME_CONTROL            => $this->plugin_root . '/includes/controls',
-				self::COMPONENT_NAME_TEMPLATE           => $this->plugin_root . '/includes/templates',
-				self::COMPONENT_NAME_MODEL              => $this->plugin_root . '/includes/models',
-				self::COMPONENT_NAME_VIEW               => $this->plugin_root . '/includes/views',
+				self::BOOTSTRAP_CALLBACK => $this->plugin_root . '/includes/bootstraps',
+				self::CONTROL            => $this->plugin_root . '/includes/controls',
+				self::TEMPLATE           => $this->plugin_root . '/includes/templates',
+				self::MODEL              => $this->plugin_root . '/includes/models',
+				self::VIEW               => $this->plugin_root . '/includes/views',
 			);
 
 		} else {
@@ -91,13 +91,13 @@ class Loader {
 
 		$callback_path  = $this->get_component_path(
 			$callback_name,
-			self::COMPONENT_NAME_BOOTSTRAP_CALLBACK
+			self::BOOTSTRAP_CALLBACK
 		);
 
 		$callback_class = $this->get_component_class(
 			$namespace,
 			$callback_name,
-			self::COMPONENT_NAME_BOOTSTRAP_CALLBACK
+			self::BOOTSTRAP_CALLBACK
 		);
 
 		if( !file_exists( $callback_path ) ) {
@@ -146,7 +146,7 @@ class Loader {
 		extract( $context );
 
 		/** @noinspection PhpIncludeInspection */
-		require_once( $this->get_component_path( $view_name, 'view', self::COMPONENT_RULE_SIMPLE ) );
+		require_once( $this->get_component_path( $view_name, 'view', self::RULE_SIMPLE ) );
 	}
 
 	/**
@@ -214,7 +214,7 @@ class Loader {
 		extract( $context );
 
 		/** @noinspection PhpIncludeInspection */
-		require( $this->get_component_path( $template_name, 'template', self::COMPONENT_RULE_SIMPLE ) );
+		require( $this->get_component_path( $template_name, 'template', self::RULE_SIMPLE ) );
 	}
 
 	/**
@@ -230,13 +230,13 @@ class Loader {
 		$namespace,
 		$component_name,
 		$component_criteria,
-		$component_rule = self::COMPONENT_RULE_COMPLETE,
+		$component_rule = self::RULE_COMPLETE,
 		$naming_override = NULL
 	) {
 
 		switch ( $component_rule ) {
 
-			case self::COMPONENT_RULE_COMPLETE:
+			case self::RULE_COMPLETE:
 				$fq_class_name = $namespace === '\\' ? $namespace : $namespace . '\\';
 				$element_array = explode( '-', str_replace( '_', '-', $component_name ) );
 				foreach ( $element_array as &$element ) {
@@ -245,7 +245,7 @@ class Loader {
 				$fq_class_name .= ucfirst( strtolower( $component_criteria ) );
 				break;
 
-			case self::COMPONENT_RULE_CUSTOM:
+			case self::RULE_CUSTOM:
 				$fq_class_name = call_user_func(
 					$naming_override,
 					array( $namespace, $component_name, $component_criteria )
@@ -275,7 +275,7 @@ class Loader {
 	public function get_component_path(
 		$component_name,
 		$component_criteria,
-		$component_rule = self::COMPONENT_RULE_COMPLETE,
+		$component_rule = self::RULE_COMPLETE,
 		$naming_override = NULL
 	) {
 
@@ -294,7 +294,7 @@ class Loader {
 
 		switch ( $component_rule ) {
 
-			case self::COMPONENT_RULE_COMPLETE:
+			case self::RULE_COMPLETE:
 				$path = sprintf(
 					'%s/class-%s-%s.php',
 					$path_to_component,
@@ -303,11 +303,11 @@ class Loader {
 				);
 				break;
 
-			case self::COMPONENT_RULE_SIMPLE:
+			case self::RULE_SIMPLE:
 				$path = sprintf( '%s/%s.php', $this->component_path[ $component_criteria ], $component_name );
 				break;
 
-			case self::COMPONENT_RULE_CUSTOM:
+			case self::RULE_CUSTOM:
 				$path = call_user_func_array( $naming_override, array( $component_name, $component_criteria, ) );
 				break;
 
