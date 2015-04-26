@@ -2,7 +2,7 @@
 
 namespace axis_framework\includes\models;
 
-interface Table_Interface {
+interface Entity {
 
 	public static function get_table();
 

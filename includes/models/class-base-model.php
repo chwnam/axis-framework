@@ -4,7 +4,7 @@ namespace axis_framework\includes\models;
 
 use axis_framework\includes\core;
 
-abstract class Base_Model implements Model_Interface {
+abstract class Base_Model {
 
 	/** @var  core\Loader loader */
 	protected $loader;
