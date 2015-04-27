@@ -33,8 +33,8 @@
 액시스가 워드프레스에 대해 어떤 멋진 OOP 가이드를 해 주는 역할은 되지 않을 것입니다.
 
 ## 도와 주세요!
-액시스는 LGPL을 따릅니다. 어디든지 무료로 사용하실 수 있습니다, 그러나 사용하실 때에는 저자인 저, 남창우(cs.chwnam@gmail.com)에게
-사용 사실을 알려 주세요.
+액시스는 LGPL v2.1을 따릅니다. 어디든지 무료로 사용하실 수 있습니다.
+(그렇지만 가급적 사용하실 때에는 저자인 저, 남창우(cs.chwnam@gmail.com)에게 사용 사실을 알려 주세요.)
 
 사용하신 이의 피드백과 기능 제안을 환영합니다.
 
@@ -51,3 +51,13 @@
 ### 샘플 코드 (Sample code)
 axis-sample, axis-framework example plugin:
 ``https://github.com/chwnam/axis-sample.git``
+
+
+## 저작권
+액시스의 ORM 구현 코드는 Brandon Wamboldt 씨의 wp-orm 코드를 참고하였습니다.
+wp-orm 은 MIT 라이센스를 따르며 라이센스 조항은 [LICENSE.md](LICENSE.md) 파일에 별도로 명시되어 있습니다.
+
+- Homepage: [http://brandonwamboldt.ca/](http://brandonwamboldt.ca/)
+- Email: [brandon.wamboldt@gmail.com](mailto:brandon.wamboldt@gmail.com)
+- GitHub: [https://github.com/brandonwamboldt/wp-orm](https://github.com/brandonwamboldt/wp-orm)
+ 
