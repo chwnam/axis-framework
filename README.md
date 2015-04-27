@@ -40,18 +40,14 @@
 
 ## 액시스 사용하기
 
-### 설치
+### 설치 (Installation)
 액시스는 git를 통해 다운로드 받을 수 있습니다.
 
 ``git clone https://github.com/chwnam/axis-framework.git``
 
-액시스는 서버에서 접근할 수 있다면 어디에든 놓고 사용해도 무방합니다. 다만 액시스 기반의 플러그인을 공식적으로 배포하려면,
-액시스를 플러그인 디렉토리 내부에 두고 같이 배포해야 합니다. (사용자들이 여러분의 플러그인을 위해 별도로 액시스를 설치하게 만들 수는 없으니까요)
+0.10.1000 버전부터 액시스는 워드프레스 플러그인 형태로 제공됩니다.
+그러므로 플러그인 디렉토리에 설치해 두고 사용하시면 됩니다. 액시스를 사용하기 위해 플러그인을 활성화할 필요는 없습니다.
 
-한편 액시스는 워드프레스 플러그인이 아닙니다. 그러므로 여러 플러그인을 액시스 기반으로 개발하더라도
-각각의 플러그인이 액시스를 각자 가져야 할 필요가 없습니다. 가령 서버의 어느 단 한 곳에 액시스 프레임워크를
-두고 모든 개발 중인 플러그인이 그 경로만을 참조하는 방식을 쓰더라도 문제 없습니다.
-WP_CONTENT_DIR 경로에 axis를 설치해 두는 것을 권장합니다. 
-
-### 샘플 코드
-axis-sample, axis-framework example plugin: ``https://github.com/chwnam/axis-sample.git``
+### 샘플 코드 (Sample code)
+axis-sample, axis-framework example plugin:
+``https://github.com/chwnam/axis-sample.git``
