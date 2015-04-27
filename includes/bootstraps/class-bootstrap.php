@@ -57,11 +57,18 @@ class Bootstrap {
 	 * @param string $main_file                 full path of your plug-in's main file.
 	 * @param mixed  $custom_discover           additional discover function
 	 * @param array  $loader_component_override loader component array to override.
+	 * @param mixed  $custom_run_callback       callback function finally called in run() method.
 	 */
-	public function auto_discover_and_run( $main_file_namespace, $main_file, $custom_discover = NULL, array $loader_component_override = array() ) {
+	public function auto_discover_and_run(
+		$main_file_namespace,
+		$main_file,
+		$custom_discover = NULL,
+		array $loader_component_override = array(),
+		$custom_run_callback = NULL
+	) {
 
 		$this->auto_discover( $main_file_namespace, $main_file, $custom_discover, $loader_component_override );
-		$this->run();
+		$this->run( $custom_run_callback );
 	}
 
 	/**
@@ -72,7 +79,12 @@ class Bootstrap {
 	 * @param mixed  $custom_discover           additional discover function
 	 * @param array  $loader_component_override loader component array to override.
 	 */
-	public function auto_discover( $callback_namespace, $main_file, $custom_discover = NULL, array $loader_component_override = array() ) {
+	public function auto_discover(
+		$callback_namespace,
+		$main_file,
+		$custom_discover = NULL,
+		array $loader_component_override = array()
+	) {
 
 		$this->set_main_file( $main_file );
 
@@ -104,7 +116,7 @@ class Bootstrap {
 
 		if ( $custom_discover ) {
 
-			call_user_func( $custom_discover, $this );
+			call_user_func_array( $custom_discover, array( &$this ) );
 		}
 	}
 
@@ -141,8 +153,10 @@ class Bootstrap {
 
 	/**
 	 * main run procedure.
+	 *
+	 * @param mixed  $custom_run_callback       callback function finally called in run() method.
 	 */
-	public function run() {
+	public function run( $custom_run_callback = NULL ) {
 
 		$this->register_hooks();
 		$this->add_admin_menus();
@@ -150,6 +164,11 @@ class Bootstrap {
 		$this->localize();
 		$this->add_admin_post_actions();
 		$this->add_ajax_actions();
+
+		if( $custom_run_callback ) {
+
+			call_user_func_array( $custom_run_callback, array( &$this ) );
+		}
 	}
 
 	/**
