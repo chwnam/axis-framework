@@ -12,6 +12,7 @@ require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-plugin-callback.php' );
 require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-settings-callback.php' );
 require_once( AXIS_INC_CONTROL_PATH . '/class-base-control.php' );
 require_once( AXIS_INC_MODEL_PATH . '/class-base-model.php' );
+require_once( AXIS_INC_MODEL_PATH . '/class-base-entity-model.php' );
 require_once( AXIS_INC_VIEW_PATH . '/class-base-view.php' );
 
 use axis_framework\includes\core;

@@ -2,8 +2,6 @@
 
 namespace axis_framework\includes\models;
 
-require_once AXIS_INC_MODEL_PATH . '/class-base-entity-model.php';
-
 
 class Page_Model extends Post_Model {
 

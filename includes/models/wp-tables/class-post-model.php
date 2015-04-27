@@ -4,8 +4,6 @@ namespace axis_framework\includes\models;
 
 use \DateTime;
 
-require_once AXIS_INC_MODEL_PATH . '/class-base-entity-model.php';
-
 
 class Post_Model extends Base_Entity_Model {
 
