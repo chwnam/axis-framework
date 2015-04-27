@@ -12,9 +12,8 @@ class Query {
 	protected $offset = 0;
 
 	protected $where    = array();
-	protected $order_by = 'id';
+	protected $order_by = array();
 
-	protected $order       = self::ORDER_ASC;
 	protected $search_term = NULL;
 
 	protected $search_fields = array();
@@ -65,7 +64,7 @@ class Query {
 		return $this;
 	}
 
-	public function order_by( $order_by ) {
+	public function order_by( $field, $order ) {
 
 		$this->order_by = $order_by;
 
@@ -314,4 +313,11 @@ class Query {
 
 		return "SELECT * FROM `{$table}`{$where}{$order}{$limit}{$offset}";
 	}
+
+	public function total_count() {
+
+		return $this->find( TRUE );
+	}
+
+
 }

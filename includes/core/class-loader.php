@@ -38,23 +38,25 @@ class Loader {
 	/**
 	 * initialize default component path.
 	 *
-	 * @param array $override rule to override.
+	 * @param array $component_to_override rule to override.
 	 */
-	public function init_component_path( array $override = array() ) {
+	public function init_component_path( array $component_to_override = array() ) {
 
-		if ( empty( $override ) ) {
+		$default = array(
+			self::BOOTSTRAP_CALLBACK => $this->plugin_root . '/includes/bootstraps',
+			self::CONTROL            => $this->plugin_root . '/includes/controls',
+			self::TEMPLATE           => $this->plugin_root . '/includes/templates',
+			self::MODEL              => $this->plugin_root . '/includes/models',
+			self::VIEW               => $this->plugin_root . '/includes/views',
+		);
 
-			$this->component_path = array(
-				self::BOOTSTRAP_CALLBACK => $this->plugin_root . '/includes/bootstraps',
-				self::CONTROL            => $this->plugin_root . '/includes/controls',
-				self::TEMPLATE           => $this->plugin_root . '/includes/templates',
-				self::MODEL              => $this->plugin_root . '/includes/models',
-				self::VIEW               => $this->plugin_root . '/includes/views',
-			);
+		$this->component_path = $default;
 
-		} else {
+		if ( !empty( $component_to_override ) ) {
 
-			$this->component_path = $override;
+			foreach( $component_to_override as $c => $p ) {
+				$this->update_component_path( $c, $p );
+			}
 		}
 	}
 

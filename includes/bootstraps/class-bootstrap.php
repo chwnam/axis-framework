@@ -2,19 +2,20 @@
 
 namespace axis_framework\includes\bootstraps;
 
-require_once( AXIS_INC_CORE_PATH      . '/class-singleton.php' );
-require_once( AXIS_INC_CORE_PATH      . '/class-loader.php' );
-require_once( AXIS_INC_CORE_PATH      . '/utils.php' );
+require_once( AXIS_INC_CORE_PATH . '/class-singleton.php' );
+require_once( AXIS_INC_CORE_PATH . '/class-loader.php' );
+require_once( AXIS_INC_CORE_PATH . '/utils.php' );
 require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-admin-post-callback.php' );
 require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-ajax-callback.php' );
 require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-menu-callback.php' );
 require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-plugin-callback.php' );
 require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-settings-callback.php' );
-require_once( AXIS_INC_CONTROL_PATH   . '/class-base-control.php' );
-require_once( AXIS_INC_MODEL_PATH     . '/class-base-model.php' );
-require_once( AXIS_INC_VIEW_PATH      . '/class-base-view.php' );
+require_once( AXIS_INC_CONTROL_PATH . '/class-base-control.php' );
+require_once( AXIS_INC_MODEL_PATH . '/class-base-model.php' );
+require_once( AXIS_INC_VIEW_PATH . '/class-base-view.php' );
 
 use axis_framework\includes\core;
+
 
 core\utils\check_abspath();
 
@@ -55,24 +56,26 @@ class Bootstrap {
 	/**
 	 * Automatically discover files and run this bootstrap
 	 *
-	 * @param string $main_file_namespace the namespace of callback objects.
-	 * @param string $main_file           full path of your plug-in's main file.
-	 * @param mixed  $custom_discover     additional discover function
+	 * @param string $main_file_namespace       namespace of callback objects.
+	 * @param string $main_file                 full path of your plug-in's main file.
+	 * @param mixed  $custom_discover           additional discover function
+	 * @param array  $loader_component_override loader component array to override.
 	 */
-	public function auto_discover_and_run( $main_file_namespace, $main_file, $custom_discover = NULL ) {
+	public function auto_discover_and_run( $main_file_namespace, $main_file, $custom_discover = NULL, array $loader_component_override = array() ) {
 
-		$this->auto_discover( $main_file_namespace, $main_file, $custom_discover );
+		$this->auto_discover( $main_file_namespace, $main_file, $custom_discover, $loader_component_override );
 		$this->run();
 	}
 
 	/**
 	 * Automatic setting when files are arranged under the rule.
 	 *
-	 * @param string $callback_namespace the namespace of callback objects.
-	 * @param string $main_file          full path of your plug-in's main file.
-	 * @param mixed  $custom_discover    additional discover function
+	 * @param string $callback_namespace        the namespace of callback objects.
+	 * @param string $main_file                 full path of your plug-in's main file.
+	 * @param mixed  $custom_discover           additional discover function
+	 * @param array  $loader_component_override loader component array to override.
 	 */
-	public function auto_discover( $callback_namespace, $main_file, $custom_discover = NULL ) {
+	public function auto_discover( $callback_namespace, $main_file, $custom_discover = NULL, array $loader_component_override = array() ) {
 
 		$this->set_main_file( $main_file );
 
@@ -80,7 +83,7 @@ class Bootstrap {
 		if ( $this->loader == NULL ) {
 
 			$plugin_root_path = realpath( dirname( $main_file ) );
-			$this->loader = new core\Loader( $plugin_root_path );
+			$this->loader     = new core\Loader( $plugin_root_path, $loader_component_override );
 		}
 
 		// callback objects initialization
@@ -92,17 +95,17 @@ class Bootstrap {
 			self::CALLBACK_SETTINGS
 		);
 
-		foreach( $callback_targets as $callback_target ) {
+		foreach ( $callback_targets as $callback_target ) {
 
 			/** @var Base_Callback $callback fully-qualified name of the callback class. */
 			$callback = $this->loader->bootstrap_callback( $callback_namespace, $callback_target );
 
-			if( $callback ) {
+			if ( $callback ) {
 				$this->set_callback_object( $callback_target, $callback::get_instance() );
 			}
 		}
 
-		if( $custom_discover ) {
+		if ( $custom_discover ) {
 
 			call_user_func( $custom_discover, $this );
 		}
@@ -166,7 +169,7 @@ class Bootstrap {
 			register_uninstall_hook( $this->main_file, array( $plugin_callback, 'on_uninstall' ) );
 
 			// register other hooks
-            /** @noinspection PhpUndefinedMethodInspection */
+			/** @noinspection PhpUndefinedMethodInspection */
 			$plugin_callback->register_hooks();
 		}
 	}
@@ -222,7 +225,7 @@ class Bootstrap {
 
 		if ( $ajax_callback ) {
 
-            /** @noinspection PhpUndefinedMethodInspection */
+			/** @noinspection PhpUndefinedMethodInspection */
 			$ajax_callback->add_ajax_actions();
 		}
 	}
@@ -236,7 +239,7 @@ class Bootstrap {
 
 		if ( $admin_post_callback ) {
 
-            /** @noinspection PhpUndefinedMethodInspection */
+			/** @noinspection PhpUndefinedMethodInspection */
 			$admin_post_callback->add_admin_post_actions();
 		}
 	}
