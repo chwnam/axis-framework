@@ -2,14 +2,20 @@
 
 namespace axis_framework\includes\core;
 
-
 /**
  * Class Singleton
  *
+ * For creating unique objects.
+ *
  * @package axis_framework\includes\core
+ * @author Changwoo Nam (cs.chwnam@gmail.com)
+ * @see    \axis_framework\includes\bootstraps\Base_Callback
  */
 class Singleton {
 
+	/**
+	 * @return static unique instance
+	 */
     public static function get_instance() {
 
         static $instance = NULL;

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Base callback
+ */
 
 namespace axis_framework\includes\bootstraps;
 
@@ -10,11 +13,19 @@ use \axis_framework\includes\core;
  * Root of all base-*-callbacks.
  *
  * @package axis_framework\includes\bootstraps
+ * @author Changwoo Nam (cs.chwnam@gmail.com)
  */
 class Base_Callback extends core\Singleton {
 
+	/**
+	 * loader trait
+	 */
 	use core\Loader_Trait;
 
+	/**
+	 * @param array $args key - value pairs to initialize the object.
+	 *                    key 'loader' is reserved for loader object.
+	 */
 	protected function __construct( array $args = array() ) {
 
 		if( isset( $args['loader'] ) ) {
@@ -28,7 +39,7 @@ class Base_Callback extends core\Singleton {
      * Also takes care of output, and finishing.
      *
      * @param string $namespace        control class namespace
-     * @param string $control_name     control class fully-qualified name
+     * @param string $control_name     control name for loader
      * @param array  $construct_param  construct parameter
      * @param bool   $output_buffering set TRUE when callback for shortcodes, or set FALSE
      * @param bool   $die              set TRUE when callback for ajax. If $output_buffering is TRUE, this parameter is
