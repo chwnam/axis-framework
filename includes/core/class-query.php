@@ -44,7 +44,7 @@ class Query {
 		$this->limit = 0;
 		$this->offset = 0;
 		$this->where = array();
-		$this->order = self::ORDER_ASC;
+		$this->order_by = array();
 		$search_term = NULL;
 
 		return $this;
@@ -64,9 +64,16 @@ class Query {
 		return $this;
 	}
 
-	public function order_by( $field, $order ) {
+	public function order_by( $field, $order = self::ORDER_ASC ) {
 
-		$this->order_by = $order_by;
+		$this->order_by[] = array( 'field' => $field, 'order' => $order );
+
+		return $this;
+	}
+
+	public function clear_order_by() {
+
+		$this->order_by = array();
 
 		return $this;
 	}
@@ -200,7 +207,7 @@ class Query {
 		$table = $model::get_table();
 
 		$where  = '';
-		// $order  = '';
+		$order  = '';
 		$limit  = '';
 		$offset = '';
 
@@ -288,12 +295,20 @@ class Query {
 		}
 
 		// Order
-		if ( strstr( $this->order_by, '(' ) !== FALSE && strstr( $this->order_by, ')' ) !== FALSE ) {
-			// The sort column contains () so we assume its a function, therefore
-			// don't quote it
-			$order = ' ORDER BY ' . $this->order_by . ' ' . $this->order;
-		} else {
-			$order = ' ORDER BY `' . $this->order_by . '` ' . $this->order;
+		foreach( $this->order_by as $order_by ) {
+
+			$field = $order_by['field'];
+			$ord   = isset( $order_by['order'] ) ? $order_by['order'] : self::ORDER_ASC;
+
+			if( strstr( $field, '(' ) !== FALSE && strstr( $field, ')' ) !== FALSE ) {
+				$order .= ' ' . $field . ' ' . $ord . ', ';     // $field is function
+			} else {
+				$order .= ' `' . $field . '`` ' . $ord . ', ';
+			}
+		}
+
+		if( !empty( $order ) ) {
+			$order = ' ORDER BY ' . substr( $order, 0, -2 );
 		}
 
 		// Limit
@@ -318,6 +333,4 @@ class Query {
 
 		return $this->find( TRUE );
 	}
-
-
 }

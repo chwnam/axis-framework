@@ -101,6 +101,7 @@ class Comment_Model extends Base_Entity_Model {
 
 		if ( isset( $properties['comment_ID'] ) ) {
 
+			/** @noinspection SqlResolveInspection */
 			$metadata = $wpdb->get_results( "SELECT * FROM `{$wpdb->commentmeta}` WHERE `comment_id` = {$properties['comment_ID']}" );
 
 			foreach ( $metadata as $data ) {

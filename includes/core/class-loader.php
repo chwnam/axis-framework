@@ -220,6 +220,21 @@ class Loader {
 	}
 
 	/**
+	 * @param string $table WordPress table name. e.g. comment, user, post, page
+	 *
+	 * @return string fully-qualified class name of model
+	 */
+	public function wp_table( $table ) {
+
+		$path  = AXIS_INC_MODEL_PATH . '/wp-tables' . '/class-' . $table . '-model.php';
+		$model = '\\axis_framework\\includes\\models\\' . ucfirst( $table ) . '_Model';
+
+		/** @noinspection PhpIncludeInspection */
+		require_once( $path );
+		return $model;
+	}
+
+	/**
 	 * @param string   $namespace
 	 * @param string   $component_name
 	 * @param string   $component_criteria

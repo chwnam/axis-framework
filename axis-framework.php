@@ -5,7 +5,7 @@
  * Description: Axis - A WordPress Plugin Framework.
  * Author: Changwoo Nam
  * Author URI: mailto://cs.chwnam@gmail.com
- * Version: 0.10.1000
+ * Version: 0.10.2000
  */
 
 namespace axis_framework;
@@ -14,7 +14,7 @@ if ( ! defined( 'AXIS_FRAMEWORK_PATH' ) ) {
 	define( 'AXIS_FRAMEWORK_PATH', dirname( __FILE__ ) );
 }
 
-define( 'AXIS_VERSION', '0.10.1000' );
+define( 'AXIS_VERSION', '0.10.2000' );
 
 /* first-depth directories */
 define( 'AXIS_INC_PATH', AXIS_FRAMEWORK_PATH . '/includes' );
