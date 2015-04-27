@@ -43,7 +43,7 @@
 ### 설치
 액시스는 git를 통해 다운로드 받을 수 있습니다.
 
-``git clone https://github.com/chwnam/axis.git``
+``git clone https://github.com/chwnam/axis-framework.git``
 
 액시스는 서버에서 접근할 수 있다면 어디에든 놓고 사용해도 무방합니다. 다만 액시스 기반의 플러그인을 공식적으로 배포하려면,
 액시스를 플러그인 디렉토리 내부에 두고 같이 배포해야 합니다. (사용자들이 여러분의 플러그인을 위해 별도로 액시스를 설치하게 만들 수는 없으니까요)
@@ -54,4 +54,4 @@
 WP_CONTENT_DIR 경로에 axis를 설치해 두는 것을 권장합니다. 
 
 ### 샘플 코드
-액시스의 sample 디렉토리에 간단하게 액시스를 사용한 플러그인 예제가 수록되어 있습니다.
+axis-sample, axis-framework example plugin: ``https://github.com/chwnam/axis-sample.git``
