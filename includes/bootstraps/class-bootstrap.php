@@ -1,4 +1,7 @@
 <?php
+/**
+ * Bootstrap
+ */
 
 namespace axis_framework\includes\bootstraps;
 
@@ -19,30 +22,67 @@ require_once( AXIS_INC_VIEW_PATH . '/class-base-view.php' );
 
 use axis_framework\includes\core;
 
+
 core\utils\check_abspath();
 
 
+/**
+ * Class Bootstrap: Plugin initializer.
+ *
+ * Bootstrap is the first object to be instantiated for Axis Framework based plugins.
+ * It initializes all callback objects, so that every callback function of your plugin can work for you.
+ *
+ * @package axis_framework\includes\bootstraps
+ * @see     \axis_framework\includes\Base_Callback
+ */
 class Bootstrap {
 
 	/**
-	 * @var array       $callback_objects all callback objects.
-	 * @var string      $main_file        Full path of your plug-in's path.
-	 * @var core\Loader $loader           Loader object.
+	 * constant string for admin post callback object.
 	 */
-
 	const CALLBACK_ADMIN_POST = 'admin-post';
-	const CALLBACK_AJAX       = 'ajax';
-	const CALLBACK_MENU       = 'menu';
-	const CALLBACK_PLUGIN     = 'plugin';
-	const CALLBACK_SETTINGS   = 'settings';
 
+	/**
+	 * constant string for ajax callback object.
+	 */
+	const CALLBACK_AJAX = 'ajax';
+
+	/**
+	 * constant string for menu callback object.
+	 */
+	const CALLBACK_MENU = 'menu';
+
+	/**
+	 * constant string for plugin callback object.
+	 */
+	const CALLBACK_PLUGIN = 'plugin';
+
+	/**
+	 * constant string for setting callback object.
+	 */
+	const CALLBACK_SETTINGS = 'settings';
+
+	/**
+	 * @var array $callback_objects all callback objects are stored here.
+	 */
 	protected $callback_objects;
+
+	/**
+	 * @var string $main_file Full path of your plug-in's path.
+	 */
 	protected $main_file;
 
+	/**
+	 * protected loader variable, and loader setter/getter trait.
+	 */
 	use core\Loader_Trait;
 
+	/**
+	 * @param array $arg argument to initialize.
+	 */
 	public function __construct( array $arg = array() ) {
 
+		/** Default callback objects. Of course, you can override them. */
 		$this->callback_objects = array(
 			self::CALLBACK_ADMIN_POST => NULL,
 			self::CALLBACK_AJAX       => NULL,
@@ -53,13 +93,16 @@ class Bootstrap {
 	}
 
 	/**
-	 * Automatically discover files and run this bootstrap
+	 * Automatically discover files and run this bootstrap. Wrapper for auto_discover(), and run().
 	 *
 	 * @param string $main_file_namespace       namespace of callback objects.
 	 * @param string $main_file                 full path of your plug-in's main file.
 	 * @param mixed  $custom_discover           additional discover function
 	 * @param array  $loader_component_override loader component array to override.
 	 * @param mixed  $custom_run_callback       callback function finally called in run() method.
+	 *
+	 * @see \axis_framework\includes\bootstraps\Bootstrap::auto_discover()
+	 * @see \axis_framework\includes\bootstraps\Bootstrap::run()
 	 */
 	public function auto_discover_and_run(
 		$main_file_namespace,
@@ -88,16 +131,20 @@ class Bootstrap {
 		array $loader_component_override = array()
 	) {
 
+		// Main file set. It will be used when adding actions for activation, deactivation of plugin later.
 		$this->set_main_file( $main_file );
 
 		// initialize loader with default settings.
 		if ( $this->loader == NULL ) {
 
 			$plugin_root_path = realpath( dirname( $main_file ) );
-			$this->loader     = new core\Loader( $plugin_root_path, $loader_component_override );
+
+			// your loader is created.
+			$this->loader = new core\Loader( $plugin_root_path, $loader_component_override );
 		}
 
-		// callback objects initialization
+
+		// temporary array for batch operation.
 		$callback_targets = array(
 			self::CALLBACK_ADMIN_POST,
 			self::CALLBACK_AJAX,
@@ -106,16 +153,21 @@ class Bootstrap {
 			self::CALLBACK_SETTINGS
 		);
 
+		// callback objects initialization
 		foreach ( $callback_targets as $callback_target ) {
 
-			/** @var Base_Callback $callback fully-qualified name of the callback class. */
+			/**
+			 * @var Base_Callback $callback fully-qualified name of the callback class.
+			 */
 			$callback = $this->loader->bootstrap_callback( $callback_namespace, $callback_target );
 
 			if ( $callback ) {
+
 				$this->set_callback_object( $callback_target, $callback::get_instance() );
 			}
 		}
 
+		// User-side discover operation. You can add your own extra callback objects.
 		if ( $custom_discover ) {
 
 			call_user_func_array( $custom_discover, array( &$this ) );
@@ -123,7 +175,9 @@ class Bootstrap {
 	}
 
 	/**
-	 * @param string $callback_category
+	 * Set a callback object.
+	 *
+	 * @param string $callback_category callback category. e.g. admin-post, ajax, menu, plugin, setting, ...
 	 * @param object $plugin_callback
 	 */
 	public function set_callback_object( $callback_category, $plugin_callback ) {
@@ -133,6 +187,13 @@ class Bootstrap {
 		$this->callback_objects[ $callback_category ]->set_loader( $this->get_loader() );
 	}
 
+	/**
+	 * Get a callback object.
+	 *
+	 * @param string $callback_category callback category. e.g. admin-post, ajax, menu, plugin, setting, ...
+	 *
+	 * @return object callback object's instance.
+	 */
 	public function get_callback_object( $callback_category ) {
 
 		return $this->callback_objects[ $callback_category ];
@@ -151,7 +212,7 @@ class Bootstrap {
 	/**
 	 * main run procedure.
 	 *
-	 * @param mixed  $custom_run_callback       callback function finally called in run() method.
+	 * @param mixed $custom_run_callback callback function finally called in run() method.
 	 */
 	public function run( $custom_run_callback = NULL ) {
 
@@ -162,7 +223,7 @@ class Bootstrap {
 		$this->add_admin_post_actions();
 		$this->add_ajax_actions();
 
-		if( $custom_run_callback ) {
+		if ( $custom_run_callback ) {
 
 			call_user_func_array( $custom_run_callback, array( &$this ) );
 		}
