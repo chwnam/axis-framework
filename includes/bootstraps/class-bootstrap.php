@@ -23,13 +23,9 @@ core\utils\check_abspath();
 class Bootstrap {
 
 	/**
-	 * @var Base_Plugin_Callback     $plugin_callback     Plugin callback object.
-	 * @var Base_Admin_Post_Callback $admin_post_callback Admin Post callback object.
-	 * @var Base_Ajax_Callback       $ajax_callback       Ajax callback object.
-	 * @var Base_Menu_Callback       $menu_callback       Menu callback object.
-	 * @var Base_Settings_Callback   $settings_callback   Settings callback object.
-	 * @var string                   $main_file           Full path of your plug-in's path.
-	 * @var core\Loader              $loader              Loader object.
+	 * @var array       $callback_objects all callback objects.
+	 * @var string      $main_file        Full path of your plug-in's path.
+	 * @var core\Loader $loader           Loader object.
 	 */
 
 	const CALLBACK_ADMIN_POST = 'admin-post';
