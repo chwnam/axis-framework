@@ -13,8 +13,7 @@ use \axis_framework\includes\core;
  */
 class Base_Callback extends core\Singleton {
 
-	/** @var  core\Loader $loader loader object */
-	protected $loader;
+	use core\Loader_Trait;
 
 	protected function __construct( array $args = array() ) {
 
@@ -22,22 +21,6 @@ class Base_Callback extends core\Singleton {
 
 			$this->set_loader( $args['loader'] );
 		}
-	}
-
-	/**
-	 * @return core\Loader
-	 */
-	public function get_loader() {
-
-		return $this->loader;
-	}
-
-	/**
-	 * @param core\Loader $loader
-	 */
-	public function set_loader( core\Loader &$loader ) {
-
-		$this->loader = $loader;
 	}
 
     /**

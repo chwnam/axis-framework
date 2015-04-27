@@ -9,8 +9,7 @@ use axis_framework\includes\core;
 
 abstract class Base_View {
 
-	/** @var  core\Loader loader */
-	protected $loader;
+	use core\Loader_Trait;
 
     protected $block;
 
@@ -28,11 +27,6 @@ abstract class Base_View {
 		}
 
         $this->block = new View_Block();
-	}
-
-	public function set_loader( core\Loader &$loader) {
-
-		$this->loader = &$loader;
 	}
 
     public function extend( $template ) {

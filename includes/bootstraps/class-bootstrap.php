@@ -2,6 +2,7 @@
 
 namespace axis_framework\includes\bootstraps;
 
+require_once( AXIS_INC_CORE_PATH . '/class-query.php' );
 require_once( AXIS_INC_CORE_PATH . '/class-singleton.php' );
 require_once( AXIS_INC_CORE_PATH . '/class-loader.php' );
 require_once( AXIS_INC_CORE_PATH . '/utils.php' );
@@ -12,11 +13,11 @@ require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-plugin-callback.php' );
 require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-settings-callback.php' );
 require_once( AXIS_INC_CONTROL_PATH . '/class-base-control.php' );
 require_once( AXIS_INC_MODEL_PATH . '/class-base-model.php' );
+require_once( AXIS_INC_MODEL_PATH . '/interface-entity.php' );  // entity interface must be earlier than entity model
 require_once( AXIS_INC_MODEL_PATH . '/class-base-entity-model.php' );
 require_once( AXIS_INC_VIEW_PATH . '/class-base-view.php' );
 
 use axis_framework\includes\core;
-
 
 core\utils\check_abspath();
 
@@ -37,7 +38,8 @@ class Bootstrap {
 
 	protected $callback_objects;
 	protected $main_file;
-	protected $loader;
+
+	use core\Loader_Trait;
 
 	public function __construct( array $arg = array() ) {
 
@@ -120,11 +122,6 @@ class Bootstrap {
 		}
 	}
 
-	public function get_loader() {
-
-		return $this->loader;
-	}
-
 	/**
 	 * @param string $callback_category
 	 * @param object $plugin_callback
@@ -133,7 +130,7 @@ class Bootstrap {
 
 		$this->callback_objects[ $callback_category ] = $plugin_callback;
 		/** @noinspection PhpUndefinedMethodInspection */
-		$this->callback_objects[ $callback_category ]->set_loader( $this->loader );
+		$this->callback_objects[ $callback_category ]->set_loader( $this->get_loader() );
 	}
 
 	public function get_callback_object( $callback_category ) {

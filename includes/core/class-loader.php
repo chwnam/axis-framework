@@ -2,6 +2,13 @@
 
 namespace axis_framework\includes\core;
 
+
+/**
+ * Class Loader
+ *
+ * @package axis_framework\includes\core
+ * @author  Changwoo Nam (cs.chwnam@gmail.com)
+ */
 class Loader {
 
 	const BOOTSTRAP_CALLBACK = 'callback';
@@ -338,5 +345,28 @@ class Loader {
 		}
 
 		return $path;
+	}
+}
+
+
+/**
+ * Class Loader_Trait
+ *
+ * @package axis_framework\includes\core
+ * @authro  Changwoo Nam (cs.chwnam@gmail.com)
+ */
+trait Loader_Trait {
+
+	/** @var \axis_framework\includes\core\Loader */
+	protected $loader = NULL;
+
+	public function set_loader( \axis_framework\includes\core\Loader $loader ) {
+
+		$this->loader = $loader;
+	}
+
+	public function get_loader() {
+
+		return $this->loader;
 	}
 }

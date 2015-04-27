@@ -2,9 +2,6 @@
 
 namespace axis_framework\includes\models;
 
-require_once( AXIS_INC_CORE_PATH . '/class-query.php' );
-require_once AXIS_INC_MODEL_PATH . '/interface-entity.php';
-
 use axis_framework\includes\core;
 
 

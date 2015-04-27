@@ -6,8 +6,7 @@ use axis_framework\includes\core;
 
 abstract class Base_Model {
 
-	/** @var  core\Loader loader */
-	protected $loader;
+	use core\Loader_Trait;
 
 	/** @noinspection PhpUndefinedClassInspection */
 	/** @noinspection PhpUndefinedNamespaceInspection */
@@ -25,11 +24,6 @@ abstract class Base_Model {
 
 			$this->set_loader( $args['loader'] );
 		}
-	}
-
-	public function set_loader( core\Loader &$loader) {
-
-		$this->loader = &$loader;
 	}
 
 	public function set_control( &$control ) {

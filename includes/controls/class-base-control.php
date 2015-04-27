@@ -7,8 +7,7 @@ use axis_framework\includes\core;
 
 abstract class Base_Control {
 
-    /** @var  core\Loader loader */
-    protected $loader;
+	use core\Loader_Trait;
 
     /** @var bool using output buffer. */
     protected $output_buffer_used = FALSE;
@@ -17,10 +16,6 @@ abstract class Base_Control {
         if ( isset( $params['loader'] ) ) {
             $this->set_loader( $params['loader'] );
         }
-    }
-
-    public function set_loader( core\Loader &$loader ) {
-        $this->loader = &$loader;
     }
 
     /**
