@@ -98,18 +98,31 @@ class Loader {
 
 	public function bootstrap_callback( $namespace, $callback_name ) {
 
-		$callback_path  = $this->get_component_path(
-			$callback_name,
-			self::BOOTSTRAP_CALLBACK
-		);
+		try {
 
-		$callback_class = $this->get_component_class(
-			$namespace,
-			$callback_name,
-			self::BOOTSTRAP_CALLBACK
-		);
+			$callback_path = $this->get_component_path(
+				$callback_name,
+				self::BOOTSTRAP_CALLBACK
+			);
+
+			$callback_class = $this->get_component_class(
+				$namespace,
+				$callback_name,
+				self::BOOTSTRAP_CALLBACK
+			);
+
+		} catch( \RuntimeException $e ) {
+
+			/**
+			 * caught when the component directory is missing.
+			 * see get_component_path().
+			 */
+			$callback_path  = NULL;
+			$callback_class = NULL;
+		}
 
 		if( !file_exists( $callback_path ) ) {
+
 			return NULL;
 		}
 
@@ -303,7 +316,7 @@ class Loader {
 		$naming_override = NULL
 	) {
 
-		$path_to_component = &$this->component_path[ $component_criteria ];
+		$path_to_component = $this->component_path[ $component_criteria ];
 
 		if ( ! file_exists( $path_to_component ) ) {
 
