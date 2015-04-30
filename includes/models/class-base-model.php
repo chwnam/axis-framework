@@ -6,6 +6,9 @@ use axis_framework\includes\controls;
 use axis_framework\includes\core;
 
 
+core\utils\check_abspath(); // check abspath or inclusion fatal error.
+
+
 abstract class Base_Model {
 
 	use core\Loader_Trait;

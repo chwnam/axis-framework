@@ -2,6 +2,8 @@
 
 namespace axis_framework\includes\core;
 
+\axis_framework\includes\core\utils\check_abspath(); // check abspath or inclusion fatal error.
+
 
 /**
  * Class Loader
@@ -261,6 +263,12 @@ class Loader {
 		switch ( $component_rule ) {
 
 			case self::RULE_COMPLETE:
+				// component name can be hierarchical.
+				$last_slash = strrpos( $component_name, '/' );
+				if ( FALSE !== $last_slash ) {
+					$component_name = substr( $component_name, $last_slash + 1 );
+				}
+
 				$fq_class_name = $namespace === '\\' ? $namespace : $namespace . '\\';
 				$element_array = explode( '-', str_replace( '_', '-', $component_name ) );
 				foreach ( $element_array as &$element ) {
@@ -303,7 +311,7 @@ class Loader {
 		$naming_override = NULL
 	) {
 
-		$path_to_component = &$this->component_path[ $component_criteria ];
+		$path_to_component = $this->component_path[ $component_criteria ];
 
 		if ( ! file_exists( $path_to_component ) ) {
 
@@ -319,6 +327,19 @@ class Loader {
 		switch ( $component_rule ) {
 
 			case self::RULE_COMPLETE:
+				// component name can be hierarchical.
+				$last_slash = strrpos( $component_name, '/' );
+				if ( FALSE !== $last_slash ) {
+
+					$sub_path = substr( $component_name, 0, $last_slash );
+					if ( $sub_path[0] != '/' ) {
+						$sub_path = '/' . $sub_path;
+					}
+
+					$path_to_component .= $sub_path;
+					$component_name = substr( $component_name, $last_slash + 1 );
+				}
+
 				$path = sprintf(
 					'%s/class-%s-%s.php',
 					$path_to_component,
@@ -353,14 +374,14 @@ class Loader {
  * Class Loader_Trait
  *
  * @package axis_framework\includes\core
- * @authro  Changwoo Nam (cs.chwnam@gmail.com)
+ * @author  Changwoo Nam (cs.chwnam@gmail.com)
  */
 trait Loader_Trait {
 
-	/** @var \axis_framework\includes\core\Loader */
+	/** @var Loader */
 	protected $loader = NULL;
 
-	public function set_loader( \axis_framework\includes\core\Loader $loader ) {
+	public function set_loader( Loader $loader ) {
 
 		$this->loader = $loader;
 	}

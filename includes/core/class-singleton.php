@@ -2,6 +2,9 @@
 
 namespace axis_framework\includes\core;
 
+\axis_framework\includes\core\utils\check_abspath(); // check abspath or inclusion fatal error.
+
+
 /**
  * Class Singleton
  *

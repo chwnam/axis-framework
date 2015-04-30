@@ -7,6 +7,9 @@ require_once( 'class-view-block.php' );
 use axis_framework\includes\core;
 
 
+core\utils\check_abspath(); // check abspath or inclusion fatal error.
+
+
 abstract class Base_View {
 
 	use core\Loader_Trait;

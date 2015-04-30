@@ -2,8 +2,6 @@
 
 namespace axis_framework\includes\bootstraps;
 
-require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-base-callback.php' );
-
 use \axis_framework\includes\core;
 
 

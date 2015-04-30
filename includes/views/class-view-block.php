@@ -2,6 +2,8 @@
 
 namespace axis_framework\includes\views;
 
+\axis_framework\includes\core\utils\check_abspath(); // check abspath or inclusion fatal error.
+
 
 class View_Block {
 
