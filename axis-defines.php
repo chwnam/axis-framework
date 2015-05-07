@@ -49,21 +49,24 @@ require_once( AXIS_CORE_PATH . '/utils.php' );
 require_once( AXIS_CORE_PATH . '/class-query.php' );
 require_once( AXIS_CORE_PATH . '/class-singleton.php' );
 require_once( AXIS_CORE_PATH . '/class-loader.php' );
-require_once( AXIS_BOOTSTRAP_PATH . '/class-base-callback.php' );
-require_once( AXIS_BOOTSTRAP_PATH . '/class-base-admin-post-callback.php' );
-require_once( AXIS_BOOTSTRAP_PATH . '/class-base-ajax-callback.php' );
-require_once( AXIS_BOOTSTRAP_PATH . '/class-base-menu-callback.php' );
-require_once( AXIS_BOOTSTRAP_PATH . '/class-base-plugin-callback.php' );
-require_once( AXIS_BOOTSTRAP_PATH . '/class-base-settings-callback.php' );
 require_once( AXIS_CONTROL_PATH . '/class-base-control.php' );
 require_once( AXIS_MODEL_PATH . '/class-base-model.php' );
 require_once( AXIS_MODEL_PATH . '/interface-entity.php' );  // entity interface must be earlier than entity model
 require_once( AXIS_MODEL_PATH . '/class-base-entity-model.php' );
 require_once( AXIS_VIEW_PATH . '/class-base-view.php' );
-require_once( AXIS_BOOTSTRAP_PATH . '/class-bootstrap.php' );
 
-require_once( AXIS_CONTEXT_PATH . '/class-base-context.php' );
-require_once( AXIS_CONTEXT_PATH . '/class-dispatch.php' );
+if( defined('AXIS_USE_BOOTSTRAP') && AXIS_USE_BOOTSTRAP ) {
+	require_once( AXIS_BOOTSTRAP_PATH . '/class-base-callback.php' );
+	require_once( AXIS_BOOTSTRAP_PATH . '/class-base-admin-post-callback.php' );
+	require_once( AXIS_BOOTSTRAP_PATH . '/class-base-ajax-callback.php' );
+	require_once( AXIS_BOOTSTRAP_PATH . '/class-base-menu-callback.php' );
+	require_once( AXIS_BOOTSTRAP_PATH . '/class-base-plugin-callback.php' );
+	require_once( AXIS_BOOTSTRAP_PATH . '/class-base-settings-callback.php' );
+	require_once( AXIS_BOOTSTRAP_PATH . '/class-bootstrap.php' );
+} else {
+	require_once( AXIS_CONTEXT_PATH . '/class-base-context.php' );
+	require_once( AXIS_CONTEXT_PATH . '/class-dispatch.php' );
+}
 
 /**
  * Version of Axis Framework.

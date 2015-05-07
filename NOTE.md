@@ -1,9 +1,11 @@
-# Ver 0.20.0000
+# Ver 0.20.0000Alpha1
 
 * 액시스의 bootstrap, callback object 구조는 폐기하기로 구상.
 * 대안으로 dispatch, context 구조를 도입 구상.
 * namespace 구조를 변경. 'includes' 부분을 삭제.
 * 실제 패스 상에서도 includes 부분을 삭제.
+
+* 콘텍스트 인터페이스 혹은 트레잇 구상.
 
 # Ver. 0.10.2500
 2015년 05월 01일

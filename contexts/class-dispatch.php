@@ -3,7 +3,7 @@
  * Base dispatch
  */
 
-namespace axis_framework\bootstraps\dispatch;
+namespace axis_framework\contexts;
 
 use axis_framework\core\Loader;
 use axis_framework\core\Loader_Trait;
@@ -45,7 +45,7 @@ class Dispatch {
 		$this->loader = new Loader( realpath( dirname( $main_file_path ) ), $loader_component_override );
 		$this->plugin_main_file = $main_file_path;
 
-		// traversing the 'context' directory and instantiating all context classes.
+		// traversing the 'contexts' directory and instantiating all context classes.
 		$context_directory = $this->loader->get_component_directory('context');
 		$context_files     = scandir( $context_directory );
 		if( is_array( $context_files ) ) {
@@ -58,7 +58,7 @@ class Dispatch {
 						$this->loader->context(
 							$context_namespace,
 							$matches[1], // context name
-							array( 'loader' => $this->loader )
+							array( 'loader' => $this->loader, 'dispatch' => $this )
 						)
 					);
 				}
@@ -66,7 +66,7 @@ class Dispatch {
 		}
 
 		foreach( $this->callback_contexts as $context ) {
-			/** @var \axis_framework\bootstraps\contexts\Base_Context $context */
+			/** @var \axis_framework\contexts\Base_Context $context */
 			$context->init_context();
 		}
 	}

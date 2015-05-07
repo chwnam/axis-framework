@@ -1,28 +1,57 @@
 <?php
-namespace axis_framework\bootstraps\contexts;
+namespace axis_framework\contexts;
 
-use axis_framework\core;
+use axis_framework\core\Loader_trait;
 
 
 abstract class Base_Context {
 
-	use core\Loader_Trait;
+	use Loader_Trait;
 
+	/** @var  string $context_name */
 	private $context_name;
+
+	/** @var  string $context_identifier */
 	private $context_identifier;
+
+	/** @var  \axis_framework\contexts\Dispatch $dispatch */
+	private $dispatch;
 
 	public function __construct( array $args = array() ) {
 
 		if( isset( $args['loader'] ) ) {
+
 			$this->set_loader( $args['loader'] );
 		}
 
-		if( isset( $args['context_name'] ) && !empty( $args['context_name'] ) && is_string( $args['context_name'] ) ) {
+		if( isset( $args['dispatch'] ) ) {
+
+			$this->set_dispatch( $args['dispatch'] );
+		}
+
+		if( isset( $args['context_name'] ) && is_string( $args['context_name'] ) && !empty( $args['context_name'] ) ) {
+
 			$this->set_context_name( $args['context_name'] );
 			$this->set_context_id();
 		} else {
+
 			throw new \LogicException( 'Every context must have name. set \'context_name\' key and value.' );
 		}
+	}
+
+	public function get_dispatch() {
+
+		return $this->dispatch;
+	}
+
+	public function get_context( $context_name ) {
+
+		return $this->dispatch->get_context( $context_name );
+	}
+
+	public function set_dispatch( Dispatch $dispatch ) {
+
+		$this->dispatch = $dispatch;
 	}
 
 	public function set_context_name( $context_name ) {
@@ -43,16 +72,6 @@ abstract class Base_Context {
 	private function set_context_id() {
 
 		$this->context_identifier = $this->context_name . '-' . spl_object_hash( $this );
-	}
-
-	public function add_action( $tag, $method_to_add, $priority = 10, $accepted_args = 1 ) {
-
-		add_action( $tag, array( &$this, $method_to_add ), $priority, $accepted_args );
-	}
-
-	public function add_filter( $tag, $method_to_add, $priority = 10, $accepted_args = 1 ) {
-
-		add_filter( $tag, array( &$this, $method_to_add, $priority, $accepted_args ) );
 	}
 
 	/**
@@ -76,17 +95,26 @@ abstract class Base_Context {
 		$die = FALSE
 	) {
 		return function ( $args ) use ( $namespace, $control_name, $construct_param, $output_buffering, $die ) {
+
 			if ( is_array( $args ) && ! empty( $args ) ) {
+
 				$construct_param = array_merge( $construct_param, array( 'callback_args' => $args ) );
 			}
+
 			$control = $this->loader->control( $namespace, $control_name, $construct_param );
+
 			if ( $output_buffering ) {
+
 				$control->enable_output_buffer();
 			}
+
 			$control->run();
+
 			if ( $output_buffering ) {
+
 				return $control->get_output_buffer();
 			}
+
 			if ( $die ) {
 				die();
 			}
