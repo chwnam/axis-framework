@@ -13,7 +13,7 @@ abstract class Base_Model {
 
 	use core\Loader_Trait;
 
-	/** @var \axis_framework\includes\controls\Base_Control */
+	/** @var \axis_framework\controls\Base_Control */
 	protected $control = NULL;
 
 	public function __construct( $args = array() ) {
