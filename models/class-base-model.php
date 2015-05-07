@@ -1,9 +1,9 @@
 <?php
 
-namespace axis_framework\includes\models;
+namespace axis_framework\models;
 
-use axis_framework\includes\controls;
-use axis_framework\includes\core;
+use axis_framework\controls;
+use axis_framework\core;
 
 
 core\utils\check_abspath(); // check abspath or inclusion fatal error.

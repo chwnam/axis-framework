@@ -1,8 +1,8 @@
 <?php
 
-namespace axis_framework\includes\controls;
+namespace axis_framework\controls;
 
-use axis_framework\includes\core;
+use axis_framework\core;
 
 
 abstract class Base_Control {

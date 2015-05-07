@@ -1,11 +1,11 @@
 <?php
 
-namespace axis_framework\includes\models;
+namespace axis_framework\models;
 
-use \DateTime;
+use DateTime;
 
 
-class Post_Model extends Base_Entity_Model {
+class User_Model extends Base_Entity_Model {
 
 	/**
 	 * @var integer
@@ -13,114 +13,49 @@ class Post_Model extends Base_Entity_Model {
 	protected $ID;
 
 	/**
-	 * @var integer
+	 * @var string
 	 */
-	protected $post_author;
+	protected $user_login;
+
+	/**
+	 * @var string
+	 */
+	protected $user_pass;
+
+	/**
+	 * @var string
+	 */
+	protected $user_nicename;
+
+	/**
+	 * @var string
+	 */
+	protected $user_email;
+
+	/**
+	 * @var string
+	 */
+	protected $user_url;
 
 	/**
 	 * @var DateTime
 	 */
-	protected $post_date;
-
-	/**
-	 * @var DateTime
-	 */
-	protected $post_date_gmt;
+	protected $user_registered;
 
 	/**
 	 * @var string
 	 */
-	protected $post_content;
+	protected $user_activation_key;
 
 	/**
 	 * @var string
 	 */
-	protected $post_title;
+	protected $user_status;
 
 	/**
 	 * @var string
 	 */
-	protected $post_excerpt;
-
-	/**
-	 * @var string
-	 */
-	protected $post_status;
-
-	/**
-	 * @var string
-	 */
-	protected $comment_status;
-
-	/**
-	 * @var string
-	 */
-	protected $ping_status;
-
-	/**
-	 * @var string
-	 */
-	protected $post_password;
-
-	/**
-	 * @var string
-	 */
-	protected $post_name;
-
-	/**
-	 * @var string
-	 */
-	protected $to_ping;
-
-	/**
-	 * @var string
-	 */
-	protected $pinged;
-
-	/**
-	 * @var DateTime
-	 */
-	protected $post_modified;
-
-	/**
-	 * @var DateTime
-	 */
-	protected $post_modified_gmt;
-
-	/**
-	 * @var string
-	 */
-	protected $post_content_filtered;
-
-	/**
-	 * @var integer
-	 */
-	protected $post_parent;
-
-	/**
-	 * @var string
-	 */
-	protected $guid;
-
-	/**
-	 * @var integer
-	 */
-	protected $menu_order;
-
-	/**
-	 * @var string
-	 */
-	protected $post_type;
-
-	/**
-	 * @var string
-	 */
-	protected $post_mime_type;
-
-	/**
-	 * @var integer
-	 */
-	protected $comment_count;
+	protected $display_name;
 
 	/**
 	 * @var array
@@ -139,34 +74,22 @@ class Post_Model extends Base_Entity_Model {
 
 		if ( isset( $properties['ID'] ) ) {
 
-			$metadata = $wpdb->get_results( "SELECT * FROM `{$wpdb->postmeta}` WHERE `post_id` = {$properties['ID']}" );
+			$metadata = $wpdb->get_results( "SELECT * FROM `{$wpdb->usermeta}` WHERE `user_id` = {$properties['ID']}" );
 
 			foreach ( $metadata as $data ) {
 				$this->meta[ $data->meta_key ] = maybe_unserialize( $data->meta_value );
 			}
 		}
 
-		if ( isset( $properties['post_date'] ) ) {
-			$properties['post_date'] = new DateTime( $properties['post_date'] );
-		}
-
-		if ( isset( $properties['post_date_gmt'] ) ) {
-			$properties['post_date_gmt'] = new DateTime( $properties['post_date_gmt'] );
-		}
-
-		if ( isset( $properties['post_modified'] ) ) {
-			$properties['post_modified'] = new DateTime( $properties['post_modified'] );
-		}
-
-		if ( isset( $properties['post_modified_gmt'] ) ) {
-			$properties['post_modified_gmt'] = new DateTime( $properties['post_modified_gmt'] );
+		if ( isset( $properties['user_registered'] ) ) {
+			$properties['user_registered'] = new DateTime( $properties['user_registered'] );
 		}
 
 		parent::__construct( $properties );
 	}
 
 	/**
-	 * Get the post's meta data.
+	 * Get the user's meta data.
 	 *
 	 * @param  string $meta_key
 	 * @param  mixed  $default
@@ -179,7 +102,7 @@ class Post_Model extends Base_Entity_Model {
 	}
 
 	/**
-	 * Update the post's meta data.
+	 * Update the user's meta data.
 	 *
 	 * @param string $meta_key
 	 * @param mixed  $meta_value
@@ -188,11 +111,11 @@ class Post_Model extends Base_Entity_Model {
 
 		$this->meta[ $meta_key ] = $meta_value;
 
-		update_post_meta( $this->ID, $meta_key, $meta_value );
+		update_user_meta( $this->ID, $meta_key, $meta_value );
 	}
 
 	/**
-	 * Delete the post's meta data.
+	 * Delete the user's meta data.
 	 *
 	 * @param string $meta_key
 	 */
@@ -200,7 +123,7 @@ class Post_Model extends Base_Entity_Model {
 
 		unset( $this->meta[ $meta_key ] );
 
-		delete_post_meta( $this->ID, $meta_key );
+		delete_user_meta( $this->ID, $meta_key );
 	}
 
 	/**
@@ -234,10 +157,9 @@ class Post_Model extends Base_Entity_Model {
 	 */
 	public static function get_table() {
 
-		/** @var \wpdb $wpdb */
 		global $wpdb;
 
-		return $wpdb->posts;
+		return $wpdb->users;
 	}
 
 	/**
@@ -247,6 +169,6 @@ class Post_Model extends Base_Entity_Model {
 	 */
 	public static function get_searchable_fields() {
 
-		return array( 'post_title', 'post_content', 'post_excerpt' );
+		return array( 'user_login', 'user_nicename', 'user_email', 'display_name' );
 	}
 }

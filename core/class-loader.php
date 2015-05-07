@@ -1,8 +1,8 @@
 <?php
 
-namespace axis_framework\includes\core;
+namespace axis_framework\core;
 
-\axis_framework\includes\core\utils\check_abspath(); // check abspath or inclusion fatal error.
+\axis_framework\core\utils\check_abspath(); // check abspath or inclusion fatal error.
 
 
 /**
@@ -13,6 +13,8 @@ namespace axis_framework\includes\core;
  */
 class Loader {
 
+	const CONTEXT            = 'context';
+	const DISPATCH           = 'dispatch';
 	const BOOTSTRAP_CALLBACK = 'callback';
 	const CONTROL            = 'control';
 	const MODEL              = 'model';
@@ -25,13 +27,7 @@ class Loader {
 
 	private $plugin_root;
 
-	private $component_path = array(
-		self::BOOTSTRAP_CALLBACK => '',
-		self::CONTROL            => '',
-		self::MODEL              => '',
-		self::TEMPLATE           => '',
-		self::VIEW               => '',
-	);
+	private $component_path = array();
 
 	public function __construct( $plugin_root_path, $default_component_path = NULL ) {
 
@@ -52,11 +48,13 @@ class Loader {
 	public function init_component_path( array $component_to_override = array() ) {
 
 		$default = array(
-			self::BOOTSTRAP_CALLBACK => $this->plugin_root . '/includes/bootstraps',
-			self::CONTROL            => $this->plugin_root . '/includes/controls',
-			self::TEMPLATE           => $this->plugin_root . '/includes/templates',
-			self::MODEL              => $this->plugin_root . '/includes/models',
-			self::VIEW               => $this->plugin_root . '/includes/views',
+			self::CONTEXT            => $this->plugin_root . '/contexts',
+			self::DISPATCH           => $this->plugin_root . '/bootstraps',
+			self::BOOTSTRAP_CALLBACK => $this->plugin_root . '/bootstraps',
+			self::CONTROL            => $this->plugin_root . '/controls',
+			self::TEMPLATE           => $this->plugin_root . '/templates',
+			self::MODEL              => $this->plugin_root . '/models',
+			self::VIEW               => $this->plugin_root . '/views',
 		);
 
 		$this->component_path = $default;
@@ -98,9 +96,20 @@ class Loader {
 		unset( $this->component_path[ $criteria ] );
 	}
 
+	public function context( $namespace, $context_name ) {
+
+		$context_path = $this->get_component_path( $context_name, self::CONTEXT );
+		$context_class = $this->get_component_class( $namespace, $context_name, self::CONTEXT );
+
+		/** @noinspection PhpIncludeInspection */
+		require_once( $context_path );
+		$instance = new $context_class( $context_name );
+		return $instance;
+	}
+
 	public function bootstrap_callback( $namespace, $callback_name ) {
 
-		$callback_path  = $this->get_component_path(
+		$callback_path = $this->get_component_path(
 			$callback_name,
 			self::BOOTSTRAP_CALLBACK
 		);
@@ -235,7 +244,7 @@ class Loader {
 	 */
 	public function wp_table( $table ) {
 
-		$path  = AXIS_INC_MODEL_PATH . '/wp-tables' . '/class-' . $table . '-model.php';
+		$path  = AXIS_MODEL_PATH . '/wp-tables' . '/class-' . $table . '-model.php';
 		$model = '\\axis_framework\\includes\\models\\' . ucfirst( $table ) . '_Model';
 
 		/** @noinspection PhpIncludeInspection */

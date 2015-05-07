@@ -1,8 +1,8 @@
 <?php
 
-namespace axis_framework\includes\bootstraps;
+namespace axis_framework\bootstraps;
 
-use \axis_framework\includes\core;
+use axis_framework\core;
 
 
 /**

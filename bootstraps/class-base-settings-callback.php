@@ -1,11 +1,11 @@
 <?php
 
-namespace axis_framework\includes\bootstraps;
+namespace axis_framework\bootstraps;
 
-require_once( AXIS_INC_BOOTSTRAP_PATH . '/settings/settings.php' );
+require_once( AXIS_BOOTSTRAP_PATH . '/settings/settings.php' );
 
-use \axis_framework\includes\core;
-use \axis_framework\includes\bootstraps\settings;
+use \axis_framework\core;
+use \axis_framework\bootstraps\settings;
 
 
 /**

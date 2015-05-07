@@ -1,6 +1,6 @@
 <?php
 
-namespace axis_framework\includes\models;
+namespace axis_framework\models;
 
 
 class Page_Model extends Post_Model {

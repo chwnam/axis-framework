@@ -1,6 +1,6 @@
 <?php
 
-namespace axis_framework\includes\bootstraps\settings;
+namespace axis_framework\bootstraps\settings;
 
 /**
  * Class Option_Name

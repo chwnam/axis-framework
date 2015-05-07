@@ -14,4 +14,4 @@ namespace axis_framework;
  * bootstrap file loading.
  */
 require_once( 'axis-defines.php' );
-require_once( AXIS_INC_BOOTSTRAP_PATH . '/class-bootstrap.php' );
+require_once( AXIS_BOOTSTRAP_PATH . '/class-bootstrap.php' );

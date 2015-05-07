@@ -1,11 +1,10 @@
 <?php
 
-namespace axis_framework\includes\views;
+namespace axis_framework\views;
 
 require_once( 'class-view-block.php' );
 
-use axis_framework\includes\core;
-
+use axis_framework\core;
 
 core\utils\check_abspath(); // check abspath or inclusion fatal error.
 

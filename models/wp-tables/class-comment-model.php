@@ -1,61 +1,86 @@
 <?php
 
-namespace axis_framework\includes\models;
+namespace axis_framework\models;
 
 use DateTime;
 
 
-class User_Model extends Base_Entity_Model {
+class Comment_Model extends Base_Entity_Model {
 
 	/**
 	 * @var integer
 	 */
-	protected $ID;
+	protected $comment_ID;
+
+	/**
+	 * @var integer
+	 */
+	protected $comment_post_ID;
 
 	/**
 	 * @var string
 	 */
-	protected $user_login;
+	protected $comment_author;
 
 	/**
 	 * @var string
 	 */
-	protected $user_pass;
+	protected $comment_author_email;
 
 	/**
 	 * @var string
 	 */
-	protected $user_nicename;
+	protected $comment_author_url;
 
 	/**
 	 * @var string
 	 */
-	protected $user_email;
-
-	/**
-	 * @var string
-	 */
-	protected $user_url;
+	protected $comment_author_IP;
 
 	/**
 	 * @var DateTime
 	 */
-	protected $user_registered;
+	protected $comment_date;
+
+	/**
+	 * @var DateTime
+	 */
+	protected $comment_date_gmt;
 
 	/**
 	 * @var string
 	 */
-	protected $user_activation_key;
+	protected $comment_content;
+
+	/**
+	 * @var integer
+	 */
+	protected $comment_karma;
 
 	/**
 	 * @var string
 	 */
-	protected $user_status;
+	protected $comment_approved;
 
 	/**
 	 * @var string
 	 */
-	protected $display_name;
+	protected $comment_agent;
+
+	/**
+	 * @var string
+	 */
+	protected $comment_type;
+
+	/**
+	 * @var integer
+	 */
+	protected $comment_parent;
+
+	/**
+	 * @var integer
+	 */
+	protected $user_id;
 
 	/**
 	 * @var array
@@ -72,24 +97,29 @@ class User_Model extends Base_Entity_Model {
 		/** @var \wpdb $wpdb */
 		global $wpdb;
 
-		if ( isset( $properties['ID'] ) ) {
+		if ( isset( $properties['comment_ID'] ) ) {
 
-			$metadata = $wpdb->get_results( "SELECT * FROM `{$wpdb->usermeta}` WHERE `user_id` = {$properties['ID']}" );
+			/** @noinspection SqlResolveInspection */
+			$metadata = $wpdb->get_results( "SELECT * FROM `{$wpdb->commentmeta}` WHERE `comment_id` = {$properties['comment_ID']}" );
 
 			foreach ( $metadata as $data ) {
 				$this->meta[ $data->meta_key ] = maybe_unserialize( $data->meta_value );
 			}
 		}
 
-		if ( isset( $properties['user_registered'] ) ) {
-			$properties['user_registered'] = new DateTime( $properties['user_registered'] );
+		if ( isset( $properties['comment_date'] ) ) {
+			$properties['comment_date'] = new DateTime( $properties['comment_date'] );
+		}
+
+		if ( isset( $properties['comment_date_gmt'] ) ) {
+			$properties['comment_date_gmt'] = new DateTime( $properties['comment_date_gmt'] );
 		}
 
 		parent::__construct( $properties );
 	}
 
 	/**
-	 * Get the user's meta data.
+	 * Get the post's meta data.
 	 *
 	 * @param  string $meta_key
 	 * @param  mixed  $default
@@ -98,11 +128,11 @@ class User_Model extends Base_Entity_Model {
 	 */
 	public function get_metadata( $meta_key, $default = NULL ) {
 
-		return isset( $this->meta[ $meta_key ] ) ?  $this->meta[ $meta_key ] : $default;
+		return isset( $this->meta[ $meta_key ] ) ? $this->meta[ $meta_key ] : $default;
 	}
 
 	/**
-	 * Update the user's meta data.
+	 * Update the post's meta data.
 	 *
 	 * @param string $meta_key
 	 * @param mixed  $meta_value
@@ -111,11 +141,11 @@ class User_Model extends Base_Entity_Model {
 
 		$this->meta[ $meta_key ] = $meta_value;
 
-		update_user_meta( $this->ID, $meta_key, $meta_value );
+		update_comment_meta( $this->comment_ID, $meta_key, $meta_value );
 	}
 
 	/**
-	 * Delete the user's meta data.
+	 * Delete the post's meta data.
 	 *
 	 * @param string $meta_key
 	 */
@@ -123,7 +153,7 @@ class User_Model extends Base_Entity_Model {
 
 		unset( $this->meta[ $meta_key ] );
 
-		delete_user_meta( $this->ID, $meta_key );
+		delete_comment_meta( $this->comment_ID, $meta_key );
 	}
 
 	/**
@@ -147,7 +177,7 @@ class User_Model extends Base_Entity_Model {
 	 */
 	public static function primary_key_name() {
 
-		return 'ID';
+		return 'comment_ID';
 	}
 
 	/**
@@ -159,7 +189,7 @@ class User_Model extends Base_Entity_Model {
 
 		global $wpdb;
 
-		return $wpdb->users;
+		return $wpdb->comments;
 	}
 
 	/**
@@ -169,6 +199,6 @@ class User_Model extends Base_Entity_Model {
 	 */
 	public static function get_searchable_fields() {
 
-		return array( 'user_login', 'user_nicename', 'user_email', 'display_name' );
+		return array( 'comment_content' );
 	}
 }

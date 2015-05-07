@@ -1,8 +1,8 @@
 <?php
 
-namespace axis_framework\includes\models;
+namespace axis_framework\models;
 
-use axis_framework\includes\core;
+use axis_framework\core;
 
 
 abstract class Base_Entity_Model implements Entity {

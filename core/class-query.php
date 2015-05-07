@@ -1,8 +1,8 @@
 <?php
 
-namespace axis_framework\includes\core;
+namespace axis_framework\core;
 
-\axis_framework\includes\core\utils\check_abspath(); // check abspath or inclusion fatal error.
+\axis_framework\core\utils\check_abspath(); // check abspath or inclusion fatal error.
 
 
 class Query {
