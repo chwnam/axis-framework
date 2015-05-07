@@ -7,7 +7,6 @@ namespace axis_framework\bootstraps;
 
 use axis_framework\core\Loader;
 use axis_framework\core\Loader_Trait;
-use axis_framework\bootstraps\dispatch\Dispatch;
 
 /**
  * Class Bootstrap: Plugin initializer.
@@ -55,8 +54,6 @@ class Bootstrap {
 	 */
 	protected $main_file;
 
-	private $dispatch = NULL;
-
 	/**
 	 * protected loader variable, and loader setter/getter trait.
 	 */
@@ -99,74 +96,6 @@ class Bootstrap {
 
 		$this->auto_discover( $main_file_namespace, $main_file, $custom_discover, $loader_component_override );
 		$this->run( $custom_run_callback );
-	}
-
-	public function initialize(
-		$context_namespace,
-		$main_file_path,
-		$custom_discover_function = NULL,
-		array $loader_component_override = array()
-	) {
-
-		$this->set_main_file( $main_file_path );
-
-		if( $this->loader == NULL ) {
-
-			$plugin_root_path = realpath( dirname( $main_file_path ) );
-			$this->loader = new Loader( $plugin_root_path, $loader_component_override );
-		}
-
-		// get dispatch path
-		$dispatch_path = $this->loader->get_component_path(
-			'class-dispatch',
-			Loader::DISPATCH,
-			Loader::RULE_SIMPLE
-		);
-		require_once( $dispatch_path );
-
-		$dispatch_class = $this->loader->get_component_class(
-			$context_namespace,
-			'dispatch',
-			Loader::DISPATCH,
-			Loader::RULE_CUSTOM,
-			function( $namespace, $component_name, $component_criteria ) {
-
-			}
-		);
-
-		// set-up context
-		$context_directory = $this->loader->component_paths()['context'];
-		$context_files = scandir( $context_directory );
-
-		// traversing the 'context' directory and instantiating all context classes.
-		if( is_array( $context_files ) ) {
-			foreach( $context_files as $context_file ) {
-				$path = $context_directory . '/' . $context_file;
-				$matches = array();
-				if( file_exists( $path ) && is_file( $path ) &&
-				    preg_match( '/^class-(.+)-context\.php$/', $context_file, $matches ) &&
-					count( $matches ) == 1 ) {
-					$context_name = $matches[0];
-					$instance = $this->loader->context( $context_namespace, $context_name );
-					$dispatch->set_context( $context_name, $instance );
-				}
-			}
-		}
-
-		// custom discover
-		if( $custom_discover_function ) {
-			call_user_func_array( $custom_discover_function, array( &$this) );
-		}
-	}
-
-	public function setup( $custom_run_callback = NULL ) {
-
-		$dispatch = Dispatch::get_instance();
-
-
-		if ( $custom_run_callback ) {
-			call_user_func_array( $custom_run_callback, array( &$this ) );
-		}
 	}
 
 	/**

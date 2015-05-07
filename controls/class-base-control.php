@@ -69,7 +69,7 @@ abstract class Base_Control {
     }
 
     /**
-     * @return void keep the return value of control::run() as void, end use "echo" inside.
+     * @return void keep the return value of control::run() as void, and use "echo" inside.
      *              To return output, use enable_output_buffer() before run(),
      *              and call get_output_buffer() after run().
      */

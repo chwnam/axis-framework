@@ -15,29 +15,34 @@ if ( ! defined( 'AXIS_FRAMEWORK_MAIN_FILE' ) ) {
 }
 
 /**
- * second-depth directory: bootstrap path
+ * bootstrap path
  */
 define( 'AXIS_BOOTSTRAP_PATH', AXIS_FRAMEWORK_PATH . '/bootstraps' );
 
 /**
- * second-depth directory: control path
+ * control path
  */
 define( 'AXIS_CONTROL_PATH', AXIS_FRAMEWORK_PATH . '/controls' );
 
 /**
- * second-depth directory: core path
+ * core path
  */
 define( 'AXIS_CORE_PATH', AXIS_FRAMEWORK_PATH . '/core' );
 
 /**
- * second-depth directory: model path
+ * model path
  */
 define( 'AXIS_MODEL_PATH', AXIS_FRAMEWORK_PATH . '/models' );
 
 /**
- * second-depth directory: view
+ * view path
  */
 define( 'AXIS_VIEW_PATH', AXIS_FRAMEWORK_PATH . '/views' );
+
+/**
+ * context and dispatch path
+ */
+define( 'AXIS_CONTEXT_PATH', AXIS_FRAMEWORK_PATH . '/contexts' );
 
 // all fundamental files are required.
 require_once( AXIS_CORE_PATH . '/utils.php' );
@@ -55,6 +60,10 @@ require_once( AXIS_MODEL_PATH . '/class-base-model.php' );
 require_once( AXIS_MODEL_PATH . '/interface-entity.php' );  // entity interface must be earlier than entity model
 require_once( AXIS_MODEL_PATH . '/class-base-entity-model.php' );
 require_once( AXIS_VIEW_PATH . '/class-base-view.php' );
+require_once( AXIS_BOOTSTRAP_PATH . '/class-bootstrap.php' );
+
+require_once( AXIS_CONTEXT_PATH . '/class-base-context.php' );
+require_once( AXIS_CONTEXT_PATH . '/class-dispatch.php' );
 
 /**
  * Version of Axis Framework.

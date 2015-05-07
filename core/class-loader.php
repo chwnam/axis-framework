@@ -68,11 +68,16 @@ class Loader {
 	}
 
 	/**
+	 * @param string $criteria
 	 * @return array current component path list
 	 */
-	public function component_paths() {
+	public function get_component_directory( $criteria = '' ) {
 
-		return $this->component_path;
+		if( empty( $criteria ) ) {
+			return $this->component_path;
+		}
+
+		return $this->component_path[ $criteria ];
 	}
 
 	/**
@@ -96,14 +101,19 @@ class Loader {
 		unset( $this->component_path[ $criteria ] );
 	}
 
-	public function context( $namespace, $context_name ) {
+	public function context( $namespace, $context_name, array $args = array() ) {
 
 		$context_path = $this->get_component_path( $context_name, self::CONTEXT );
 		$context_class = $this->get_component_class( $namespace, $context_name, self::CONTEXT );
 
 		/** @noinspection PhpIncludeInspection */
 		require_once( $context_path );
-		$instance = new $context_class( $context_name );
+
+		if( !isset( $args['context_name'] ) ) {
+			$args['context_name'] = $context_name;
+		}
+
+		$instance = new $context_class( $args );
 		return $instance;
 	}
 
@@ -392,7 +402,11 @@ trait Loader_Trait {
 
 	public function set_loader( Loader $loader ) {
 
-		$this->loader = $loader;
+		if( $loader instanceof Loader ) {
+			$this->loader = $loader;
+		} else {
+			throw new \LogicException( '\'$loader\' is not an instance of Loader class' );
+		}
 	}
 
 	public function get_loader() {
