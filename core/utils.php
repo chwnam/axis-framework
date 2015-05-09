@@ -15,24 +15,17 @@ check_abspath();
  * @param mixed  $any_object any type of object you want to print.
  * @param string $tag        additional tag.
  */
-if( defined( 'AXIS_ENABLE_DUMP_PRE' ) && AXIS_ENABLE_DUMP_PRE ) {
+function axis_dump_pre( $any_object, $tag = '' ) {
 
-	function axis_dump_pre( $any_object, $tag = '' ) {
+	echo "<pre>";
 
-		echo "<pre>";
-
-		if ( ! empty( $tag ) ) {
-			echo "$tag:\n";
-		}
-
-		print_r( $any_object );
-
-		echo "</pre>";
+	if ( ! empty( $tag ) ) {
+		echo "$tag:\n";
 	}
 
-}  else {
+	print_r( $any_object );
 
-	function axis_dump_pre( $any_object, $tag = '' ) { }
+	echo "</pre>";
 }
 
 /**
