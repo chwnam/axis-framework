@@ -73,7 +73,7 @@ abstract class Base_Control {
      *              To return output, use enable_output_buffer() before run(),
      *              and call get_output_buffer() after run().
      */
-    public abstract function run();
+    // public abstract function run();
 }
 
 /**

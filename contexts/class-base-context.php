@@ -80,6 +80,7 @@ abstract class Base_Context {
 	 *
 	 * @param string $namespace        control class namespace
 	 * @param string $control_name     control name for loader
+	 * @param string $control_function target function. Defaults to 'run'
 	 * @param array  $construct_param  construct parameter
 	 * @param bool   $output_buffering set TRUE when callback for shortcodes, or set FALSE
 	 * @param bool   $die              set TRUE when callback for ajax. If $output_buffering is TRUE, this parameter is
@@ -90,11 +91,12 @@ abstract class Base_Context {
 	protected function control_helper(
 		$namespace,
 		$control_name,
+		$control_function = 'run',
 		array $construct_param = array(),
 		$output_buffering = FALSE,
 		$die = FALSE
 	) {
-		return function ( $args ) use ( $namespace, $control_name, $construct_param, $output_buffering, $die ) {
+		return function ( $args ) use ( $namespace, $control_name, $control_function, $construct_param, $output_buffering, $die ) {
 
 			if ( is_array( $args ) && ! empty( $args ) ) {
 
@@ -108,7 +110,7 @@ abstract class Base_Context {
 				$control->enable_output_buffer();
 			}
 
-			$control->run();
+			call_user_func( array( &$control, $control_function ) );
 
 			if ( $output_buffering ) {
 
