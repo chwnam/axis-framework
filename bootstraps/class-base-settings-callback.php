@@ -2,7 +2,7 @@
 
 namespace axis_framework\bootstraps;
 
-require_once( AXIS_BOOTSTRAP_PATH . '/settings/settings.php' );
+require_once( AXIS_FRAMEWORK_PATH . '/bootstraps/settings/settings.php' );
 
 use \axis_framework\core;
 use \axis_framework\bootstraps\settings;
