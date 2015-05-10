@@ -46,8 +46,14 @@ class Dispatch {
 		$this->plugin_main_file = $main_file_path;
 
 		// traversing the 'contexts' directory and instantiating all context classes.
-		$context_directory = $this->loader->get_component_directory('context');
-		$context_files     = scandir( $context_directory );
+		$context_directory = $this->loader->get_component_directory( 'context' );
+
+		// scandir spits warning when the input is not a directory
+		if( !is_dir( $context_directory ) ) {
+			return;
+		}
+
+		$context_files = scandir( $context_directory );
 		if( is_array( $context_files ) ) {
 			foreach( $context_files as $context_file ) {
 				$path = $context_directory . '/' . $context_file;

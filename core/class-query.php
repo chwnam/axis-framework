@@ -13,8 +13,8 @@ class Query {
 	protected $limit  = 0;
 	protected $offset = 0;
 
-	protected $where    = array();
-	protected $order_by = array();
+	protected $where     = array();
+	protected $_order_by = array();
 
 	protected $search_term = NULL;
 
@@ -38,16 +38,16 @@ class Query {
 	public function set_primary_key( $primary_key ) {
 
 		$this->primary_key = $primary_key;
-		$this->order_by    = $primary_key;
+		$this->_order_by   = array( array( 'field' => $primary_key, 'order' => self::ORDER_ASC ) );
 	}
 
 	public function reset() {
 
-		$this->limit = 0;
-		$this->offset = 0;
-		$this->where = array();
-		$this->order_by = array();
-		$search_term = NULL;
+		$this->limit     = 0;
+		$this->offset    = 0;
+		$this->where     = array();
+		$this->_order_by = array();
+		$search_term     = NULL;
 
 		return $this;
 	}
@@ -68,14 +68,14 @@ class Query {
 
 	public function order_by( $field, $order = self::ORDER_ASC ) {
 
-		$this->order_by[] = array( 'field' => $field, 'order' => $order );
+		$this->_order_by[] = array( 'field' => $field, 'order' => $order );
 
 		return $this;
 	}
 
 	public function clear_order_by() {
 
-		$this->order_by = array();
+		$this->_order_by = array();
 
 		return $this;
 	}
@@ -297,7 +297,7 @@ class Query {
 		}
 
 		// Order
-		foreach( $this->order_by as $order_by ) {
+		foreach( $this->_order_by as $order_by ) {
 
 			$field = $order_by['field'];
 			$ord   = isset( $order_by['order'] ) ? $order_by['order'] : self::ORDER_ASC;
