@@ -159,7 +159,7 @@ class Loader {
 
 		// dynamic instance creation
 		/** @noinspection PhpIncludeInspection */
-		require_once( $control_path );
+		require( $control_path );
 		$instance = new $control_class( $construct_param );
 
 		return $instance;
