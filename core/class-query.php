@@ -297,7 +297,6 @@ class Query {
 		}
 
 		// Order
-		var_dump( $this->_order_by );
 		foreach( $this->_order_by as $order_by ) {
 
 			$field = $order_by['field'];
