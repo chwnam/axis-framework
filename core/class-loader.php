@@ -159,7 +159,7 @@ class Loader {
 
 		// dynamic instance creation
 		/** @noinspection PhpIncludeInspection */
-		require( $control_path );
+		require_once( $control_path );
 		$instance = new $control_class( $construct_param );
 
 		return $instance;
@@ -176,7 +176,7 @@ class Loader {
 		extract( $context );
 
 		/** @noinspection PhpIncludeInspection */
-		require_once( $this->get_component_path( $view_name, 'view', self::RULE_SIMPLE ) );
+		require( $this->get_component_path( $view_name, 'view', self::RULE_SIMPLE ) );
 	}
 
 	/**
