@@ -98,7 +98,7 @@ abstract class Base_Context {
 	) {
 		return function ( $args ) use ( $namespace, $control_name, $control_function, $construct_param, $output_buffering, $die ) {
 
-			if ( is_array( $args ) && ! empty( $args ) ) {
+			if ( $args ) {
 
 				$construct_param = array_merge( $construct_param, array( 'callback_args' => $args ) );
 			}
