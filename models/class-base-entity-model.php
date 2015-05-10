@@ -121,16 +121,11 @@ abstract class Base_Entity_Model implements Entity {
 
 	public static function query() {
 
-		static $query = NULL;
+		$query = new core\Query( get_called_class() );
+		$query->set_searchable_fields( static::get_searchable_fields() );
+		$query->set_primary_key( static::primary_key_name() );
 
-		if ( is_null( $query ) ) {
-
-			$query = new core\Query( get_called_class() );
-			$query->set_searchable_fields( static::get_searchable_fields() );
-			$query->set_primary_key( static::primary_key_name() );
-		}
-
-		return $query->reset();
+		return $query;
 	}
 
 	public static function flatten_properties( $properties ) {
