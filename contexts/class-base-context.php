@@ -91,12 +91,15 @@ abstract class Base_Context {
 	protected function control_helper(
 		$namespace,
 		$control_name,
-		$control_function = 'run',
+		$control_function,
 		array $construct_param = array(),
 		$output_buffering = FALSE,
 		$die = FALSE
 	) {
-		return function ( $args ) use ( $namespace, $control_name, $control_function, $construct_param, $output_buffering, $die ) {
+
+		return function () use ( $namespace, $control_name, $control_function, $construct_param, $output_buffering, $die ) {
+
+			$args = func_get_args();
 
 			if ( ! empty( $args ) ) {
 
@@ -104,6 +107,7 @@ abstract class Base_Context {
 			}
 
 			$control = $this->loader->control( $namespace, $control_name, $construct_param );
+			var_dump( $control );
 
 			if ( $output_buffering ) {
 
