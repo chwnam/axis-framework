@@ -107,7 +107,6 @@ abstract class Base_Context {
 			}
 
 			$control = $this->loader->control( $namespace, $control_name, $construct_param );
-			var_dump( $control );
 
 			if ( $output_buffering ) {
 
