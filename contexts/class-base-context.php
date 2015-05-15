@@ -91,14 +91,17 @@ abstract class Base_Context {
 	protected function control_helper(
 		$namespace,
 		$control_name,
-		$control_function = 'run',
+		$control_function,
 		array $construct_param = array(),
 		$output_buffering = FALSE,
 		$die = FALSE
 	) {
-		return function ( $args ) use ( $namespace, $control_name, $control_function, $construct_param, $output_buffering, $die ) {
 
-			if ( $args ) {
+		return function () use ( $namespace, $control_name, $control_function, $construct_param, $output_buffering, $die ) {
+
+			$args = func_get_args();
+
+			if ( ! empty( $args ) ) {
 
 				$construct_param = array_merge( $construct_param, array( 'callback_args' => $args ) );
 			}
