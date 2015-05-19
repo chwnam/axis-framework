@@ -59,13 +59,19 @@ abstract class Base_Control {
      *
      * @param string $namespace
      * @param string $view_name
+     * @param string $template_name
      * @param array  $construct_param
      * @param array  $context
      */
-    public function view_helper( $namespace, $view_name, array $construct_param = array(), array $context = array() ) {
-
+    public function view_helper(
+	    $namespace,
+	    $view_name,
+        $template_name,
+	    array $construct_param = array(),
+	    array $context = array()
+    ) {
         $view = $this->loader->view( $namespace, $view_name, $construct_param );
-        echo $view->render( 'test-template', $context );
+        echo $view->render( $template_name, $context );
     }
 
     /**
