@@ -31,6 +31,10 @@ class Dispatch {
 		return $this->callback_contexts[ $context_name ];
 	}
 
+	public function get_main_file() {
+		return $this->plugin_main_file;
+	}
+
 	public function set_context( $context_name, $context ) {
 
 		$this->callback_contexts[ $context_name ] = $context;

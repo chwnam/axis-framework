@@ -1,3 +1,7 @@
+# Ver 0.20.1000
+2015년 06월 20일
+* routing 기능의 강화 구상.
+
 # Ver 0.20.0000Alpha1
 2015년 05월 29일
 * 액시스의 bootstrap, callback object 구조는 폐기하기로 구상.
