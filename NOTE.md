@@ -1,6 +1,11 @@
 # Ver 0.20.1000
 2015년 06월 20일
 * routing 기능의 강화 구상.
+* form object 기능 구상
+  * form 요소를 request, response, validate, sanitize 
+  * form 객체와 table 구조간에 보다 괜찮은 연결?
+* logging 기능
+* 
 
 # Ver 0.20.0000Alpha1
 2015년 05월 29일
