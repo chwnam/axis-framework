@@ -4,6 +4,8 @@ namespace axis_framework\core;
 
 \axis_framework\core\utils\check_abspath(); // check abspath or inclusion fatal error.
 
+use axis_framework\views\Generic_View;
+
 
 /**
  * Class Loader
@@ -14,9 +16,9 @@ namespace axis_framework\core;
 class Loader {
 
 	const CONTEXT            = 'context';
-	const DISPATCH           = 'dispatch';
-	const BOOTSTRAP_CALLBACK = 'callback';
 	const CONTROL            = 'control';
+	const DISPATCH           = 'dispatch';
+	const FORM               = 'form';
 	const MODEL              = 'model';
 	const TEMPLATE           = 'template';
 	const VIEW               = 'view';
@@ -29,10 +31,10 @@ class Loader {
 
 	private $component_path = array();
 
-	public function __construct( $plugin_root_path, $default_component_path = NULL ) {
+	public function __construct( $plugin_root_path, array $component_path_override = array() ) {
 
 		$this->set_plugin_root( $plugin_root_path );
-		$this->init_component_path();
+		$this->init_component_path( $component_path_override );
 	}
 
 	public function set_plugin_root( $root_path ) {
@@ -49,21 +51,18 @@ class Loader {
 
 		$default = array(
 			self::CONTEXT            => $this->plugin_root . '/contexts',
-			self::DISPATCH           => $this->plugin_root . '/bootstraps',
-			self::BOOTSTRAP_CALLBACK => $this->plugin_root . '/bootstraps',
 			self::CONTROL            => $this->plugin_root . '/controls',
+			self::DISPATCH           => $this->plugin_root . '/contexts',
+			self::FORM               => $this->plugin_root . '/forms',
 			self::TEMPLATE           => $this->plugin_root . '/templates',
 			self::MODEL              => $this->plugin_root . '/models',
 			self::VIEW               => $this->plugin_root . '/views',
 		);
 
-		$this->component_path = $default;
+		$this->component_path = wp_parse_args( $component_to_override, $default );
 
-		if ( !empty( $component_to_override ) ) {
-
-			foreach( $component_to_override as $c => $p ) {
-				$this->update_component_path( $c, $p );
-			}
+		foreach( $this->component_path as $c => $p ) {
+			$this->update_component_path( $c, $p );
 		}
 	}
 
@@ -117,29 +116,6 @@ class Loader {
 		return $instance;
 	}
 
-	public function bootstrap_callback( $namespace, $callback_name ) {
-
-		$callback_path = $this->get_component_path(
-			$callback_name,
-			self::BOOTSTRAP_CALLBACK
-		);
-
-		$callback_class = $this->get_component_class(
-			$namespace,
-			$callback_name,
-			self::BOOTSTRAP_CALLBACK
-		);
-
-		if( !file_exists( $callback_path ) ) {
-			return NULL;
-		}
-
-		/** @noinspection PhpIncludeInspection */
-		require_once( $callback_path );
-
-		return $callback_class;
-	}
-
 	/**
 	 * @param string $namespace
 	 * @param string $control_name
@@ -153,7 +129,6 @@ class Loader {
 		$control_class = $this->get_component_class( $namespace, $control_name, 'control' );
 
 		if ( ! isset( $construct_param['loader'] ) ) {
-
 			$construct_param['loader'] = &$this;
 		}
 
@@ -193,8 +168,7 @@ class Loader {
 		$view_path  = $this->get_component_path( $view_name, 'view' );
 		$view_class = $this->get_component_class( $namespace, $view_name, 'view' );
 
-		if ( ! isset( $construct_param['loader'] ) ) {
-
+		if ( !isset( $construct_param['loader'] ) ) {
 			$construct_param['loader'] = &$this;
 		}
 
@@ -206,19 +180,35 @@ class Loader {
 	}
 
 	/**
+	 * Instantiates a generic view
+	 * @return Generic_View
+	 */
+	public function generic_view() {
+
+		static $view = NULL;
+
+		if( !$view ) {
+			static $construct_param = array();
+			$this->inject_loader( $construct_param );
+			$view = new Generic_View( $construct_param );
+		}
+
+		return $view;
+	}
+
+	/**
 	 * @param string $namespace
 	 * @param string $model_name
 	 * @param array  $construct_param
 	 *
 	 * @return mixed model class instance
 	 */
-	public function model( $namespace, $model_name, $construct_param = array() ) {
+	public function model( $namespace, $model_name, array $construct_param = array() ) {
 
 		$model_path  = $this->get_component_path( $model_name, 'model' );
 		$model_class = $this->get_component_class( $namespace, $model_name, 'model' );
 
-		if ( ! isset( $construct_param['loader'] ) ) {
-
+		if ( !isset( $construct_param['loader'] ) ) {
 			$construct_param['loader'] = &$this;
 		}
 
@@ -385,6 +375,13 @@ class Loader {
 		}
 
 		return $path;
+	}
+
+	private function inject_loader( array &$construct_param ) {
+
+		if( !isset( $construct_param['loader'] ) ) {
+			$construct_param['loader'] = $this;
+		}
 	}
 }
 

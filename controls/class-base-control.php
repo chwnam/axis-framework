@@ -70,9 +70,24 @@ abstract class Base_Control {
 	    array $construct_param = array(),
 	    array $context = array()
     ) {
-        $view = $this->loader->view( $namespace, $view_name, $construct_param );
+	    if( !empty( $view_name ) ) {
+		    $view = $this->loader->view( $namespace, $view_name, $construct_param );
+	    } else {
+		    $view = $this->loader->generic_view();
+	    }
+
         echo $view->render( $template_name, $context );
     }
+
+	/**
+	 * Wrapper of view helper function, for just using generic view
+	 *
+	 * @param       $template_name
+	 * @param array $context
+	 */
+	public function render_template( $template_name, array $context = array() ) {
+		$this->view_helper( '', '', $template_name, array(), $context );
+	}
 
     /**
      * @return void keep the return value of control::run() as void, and use "echo" inside.

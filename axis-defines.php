@@ -2,13 +2,13 @@
 
 namespace axis_framework;
 
-if ( ! defined( 'AXIS_FRAMEWORK_PATH' ) ) {
+if ( !defined( 'AXIS_FRAMEWORK_PATH' ) ) {
 
 	/** Axis Framework's current path */
 	define( 'AXIS_FRAMEWORK_PATH', dirname( __FILE__ ) );
 }
 
-if ( ! defined( 'AXIS_FRAMEWORK_MAIN_FILE' ) ) {
+if ( !defined( 'AXIS_FRAMEWORK_MAIN_FILE' ) ) {
 
 	/** Axis Framework's main file */
 	define( 'AXIS_FRAMEWORK_MAIN_FILE', AXIS_FRAMEWORK_PATH . '/axis-framework.php' );
@@ -25,6 +25,7 @@ require_once( AXIS_FRAMEWORK_PATH . '/models/class-base-model.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/models/interface-entity.php' );  // entity interface must be earlier than entity model
 require_once( AXIS_FRAMEWORK_PATH . '/models/class-base-entity-model.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/views/class-base-view.php' );
+require_once( AXIS_FRAMEWORK_PATH . '/views/class-generic-view.php' );
 
 require_once( AXIS_FRAMEWORK_PATH . '/contexts/class-base-context.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/contexts/class-base-routing-context.php' );

@@ -1,11 +1,21 @@
 # Ver 0.20.1000
+2015년 06월 21일
+* form object 기능 단순하게 구현
+  * 모델이 없는 form 요소에 대해 구조를 알려주고 sanitize, nonce validation 보다 편하게 하는 기능
+* loader
+  * initial override 제대로 안 되던 문제 수정
+  * generic_view() 함수 도입: 단순히 콘텍스트와 템플릿만 부르는 용도
+* control
+  * render_template() 함수: 컨트롤러에서 사용. generic view 사용
+* context
+  * context_callback(), add_context_action(), add_context_filter() 추가: add_action/add_filter 콜백 함수로 protected 메소드 호출 가능
+  * ajax_helper(), short_code_helper() 추가: control_helpe공r()의 래퍼
+* axis lock 기능 추가.
+  * 의존성 있는 플러그인에서 axis의 deactivation을 막을 수 있는 함수
+  
 2015년 06월 20일
-* routing 기능의 강화 구상.
-* form object 기능 구상
-  * form 요소를 request, response, validate, sanitize 
-  * form 객체와 table 구조간에 보다 괜찮은 연결?
-* logging 기능
-* 
+* Routing Context 도입.
+  * 생성인자를 통해 손쉽게 플러그인이 원하는 URL 생성 후, 원하는 컨트롤러에 URL 매핑 가능
 
 # Ver 0.20.0000Alpha1
 2015년 05월 29일

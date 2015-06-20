@@ -97,7 +97,7 @@ abstract class Base_Context {
 		$die = FALSE
 	) {
 
-		return function () use ( $namespace, $control_name, $control_function, $construct_param, $output_buffering, $die ) {
+		return function() use ( $namespace, $control_name, $control_function, $construct_param, $output_buffering, $die ) {
 
 			$args = func_get_args();
 
@@ -123,6 +123,114 @@ abstract class Base_Context {
 			if ( $die ) {
 				die();
 			}
+		};
+	}
+
+	/**
+	 * Just a wrapper for AJAX callback
+	 *
+	 * @see         control_helper(), shortcode_helper()
+	 * @param       $namespace
+	 * @param       $control_name
+	 * @param       $control_function
+	 * @param array $construct_param
+	 *
+	 * @return callable
+	 */
+	protected function ajax_helper(
+		$namespace,
+		$control_name,
+		$control_function,
+		array $construct_param = array()
+	) {
+		return $this->control_helper( $namespace, $control_name, $control_function, $construct_param, FALSE, TRUE );
+	}
+
+	/**
+	 * * Just a wrapper for shortcode callback
+	 *
+	 * @see         control_helper(), ajax_helper()
+	 * @param       $namespace
+	 * @param       $control_name
+	 * @param       $control_function
+	 * @param array $construct_param
+	 *
+	 * @return callable
+	 */
+	protected function shortcode_helper(
+		$namespace,
+		$control_name,
+		$control_function,
+		array $construct_param = array()
+	) {
+		return $this->control_helper( $namespace, $control_name, $control_function, $construct_param, TRUE, FALSE );
+	}
+
+	/**
+	 * Wrapper for calling protected member methods
+	 *
+	 * @param     $method
+	 * @param int $accepted_args
+	 *
+	 * @return callable
+	 */
+	protected function context_callback( $method, $accepted_args = 1  ) {
+
+		if( !method_exists( $this, $method ) ) {
+			throw new \LogicException(
+				sprintf( "method '%s' not found in context %s", $method, $this->context_name )
+			);
+		}
+
+		return function() use ( $method, $accepted_args ) {
+			return call_user_func_array( array( $this, $method ), array_slice( func_get_args(), 0, $accepted_args ) );
+		};
+	}
+
+	/**
+	 * Our add_action() shorthand
+	 *
+	 * @param        $tag
+	 * @param string $function
+	 * @param int    $priority
+	 * @param int    $accepted_args
+	 */
+	protected function add_context_action( $tag, $function = '', $priority = 10, $accepted_args = 1 ) {
+
+		if( empty( $function ) ) {
+			$function = $this->context_callback( $tag . '_callback', $accepted_args );
+		}
+
+		add_action( $tag, $function, $priority, $accepted_args );
+	}
+
+	/**
+	 * Our add_filter() shorthand
+	 *
+	 * @param        $tag
+	 * @param string $function
+	 * @param int    $priority
+	 * @param int    $accepted_args
+	 */
+	protected function add_context_filter( $tag, $function = '', $priority = 10, $accepted_args = 1 ) {
+
+		if( empty( $function ) ) {
+			$function = $this->context_callback( $tag . '_callback', $accepted_args );
+		}
+
+		add_filter( $tag, $function, $priority, $accepted_args );
+	}
+
+	/**
+	 * @param       $template_name
+	 *
+	 * @return callable
+	 */
+	protected function render_template( $template_name ) {
+
+		return function() use ( $template_name ) {
+			$view = $this->loader->generic_view();
+			echo $view->render( $template_name );
 		};
 	}
 
