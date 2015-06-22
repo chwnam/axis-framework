@@ -5,11 +5,13 @@ namespace axis_framework\contexts;
 
 trait Plugin_Callback_Trait {
 
-	public function by_trait_activation_deactivation_uninstall_hook( $main_file ) {
+	public function by_trait_activation_deactivation_hook( $main_file ) {
 
 		register_activation_hook( $main_file, array( &$this, 'on_activated' ) );
 		register_deactivation_hook( $main_file, array( &$this, 'on_deactivated' ) );
-		register_uninstall_hook( $main_file, array( &$this, 'on_uninstall' ) );
+
+		// use uninstall.php instead.
+		// register_uninstall_hook( $main_file, array( __CLASS__, 'on_uninstall' ) );
 	}
 
 	public function by_trait_add_admin_menu() {
