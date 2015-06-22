@@ -46,3 +46,27 @@ function axis_version() {
 
 	return $axis_ver;
 }
+
+/**
+ * Get admin menu notification bubble.
+ * This bubble is displayed when WordPress has something to update, or so.
+ *
+ * @param $count
+ * @since v.0.20.1000
+ *
+ * @return string
+ */
+function admin_menu_notification_bubble( $count ) {
+
+	$bubble = '';
+
+	if( preg_match( '/^\d+$/', $count ) ) {
+		$bubble = sprintf(
+			'<span class="update-plugins count-%d"><span class="plugin-count">%s</span></span>',
+			$count,
+			number_format_i18n( $count )
+		);
+	}
+
+	return $bubble;
+}
