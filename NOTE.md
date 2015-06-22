@@ -12,6 +12,7 @@
   * ajax_helper(), short_code_helper() 추가: control_helpe공r()의 래퍼
 * axis lock 기능 추가.
   * 의존성 있는 플러그인에서 axis의 deactivation을 막을 수 있는 함수
+* utils\admin_menu_notification_bubble() 함수 추가
   
 2015년 06월 20일
 * Routing Context 도입.
