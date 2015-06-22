@@ -27,6 +27,8 @@ require_once( AXIS_FRAMEWORK_PATH . '/models/class-base-entity-model.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/views/class-base-view.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/views/class-generic-view.php' );
 
+require_once( AXIS_FRAMEWORK_PATH . '/forms/class-base-form.php' );
+
 require_once( AXIS_FRAMEWORK_PATH . '/contexts/class-base-context.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/contexts/class-base-routing-context.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/contexts/class-dispatch.php' );
