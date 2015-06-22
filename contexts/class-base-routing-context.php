@@ -6,27 +6,22 @@ namespace axis_framework\contexts;
  *
  * Base routing context.
  * Please override __construct() method in your inherited class.
- * Use 'delivery' parameter to handle response automatically by the specified control class.
+ * Use 'control_mapping' parameter to handle response automatically by the specified control class.
  *
  * @package axis_framework\contexts
  */
-class Base_Routing_Context extends Base_Context {
+abstract class Base_Routing_Context extends Base_Context {
 
 	protected $query_vars         = array();
 	protected $rewrite_rules      = array();
-	protected $matched_query_vars = array();
-	protected $delivery           = array();
+	private   $matched_query_vars = array();
 
 	/**
 	 * @param array $args {
-	 *    $query_vars     array  An array of string. Query variables to add.
-	 *                           WordPress requires these terms to parse externally defined custom query variables
-	 *                           correctly.
-	 *    $rewrite_rules  array  Array of array. Each rewrite rule argument is used for add_rewrite_rule()
-	 *    $delivery       array  Key is a query var defined in $query_vars.
-	 *                           Value is an array its elements are namespace, object name, function name,
-	 *                           and fallback function name, respectively. If fallback function name is omit or empty,
-	 *                           then 404 not found default template is used..
+	 *    $query_vars       array  An array of string. Query variables to add.
+	 *                             WordPress requires these terms to parse externally defined custom query variables
+	 *                             correctly.
+	 *    $rewrite_rules    array  Array of array. Each rewrite rule argument is used for add_rewrite_rule()
 	 * }
 	 */
 	public function __construct( $args = [ ] ) {
@@ -35,21 +30,6 @@ class Base_Routing_Context extends Base_Context {
 
 		if( isset( $args['query_vars'] ) && is_array( $args['query_vars'] ) && !empty( $args['query_vars'] ) ) {
 			$this->query_vars = $args['query_vars'];
-		}
-
-		if( isset( $args['delivery'] ) && is_array( $args['delivery'] ) && !empty( $args['delivery'] ) ) {
-			foreach( $args['delivery'] as $key => &$delivery ) {
-				if( is_array( $delivery ) ) {
-					$len = count( $delivery );
-					if( $len == 3 ) {
-						$this->delivery[ $key ] = $delivery;
-					} else if ( $len == 2 ) {
-						$this->delivery[ $key ] = array( $delivery[0], $delivery[1], '' );
-					} else {
-						throw new \LogicException( 'Bad delivery parameter: ' . implode( ', ', $delivery ) );
-					}
-				}
-			}
 		}
 
 		$this->init_rewrite_rules( $args['rewrite_rules'] );
@@ -96,26 +76,19 @@ class Base_Routing_Context extends Base_Context {
 			'parse_request',
 			function () {
 				global $wp;
-
 				$this->matched_query_vars = array();
 				foreach ( $this->query_vars as $qv ) {
 					if ( isset( $wp->query_vars[ $qv ] ) && !empty( $wp->query_vars[ $qv ] ) ) {
 						$this->matched_query_vars[ $qv ] = $wp->query_vars[ $qv ];
 					}
 				}
-
 				if ( !empty( $this->matched_query_vars ) ) {
-					reset( $this->matched_query_vars );
-					$key = key( $this->matched_query_vars );
-					if( isset( $this->delivery[ $key ] ) ) {
-						add_action( 'template_redirect', array( $this, 'control_delivery' ) );
-					} else {
-						add_action( 'template_redirect', array( &$this, 'template_redirect_callback' ) );
-					}
+					$this->add_context_action( 'template_redirect', '', 1000 );
 				}
 			}
 		);
 
+		// our rewrite rule
 		add_action( 'init', array( &$this, 'add_rewrite_rules' ) );
 
 		$main_file = $this->get_dispatch()->get_main_file();
@@ -142,41 +115,17 @@ class Base_Routing_Context extends Base_Context {
 		flush_rewrite_rules();
 	}
 
+	protected function get_matched_query_vars() {
+		return $this->matched_query_vars;
+	}
+
+	protected function include_not_found() {
+		/** @noinspection PhpIncludeInspection */
+		include( get_404_template() );
+	}
+
 	/**
 	 * default redirect callback.
 	 */
-	public function template_redirect_callback() {
-		die();
-	}
-
-	/**
-	 * action: template_redirect
-	 * When the first matched query variable is in the delivery list.
-	 *
-	 * @used-by: init_context()
-	 */
-	public function control_delivery() {
-
-		reset( $this->matched_query_vars );
-		$key = key( $this->matched_query_vars );
-
-		$namespace = $this->delivery[ $key ][0];
-		$classname = $this->delivery[ $key ][1];
-		$fallback  = $this->delivery[ $key ][2];
-		$func      = $this->matched_query_vars[ $key ];
-
-		$args = array_slice( $this->matched_query_vars, 1 );
-
-		$control = $this->loader->control( $namespace, $classname );
-		if( method_exists( $control, $func ) ) {
-			$control->{$func}( $args );
-		} else {
-			if( method_exists( $control, $fallback ) ) {
-				$control->{$fallback}( $args );
-			} else {
-				include( get_404_template() );
-			}
-		}
-		die();
-	}
+	abstract protected function template_redirect_callback();
 }
