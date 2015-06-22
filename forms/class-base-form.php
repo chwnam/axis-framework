@@ -3,6 +3,12 @@
 namespace axis_framework\forms;
 
 
+/**
+ * Class Base_Form
+ *
+ * @package axis_framework\forms
+ * @since   0.20.10000
+ */
 abstract class Base_Form {
 
 	protected $_nonce_action;
