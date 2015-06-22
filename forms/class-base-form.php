@@ -11,6 +11,7 @@ abstract class Base_Form {
 	protected $scheme;
 
 	public function __construct() {
+		$this->build_scheme();
 	}
 
 	public function nonce_action() {
@@ -21,7 +22,7 @@ abstract class Base_Form {
 		return $this->_nonce_name;
 	}
 
-	public function nonce_field( $referer, $echo ) {
+	public function nonce_field( $referer = TRUE, $echo = TRUE ) {
 		return wp_nonce_field( $this->nonce_action(), $this->nonce_name(), $referer, $echo );
 	}
 
@@ -40,6 +41,13 @@ abstract class Base_Form {
 		return $this->validate();
 	}
 
+	/**
+	 * @return mixed
+	 */
 	abstract protected function build_scheme();
+
+	/**
+	 * @return boolean
+	 */
 	abstract protected function validate();
 }
