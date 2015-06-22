@@ -86,9 +86,6 @@ class Loader {
 	public function update_component_path( $criteria, $path ) {
 
 		$p = realpath( $path );
-		if ( FALSE === $p ) {
-			throw new \RuntimeException( sprintf( "path '%s' does not exist, or permission denied.", $p ) );
-		}
 		$this->component_path[ $criteria ] = $p;
 	}
 
@@ -215,6 +212,18 @@ class Loader {
 		/** @noinspection PhpIncludeInspection */
 		require_once( $model_path );
 		$instance = new $model_class( $construct_param );
+
+		return $instance;
+	}
+
+	public function form( $namespace, $form_name ) {
+
+		$form_path  = $this->get_component_path( $form_name, self::FORM );
+		$form_class = $this->get_component_class( $namespace, $form_name, self::FORM );
+
+		/** @noinspection PhpIncludeInspection */
+		require_once( $form_path );
+		$instance = new $form_class();
 
 		return $instance;
 	}
