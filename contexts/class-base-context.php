@@ -101,22 +101,15 @@ abstract class Base_Context {
 
 			$args = func_get_args();
 
-			if ( ! empty( $args ) ) {
-
-				$construct_param = array_merge( $construct_param, array( 'callback_args' => $args ) );
-			}
-
 			$control = $this->loader->control( $namespace, $control_name, $construct_param );
 
 			if ( $output_buffering ) {
-
 				$control->enable_output_buffer();
 			}
 
-			call_user_func( array( &$control, $control_function ) );
+			call_user_func_array( array( &$control, $control_function ), $args );
 
 			if ( $output_buffering ) {
-
 				return $control->get_output_buffer();
 			}
 
