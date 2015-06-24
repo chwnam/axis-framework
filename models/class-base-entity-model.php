@@ -4,6 +4,8 @@ namespace axis_framework\models;
 
 use axis_framework\core;
 
+require_once( 'interface-entity.php' );  // entity interface must be earlier than entity model
+
 
 abstract class Base_Entity_Model implements Entity {
 
