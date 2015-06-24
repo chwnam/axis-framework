@@ -138,20 +138,6 @@ class Loader {
 	}
 
 	/**
-	 * Includes a simple view file.
-	 *
-	 * @param string $view_name view name
-	 * @param array  $context   context to deliver
-	 */
-	public function simple_view( $view_name, array $context = array() ) {
-
-		extract( $context );
-
-		/** @noinspection PhpIncludeInspection */
-		require( $this->get_component_path( $view_name, 'view', self::RULE_SIMPLE ) );
-	}
-
-	/**
 	 * Returns "View Class"
 	 *
 	 * @param string $namespace view class's namespace
