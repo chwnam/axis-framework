@@ -28,28 +28,33 @@ abstract class Base_Form {
 	}
 
 	public function nonce_action() {
+
 		return $this->_nonce_action;
 	}
 
 	public function nonce_name() {
+
 		return $this->_nonce_name;
 	}
 
 	public function nonce_field( $referer = TRUE, $echo = TRUE ) {
+
 		return wp_nonce_field( $this->nonce_action(), $this->nonce_name(), $referer, $echo );
 	}
 
 	public function get_structure() {
+
 		return $this->structure;
 	}
 
 	public function apply_structure() {
+
 		$this->structure = $this->build_structure();
 	}
 
 	public function execute( array $data ) {
 
-		if( !wp_verify_nonce( $data[ $this->nonce_name() ], $this->nonce_action() ) ) {
+		if ( ! wp_verify_nonce( $data[ $this->nonce_name() ], $this->nonce_action() ) ) {
 			return new \WP_Error( '', 'nonce verification failure' );
 		}
 
