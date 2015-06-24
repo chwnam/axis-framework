@@ -15,7 +15,7 @@ if ( !defined( 'AXIS_FRAMEWORK_MAIN_FILE' ) ) {
 }
 
 // all fundamental files are required.
-require_once( AXIS_FRAMEWORK_PATH . '/core/utils.php' );
+require_once( AXIS_FRAMEWORK_PATH . '/core/util.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/core/class-query.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/core/class-singleton.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/core/class-loader.php' );
@@ -27,7 +27,7 @@ require_once( AXIS_FRAMEWORK_PATH . '/context/class-base-context.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/context/class-dispatch.php' );
 
 /**
- * any others will be auto-loaded by callback function
+ * any other axis framework's classes inherited from above will be auto-loaded by this callback function
  * @since 0.20.1000
  */
 spl_autoload_register(
@@ -47,10 +47,9 @@ spl_autoload_register(
 				case 'form':
 				case 'model':
 				case 'view':
-					$plural_form = $component . 's';
 					$file_name   = "class-{$part}-{$component}.php";
 					/** @noinspection PhpIncludeInspection */
-					require_once( AXIS_FRAMEWORK_PATH . "/{$plural_form}/{$file_name}" );
+					require_once( AXIS_FRAMEWORK_PATH . "/{$component}/{$file_name}" );
 				break;
 			}
 		}
@@ -60,4 +59,4 @@ spl_autoload_register(
 /**
  * Version of Axis Framework.
  */
-define( 'AXIS_FRAMEWORK_VERSION', \axis_framework\core\util\axis_version() ); // after utils.php
+define( 'AXIS_FRAMEWORK_VERSION', \axis_framework\core\util\axis_version() ); // after util.php

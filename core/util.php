@@ -17,7 +17,7 @@ check_abspath();
  */
 function axis_dump_pre( $any_object, $tag = '' ) {
 
-	echo "<pre>";
+	echo '<pre>';
 
 	if ( ! empty( $tag ) ) {
 		echo "$tag:\n";

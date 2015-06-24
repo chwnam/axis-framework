@@ -1,12 +1,13 @@
 <?php
 
-namespace axis_framework\model\forms;
+namespace axis_framework\form;
 
 require_once 'class-form-renderer.php';
 
 
 /**
  * Class Base_Form
+ * A ModelView-like form object
  *
  * @package axis_framework\forms
  * @since   0.20.10000
@@ -21,7 +22,7 @@ abstract class Base_Form {
 	public function __construct( $nonce_action, $nonce_name ) {
 
 		$this->_nonce_action = $nonce_action;
-		$this->_nonce_name = $nonce_name;
+		$this->_nonce_name   = $nonce_name;
 
 		$this->apply_structure();
 	}

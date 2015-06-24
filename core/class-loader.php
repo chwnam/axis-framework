@@ -50,12 +50,12 @@ class Loader {
 	public function init_component_path( array $component_to_override = array() ) {
 
 		$default = array(
-			self::CONTEXT            => $this->plugin_root . '/contexts',
-			self::CONTROL            => $this->plugin_root . '/controls',
-			self::DISPATCH           => $this->plugin_root . '/contexts',
-			self::FORM               => $this->plugin_root . '/forms',
-			self::TEMPLATE           => $this->plugin_root . '/templates',
-			self::MODEL              => $this->plugin_root . '/models',
+			self::CONTEXT            => $this->plugin_root . '/context',
+			self::CONTROL            => $this->plugin_root . '/control',
+			self::DISPATCH           => $this->plugin_root . '/context',
+			self::FORM               => $this->plugin_root . '/form',
+			self::TEMPLATE           => $this->plugin_root . '/template',
+			self::MODEL              => $this->plugin_root . '/model',
 			self::VIEW               => $this->plugin_root . '/view',
 		);
 
