@@ -2,9 +2,9 @@
 
 namespace axis_framework\core;
 
-\axis_framework\core\utils\check_abspath(); // check abspath or inclusion fatal error.
+\axis_framework\core\util\check_abspath(); // check abspath or inclusion fatal error.
 
-use axis_framework\views\Generic_View;
+use axis_framework\view\Generic_View;
 
 
 /**
@@ -56,7 +56,7 @@ class Loader {
 			self::FORM               => $this->plugin_root . '/forms',
 			self::TEMPLATE           => $this->plugin_root . '/templates',
 			self::MODEL              => $this->plugin_root . '/models',
-			self::VIEW               => $this->plugin_root . '/views',
+			self::VIEW               => $this->plugin_root . '/view',
 		);
 
 		$this->component_path = wp_parse_args( $component_to_override, $default );
@@ -240,7 +240,7 @@ class Loader {
 	public function wp_table( $table ) {
 
 		$path  = AXIS_FRAMEWORK_PATH . '/models/wp-tables' . '/class-' . $table . '-model.php';
-		$model = '\\axis_framework\\includes\\models\\' . ucfirst( $table ) . '_Model';
+		$model = '\\axis_framework\\includes\\model\\' . ucfirst( $table ) . '_Model';
 
 		/** @noinspection PhpIncludeInspection */
 		require_once( $path );

@@ -2,7 +2,7 @@
 
 namespace axis_framework\core;
 
-\axis_framework\core\utils\check_abspath(); // check abspath or inclusion fatal error.
+\axis_framework\core\util\check_abspath(); // check abspath or inclusion fatal error.
 
 
 class Query {
@@ -186,7 +186,7 @@ class Query {
 		$results = $wpdb->get_results( $query );
 		if( $results ) {
 
-			/** @var \axis_framework\models\Base_Entity_Model $model */
+			/** @var \axis_framework\model\Base_Entity_Model $model */
 			$model = $this->model;
 
 			foreach( $results as $index => &$result ) {
@@ -204,7 +204,7 @@ class Query {
 	 */
 	public function compose_query( $query_for_row_counting = FALSE ) {
 
-		/** @var \axis_framework\models\Base_Entity_Model $model */
+		/** @var \axis_framework\model\Base_Entity_Model $model */
 		$model = $this->model;
 		$table = $model::get_table();
 

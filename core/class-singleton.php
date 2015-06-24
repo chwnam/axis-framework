@@ -2,7 +2,7 @@
 
 namespace axis_framework\core;
 
-\axis_framework\core\utils\check_abspath(); // check abspath or inclusion fatal error.
+\axis_framework\core\util\check_abspath(); // check abspath or inclusion fatal error.
 
 
 /**

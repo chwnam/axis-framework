@@ -1,6 +1,6 @@
 <?php
 
-namespace axis_framework\contexts;
+namespace axis_framework\context;
 
 
 trait Plugin_Callback_Trait {

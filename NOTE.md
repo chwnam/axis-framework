@@ -1,4 +1,15 @@
+# Ver 0.21.0000
+2015년 06월 24일
+* 전반적인 구조 변경
+  * 복수형 namespace, 디렉토리 구조를 모두 단수화 변경 (피바람...)
+  * 이 대형 변경으로 인해 판올림
+
 # Ver 0.20.1000
+2015년 06월 24일
+* form object 기능 고찰
+* simple view 삭제
+* 모듈 오토로딩 기능 추가
+
 2015년 06월 21일
 * form object 기능 단순하게 구현
   * 모델이 없는 form 요소에 대해 구조를 알려주고 sanitize, nonce validation 보다 편하게 하는 기능
@@ -11,7 +22,7 @@
   * context_callback(), add_context_action(), add_context_filter() 추가: add_action/add_filter 콜백 함수로 protected 메소드 호출 가능
   * ajax_helper(), short_code_helper() 추가: control_helpe공r()의 래퍼
 * axis lock 기능 추가.
-  * 의존성 있는 플러그인에서 axis의 deactivation을 막을 수 있는 함수
+  * 의존성 있는 플러그인에서 axis의 deactivation을 막을 수 있는 함수: dispatch:lock_axis_framework()
 * utils\admin_menu_notification_bubble() 함수 추가
   
 2015년 06월 20일

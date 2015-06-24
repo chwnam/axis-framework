@@ -1,12 +1,12 @@
 <?php
 
-namespace axis_framework\views;
+namespace axis_framework\view;
 
 require_once( 'class-view-block.php' );
 
 use axis_framework\core;
 
-core\utils\check_abspath(); // check abspath or inclusion fatal error.
+core\util\check_abspath(); // check abspath or inclusion fatal error.
 
 
 abstract class Base_View {
@@ -35,14 +35,14 @@ abstract class Base_View {
 
         // parent must be different from current template
         if( $template == $this->current_template ) {
-            throw new \LogicException( 'You cannot have views extend themselves.' );
+            throw new \LogicException( 'You cannot have view extend themselves.' );
         }
 
         // the parent's parent: current, and the current template's parent: the parent
         // cyclic condition.
         if( isset( $this->parent_templates[ $template ] ) &&
             $this->parent_templates == $this->$current_template ) {
-            throw new \LogicException( 'You cannot have views extend in a loop.' );
+            throw new \LogicException( 'You cannot have view extend in a loop.' );
         }
 
         $this->parent_templates[ $this->current_template ] = $template;

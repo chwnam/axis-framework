@@ -1,6 +1,8 @@
 <?php
 
-namespace axis_framework\forms;
+namespace axis_framework\model\forms;
+
+require_once 'class-form-renderer.php';
 
 
 /**
@@ -14,10 +16,14 @@ abstract class Base_Form {
 	protected $_nonce_action;
 	protected $_nonce_name;
 	protected $data;
-	protected $scheme;
+	protected $structure;
 
-	public function __construct() {
-		$this->build_scheme();
+	public function __construct( $nonce_action, $nonce_name ) {
+
+		$this->_nonce_action = $nonce_action;
+		$this->_nonce_name = $nonce_name;
+
+		$this->apply_structure();
 	}
 
 	public function nonce_action() {
@@ -32,8 +38,12 @@ abstract class Base_Form {
 		return wp_nonce_field( $this->nonce_action(), $this->nonce_name(), $referer, $echo );
 	}
 
-	public function get_scheme() {
-		return $this->scheme;
+	public function get_structure() {
+		return $this->structure;
+	}
+
+	public function apply_structure() {
+		$this->structure = $this->build_structure();
 	}
 
 	public function execute( array $data ) {
@@ -50,7 +60,7 @@ abstract class Base_Form {
 	/**
 	 * @return mixed
 	 */
-	abstract protected function build_scheme();
+	abstract protected function build_structure();
 
 	/**
 	 * @return boolean

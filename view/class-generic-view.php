@@ -1,5 +1,5 @@
 <?php
-namespace axis_framework\views;
+namespace axis_framework\view;
 
 
 class Generic_View extends Base_View {

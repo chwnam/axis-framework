@@ -1,5 +1,5 @@
 <?php
-namespace axis_framework\contexts;
+namespace axis_framework\context;
 
 /**
  * Class Base_Routing_Context
@@ -8,7 +8,7 @@ namespace axis_framework\contexts;
  * Please override __construct() method in your inherited class.
  * Use 'control_mapping' parameter to handle response automatically by the specified control class.
  *
- * @package axis_framework\contexts
+ * @package axis_framework\context
  */
 abstract class Base_Routing_Context extends Base_Context {
 

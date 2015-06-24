@@ -19,12 +19,12 @@ require_once( AXIS_FRAMEWORK_PATH . '/core/utils.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/core/class-query.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/core/class-singleton.php' );
 require_once( AXIS_FRAMEWORK_PATH . '/core/class-loader.php' );
-require_once( AXIS_FRAMEWORK_PATH . '/controls/class-base-control.php' );
-require_once( AXIS_FRAMEWORK_PATH . '/models/class-base-model.php' );
-require_once( AXIS_FRAMEWORK_PATH . '/views/class-base-view.php' );
-require_once( AXIS_FRAMEWORK_PATH . '/forms/class-base-form.php' );
-require_once( AXIS_FRAMEWORK_PATH . '/contexts/class-base-context.php' );
-require_once( AXIS_FRAMEWORK_PATH . '/contexts/class-dispatch.php' );
+require_once( AXIS_FRAMEWORK_PATH . '/control/class-base-control.php' );
+require_once( AXIS_FRAMEWORK_PATH . '/model/class-base-model.php' );
+require_once( AXIS_FRAMEWORK_PATH . '/view/class-base-view.php' );
+require_once( AXIS_FRAMEWORK_PATH . '/form/class-base-form.php' );
+require_once( AXIS_FRAMEWORK_PATH . '/context/class-base-context.php' );
+require_once( AXIS_FRAMEWORK_PATH . '/context/class-dispatch.php' );
 
 /**
  * any others will be auto-loaded by callback function
@@ -60,4 +60,4 @@ spl_autoload_register(
 /**
  * Version of Axis Framework.
  */
-define( 'AXIS_FRAMEWORK_VERSION', \axis_framework\core\utils\axis_version() ); // after utils.php
+define( 'AXIS_FRAMEWORK_VERSION', \axis_framework\core\util\axis_version() ); // after utils.php

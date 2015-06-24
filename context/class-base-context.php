@@ -1,5 +1,5 @@
 <?php
-namespace axis_framework\contexts;
+namespace axis_framework\context;
 
 use axis_framework\core\Loader_trait;
 
@@ -14,7 +14,7 @@ abstract class Base_Context {
 	/** @var  string $context_identifier */
 	private $context_identifier;
 
-	/** @var  \axis_framework\contexts\Dispatch $dispatch */
+	/** @var  \axis_framework\context\Dispatch $dispatch */
 	private $dispatch;
 
 	public function __construct( array $args = array() ) {

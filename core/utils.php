@@ -1,6 +1,6 @@
 <?php
 
-namespace axis_framework\core\utils;
+namespace axis_framework\core\util;
 
 function check_abspath() {
 

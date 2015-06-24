@@ -2,7 +2,7 @@
 
 namespace axis_framework\plugin\plugin_context;
 
-use axis_framework\contexts\Base_Context;
+use axis_framework\context\Base_Context;
 
 
 class Axis_Plugin_Context extends Base_Context {

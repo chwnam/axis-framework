@@ -3,7 +3,7 @@
  * Base dispatch
  */
 
-namespace axis_framework\contexts;
+namespace axis_framework\context;
 
 use axis_framework\core\Loader;
 use axis_framework\core\Loader_Trait;
@@ -76,7 +76,7 @@ class Dispatch {
 		}
 
 		foreach( $this->callback_contexts as $context ) {
-			/** @var \axis_framework\contexts\Base_Context $context */
+			/** @var \axis_framework\context\Base_Context $context */
 			$context->init_context();
 		}
 	}

@@ -5,7 +5,7 @@
  * Description: Axis - A WordPress Plugin Framework.
  * Author: Changwoo Nam
  * Author URI: mailto://cs.chwnam@gmail.com
- * Version: 0.20.1000
+ * Version: 0.21.0000
  * Text Domain: axis_framework
  * License: LGPLv2 or later
  */
@@ -30,23 +30,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 namespace axis_framework;
 
-use axis_framework\contexts\Dispatch;
+use axis_framework\context\Dispatch;
 use axis_framework\core\Loader;
 
-require_once( 'axis-defines.php' );
+require_once( 'axis-define.php' );
 
 // well, now axis framework has its menu & option
 $plugin_dir = dirname( __FILE__ ) . '/plugin';
 
 // axis uses root as its library, therefore components must be overridden
 $loader_component_override = array(
-	Loader::CONTEXT            => $plugin_dir . '/plugin_contexts',
-	Loader::CONTROL            => $plugin_dir . '/plugin_controls',
-	Loader::DISPATCH           => $plugin_dir . '/plugin_contexts',
-	Loader::FORM               => $plugin_dir . '/plugin_forms',
-	Loader::TEMPLATE           => $plugin_dir . '/plugin_templates',
-	Loader::MODEL              => $plugin_dir . '/plugin_models',
-	Loader::VIEW               => $plugin_dir . '/plugin_views',
+	Loader::CONTEXT            => $plugin_dir . '/plugin_context',
+	Loader::CONTROL            => $plugin_dir . '/plugin_control',
+	Loader::DISPATCH           => $plugin_dir . '/plugin_context',
+	Loader::FORM               => $plugin_dir . '/plugin_form',
+	Loader::TEMPLATE           => $plugin_dir . '/plugin_template',
+	Loader::MODEL              => $plugin_dir . '/plugin_model',
+	Loader::VIEW               => $plugin_dir . '/plugin_view',
 );
 
 $axis_dispatch = new Dispatch();

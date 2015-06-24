@@ -1,6 +1,6 @@
 <?php
 
-namespace axis_framework\controls;
+namespace axis_framework\control;
 
 use axis_framework\core;
 

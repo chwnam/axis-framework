@@ -1,19 +1,19 @@
 <?php
 
-namespace axis_framework\models;
+namespace axis_framework\model;
 
-use axis_framework\controls;
+use axis_framework\control;
 use axis_framework\core;
 
 
-core\utils\check_abspath(); // check abspath or inclusion fatal error.
+core\util\check_abspath(); // check abspath or inclusion fatal error.
 
 
 abstract class Base_Model {
 
 	use core\Loader_Trait;
 
-	/** @var \axis_framework\controls\Base_Control */
+	/** @var \axis_framework\control\Base_Control */
 	protected $control = NULL;
 
 	public function __construct( $args = array() ) {
@@ -29,7 +29,7 @@ abstract class Base_Model {
 		}
 	}
 
-	public function set_control( controls\Base_Control $control ) {
+	public function set_control( control\Base_Control $control ) {
 
 		$this->control = $control;
 	}

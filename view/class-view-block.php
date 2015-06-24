@@ -1,8 +1,8 @@
 <?php
 
-namespace axis_framework\views;
+namespace axis_framework\view;
 
-\axis_framework\core\utils\check_abspath(); // check abspath or inclusion fatal error.
+\axis_framework\core\util\check_abspath(); // check abspath or inclusion fatal error.
 
 
 class View_Block {
