@@ -2,6 +2,11 @@
   <dictionary name="changwoo">
     <words>
       <w>abspath</w>
+      <w>enctype</w>
+      <w>fieldset</w>
+      <w>multipart</w>
+      <w>optgroup</w>
+      <w>textarea</w>
     </words>
   </dictionary>
 </component>
