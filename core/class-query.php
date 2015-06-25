@@ -184,6 +184,7 @@ class Query {
 		}
 
 		$results = $wpdb->get_results( $query );
+
 		if( $results ) {
 
 			/** @var \axis_framework\model\Base_Entity_Model $model */
@@ -305,7 +306,7 @@ class Query {
 			if( strstr( $field, '(' ) !== FALSE && strstr( $field, ')' ) !== FALSE ) {
 				$order .= ' ' . $field . ' ' . $ord . ', ';     // $field is function
 			} else {
-				$order .= ' `' . $field . '`` ' . $ord . ', ';
+				$order .= ' `' . $field . '` ' . $ord . ', ';
 			}
 		}
 
