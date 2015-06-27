@@ -2,7 +2,9 @@
 
 namespace axis_framework\form;
 
-require_once 'class-form-renderer.php';
+require_once( 'class-form-compose.php' );
+
+use axis_framework\form\tag;
 
 
 /**
@@ -16,15 +18,11 @@ abstract class Base_Form {
 
 	protected $_nonce_action;
 	protected $_nonce_name;
-	protected $data;
-	protected $structure;
 
 	public function __construct( $nonce_action, $nonce_name ) {
 
 		$this->_nonce_action = $nonce_action;
 		$this->_nonce_name   = $nonce_name;
-
-		$this->apply_structure();
 	}
 
 	public function nonce_action() {
@@ -44,23 +42,37 @@ abstract class Base_Form {
 
 	public function get_structure() {
 
-		return $this->structure;
+		return $this->build_structure();
 	}
 
-	public function apply_structure() {
-
-		$this->structure = $this->build_structure();
-	}
-
-	public function execute( array $data ) {
+	public function execute( array &$data ) {
 
 		if ( ! wp_verify_nonce( $data[ $this->nonce_name() ], $this->nonce_action() ) ) {
 			return new \WP_Error( '', 'nonce verification failure' );
 		}
 
-		$this->data = $data;
+		return $this->validate( $data );
+	}
 
-		return $this->validate();
+	public function do_form() {
+
+		$structure = $this->get_structure();
+		$compose   = new tag\Form_Compose();
+		$form      = $compose->compose( $structure );
+
+		$output  = isset( $structure['output'] ) ? $structure['output'] : TRUE;
+		$referer = isset( $structure['referer'] ) ? $structure['referer'] : TRUE;
+
+		$output_code   = $form->start_tag( $output );
+		$form_children = &$form->get_children();
+		foreach ( $form_children as &$child ) {
+			/** @var \axis_framework\form\tag\Base_Tag $child */
+			$output_code .= $child->render( TRUE, $output );
+		}
+		$output_code .= $this->nonce_field( $referer, $output );
+		$output_code .= $form->end_tag( $output );
+
+		return $output ? $output_code : NULL;
 	}
 
 	/**
@@ -69,7 +81,9 @@ abstract class Base_Form {
 	abstract protected function build_structure();
 
 	/**
-	 * @return boolean
+	 * @param  array $data
+	 *
+*@return boolean
 	 */
-	abstract protected function validate();
+	abstract protected function validate( array &$data );
 }

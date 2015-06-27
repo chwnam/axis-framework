@@ -8,7 +8,7 @@ namespace axis_framework\form\tag;
  *
  * @since 0.21.0000
  */
-class Base_Html_Tag {
+class Base_Tag {
 
 	/** @var string $tag */
 	private $tag = '';
@@ -22,8 +22,8 @@ class Base_Html_Tag {
 	/** @var array $properties */
 	private $properties = array();
 
-	/** @var null|Base_Html_Tag $parent */
-	private $parent   = NULL;
+	/** @var null|Base_Tag $parent */
+	private $parent = NULL;
 
 	/** @var array $children */
 	private $children = array();
@@ -33,8 +33,9 @@ class Base_Html_Tag {
 	 * @param string $id
 	 * @param string $name
 	 * @param array  $other_attributes
+	 * @param array  $children
 	 */
-	public function __construct( $tag, $id = '', $name = '', array $other_attributes = array() ) {
+	public function __construct( $tag, $id = '', $name = '', array $other_attributes = array(), array $children = array() ) {
 
 		$this->set_tag( $tag );
 		$this->set_id( $id );
@@ -46,26 +47,37 @@ class Base_Html_Tag {
 				$this->properties[ $key ] = esc_attr( $attribute );
 			}
 		}
+
+		if ( ! empty( $children ) ) {
+			foreach ( $children as $child ) {
+				if ( $child instanceof self ) {
+					$this->insert_child( $child );
+				}
+			}
+		}
 	}
 
 	/**
-	 * @param Base_Html_Tag $tag_object
+	 * @param Base_Tag $tag_object
 	 */
-	public function set_parent( Base_Html_Tag $tag_object ) {
+	public function set_parent( Base_Tag $tag_object ) {
+
 		$this->parent = $tag_object;
 	}
 
 	/**
-	 * @return Base_Html_Tag|null
+	 * @return Base_Tag|null
 	 */
 	public function get_parent() {
+
 		return $this->parent;
 	}
 
 	/**
-	 * @param Base_Html_Tag $tag_object
+	 * @param Base_Tag $tag_object
 	 */
-	public function insert_child( Base_Html_Tag $tag_object ) {
+	public function insert_child( Base_Tag $tag_object ) {
+
 		$tag_object->set_parent( $this );
 		$this->children[] = $tag_object;
 	}
@@ -73,22 +85,22 @@ class Base_Html_Tag {
 	/**
 	 * @param integer $child_index
 	 *
-	 * @return Base_Html_Tag
+	 * @return Base_Tag
 	 */
 	public function remove_child( $child_index ) {
 
-		if( 0 < $child_index && $child_index < count( $this->children ) ) {
+		if ( 0 < $child_index && $child_index < count( $this->children ) ) {
 
-			/** @var \axis_framework\form\tag\Base_Html_Tag $child */
+			/** @var \axis_framework\form\tag\Base_Tag $child */
 			$child = $this->children[ $child_index ];
 			unset( $this->children[ $child_index ] );
 
 			$child->set_parent( NULL );
 			$grandchildren = &$child->get_children();
 
-			foreach( $grandchildren as &$grandchild ) {
+			foreach ( $grandchildren as &$grandchild ) {
 
-				/** @var \axis_framework\form\tag\Base_Html_Tag $grandchild */
+				/** @var \axis_framework\form\tag\Base_Tag $grandchild */
 				$grandchild->set_parent( $this );
 			}
 
@@ -111,7 +123,7 @@ class Base_Html_Tag {
 	 */
 	public function &get_child( $child_index ) {
 
-		if( 0 < $child_index && $child_index < count( $this->children ) ) {
+		if ( 0 < $child_index && $child_index < count( $this->children ) ) {
 			return $this->children[ $child_index ];
 		}
 
@@ -125,9 +137,10 @@ class Base_Html_Tag {
 	}
 
 	/**
-	 * @return array array of Base_Html_Tag
+	 * @return array array of Base_Tag
 	 */
 	public function &get_children() {
+
 		return $this->children;
 	}
 
@@ -282,12 +295,106 @@ class Base_Html_Tag {
 
 		return $this instanceof Text_Node;
 	}
+
+	/**
+	 * @param $code_text
+	 * @param $output
+	 *
+	 * @return string|NULL
+	 */
+	private function output_or_return( $code_text, $output ) {
+
+		if ( ! $output ) {
+			return $code_text;
+		}
+
+		echo $code_text;
+
+		return NULL;
+	}
+
+	public function render( $recursive = TRUE, $output = TRUE ) {
+
+		if ( $this->is_text_node() ) {
+			/** @var \axis_framework\form\tag\Text_Node $this */
+			return $this->output_or_return( $this->get_text(), $output );
+		}
+
+		if ( ! empty( $this->children ) ) {
+			$code = $this->start_tag( FALSE );
+			if ( $recursive ) {
+				foreach ( $this->children as $child ) {
+					/** @var \axis_framework\form\tag\Base_Tag $child */
+					$code .= $child->render( $recursive, FALSE );
+				}
+			}
+			$code .= $this->end_tag( FALSE );
+
+			return $this->output_or_return( $code, $output );
+		}
+
+		return $this->self_closing_tag( $output );
+	}
+
+	/**
+	 * @param bool $output
+	 *
+	 * @return NULL|string
+	 */
+	public function start_tag( $output = TRUE ) {
+
+		$code = '<' . $this->tag;
+
+		if ( ! empty( $this->id ) ) {
+			$code .= ' id="' . $this->id . '"';
+		}
+
+		if ( ! empty( $this->name ) ) {
+			$code .= ' name="' . $this->name . '"';
+		}
+
+		foreach ( $this->properties as $key => $value ) {
+			if ( ! empty( $value ) ) {
+				$code .= ' ' . $key . '="' . esc_attr( $value ) . '"';
+			}
+		}
+		$code .= '>';
+
+		return $this->output_or_return( $code, $output );
+	}
+
+	/**
+	 * @param bool $output
+	 *
+	 * @return NULL|string
+	 */
+	public function end_tag( $output = TRUE ) {
+
+		return $this->output_or_return( '</' . $this->get_tag() . '>', $output );
+	}
+
+	/**
+	 * @param bool $output
+	 *
+	 * @return NULL|string
+	 */
+	public function self_closing_tag( $output = TRUE ) {
+
+		$code = $this->start_tag( FALSE );
+
+		return $this->output_or_return( substr( $code, 0, - 1 ) . '/>', $output );
+	}
 }
 
 
-class Text_Node extends Base_Html_Tag {
+/**
+ * Class Text_Node
+ *
+ * @package axis_framework\form\tag
+ */
+class Text_Node extends Base_Tag {
 
-	private $text;
+	protected $text;
 
 	public function __construct( $text = '' ) {
 
@@ -295,11 +402,32 @@ class Text_Node extends Base_Html_Tag {
 	}
 
 	public function get_text() {
+
 		return $this->text;
 	}
 
 	public function set_text( $text ) {
+
 		$this->text = sanitize_text_field( $text );
+	}
+}
+
+
+class Comment_Node extends Text_Node {
+
+	public function __construct( $comment = '' ) {
+
+		$this->set_comment( $comment );
+	}
+
+	public function set_comment( $comment ) {
+
+		$this->text = '<!--' . esc_attr( $comment ) . '-->';
+	}
+
+	public function get_comment() {
+
+		return $this->text;
 	}
 }
 
@@ -309,13 +437,13 @@ class Text_Node extends Base_Html_Tag {
  *
  * @package axis_framework\form\tag
  */
-class Button_Tag extends Base_Html_Tag {
+class Button_Tag extends Base_Tag {
 
-	public function __construct( $id = '', $name = '', $type = 'button', array $other_attributes = array() ) {
+	public function __construct( $id = '', $name = '', $type = 'button', array $other_attributes = array(), array $children = array() ) {
 
 		$other_attributes['type'] = $type;
-		
-		parent::__construct( 'input', $id, $name, $other_attributes );
+
+		parent::__construct( 'input', $id, $name, $other_attributes, $children );
 	}
 }
 
@@ -325,11 +453,11 @@ class Button_Tag extends Base_Html_Tag {
  *
  * @package axis_framework\form\tag
  */
-class Fieldset_Tag extends Base_Html_Tag {
+class Fieldset_Tag extends Base_Tag {
 
-	public function __construct( $id = '', $name = '', array $other_attributes = array() ) {
+	public function __construct( $id = '', $name = '', array $other_attributes = array(), array $children = array() ) {
 
-		parent::__construct( 'fieldset', $id, $name, $other_attributes );
+		parent::__construct( 'fieldset', $id, $name, $other_attributes, $children );
 	}
 }
 
@@ -339,17 +467,17 @@ class Fieldset_Tag extends Base_Html_Tag {
  *
  * @package axis_framework\form\tag
  */
-class Form_Tag extends Base_Html_Tag {
+class Form_Tag extends Base_Tag {
 
 	const URL_ENCODED = 'application/x-www-form-urlencoded';
 	const MULTIPART   = 'multipart/form-data';
 	const TEXT_PLAIN  = 'text/plain';
 
-	public function __construct( $id = '', $name = '', $enctype = self::URL_ENCODED, array $other_attributes = array() ) {
+	public function __construct( $id = '', $name = '', $enctype = self::URL_ENCODED, array $other_attributes = array(), array $children = array() ) {
 
 		$other_attributes['enctype'] = $enctype;
 
-		parent::__construct( 'form', $id, $name, $other_attributes );
+		parent::__construct( 'form', $id, $name, $other_attributes, $children );
 	}
 }
 
@@ -359,13 +487,13 @@ class Form_Tag extends Base_Html_Tag {
  *
  * @package axis_framework\form\tag
  */
-class Input_Tag extends Base_Html_Tag {
+class Input_Tag extends Base_Tag {
 
-	public function __construct( $id = '', $name = '', $type = 'text', array $other_attributes = array() ) {
+	public function __construct( $id = '', $name = '', $type = 'text', array $other_attributes = array(), array $children = array() ) {
 
 		$other_attributes['type'] = $type;
 
-		parent::__construct( 'input', $id, $name, $other_attributes );
+		parent::__construct( 'input', $id, $name, $other_attributes, $children );
 	}
 }
 
@@ -375,13 +503,13 @@ class Input_Tag extends Base_Html_Tag {
  *
  * @package axis_framework\form\tag
  */
-class Label_Tag extends Base_Html_Tag {
+class Label_Tag extends Base_Tag {
 
-	public function __construct( $id = '', $name = '', $for = '', array $other_attributes = array() ) {
+	public function __construct( $id = '', $for = '', array $other_attributes = array(), array $children = array() ) {
 
 		$other_attributes['for'] = $for;
 
-		parent::__construct( 'label', $id, $name, $other_attributes );
+		parent::__construct( 'label', $id, '', $other_attributes, $children );
 	}
 }
 
@@ -391,12 +519,12 @@ class Label_Tag extends Base_Html_Tag {
  *
  * @package axis_framework\form\tag
  */
-class Legend_Tag extends Base_Html_Tag {
+class Legend_Tag extends Base_Tag {
 
 	// legend tag only has align attribute, but it is not supported in HTML5
-	public function __construct( $id = '', array $other_attributes = array() ) {
+	public function __construct( $id = '', array $other_attributes = array(), array $children = array() ) {
 
-		parent::__construct( 'legend', $id, '', $other_attributes );
+		parent::__construct( 'legend', $id, '', $other_attributes, $children );
 	}
 }
 
@@ -406,11 +534,11 @@ class Legend_Tag extends Base_Html_Tag {
  *
  * @package axis_framework\form\tag
  */
-class Select_Tag extends Base_Html_Tag {
+class Select_Tag extends Base_Tag {
 
-	public function __construct( $id = '', $name = '', array $other_attributes = array() ) {
+	public function __construct( $id = '', $name = '', array $other_attributes = array(), array $children = array() ) {
 
-		parent::__construct( 'select', $id, $name, $other_attributes );
+		parent::__construct( 'select', $id, $name, $other_attributes, $children );
 	}
 }
 
@@ -420,14 +548,14 @@ class Select_Tag extends Base_Html_Tag {
  *
  * @package axis_framework\form\tag
  */
-class Optgroup_Tag extends Base_Html_Tag {
+class Optgroup_Tag extends Base_Tag {
 
 	// optgroup tag does not have name attribute
-	public function __construct( $id = '', $label = '', array $other_attributes = array() ) {
+	public function __construct( $id = '', $label = '', array $other_attributes = array(), array $children = array() ) {
 
 		$other_attributes['label'] = $label;
 
-		parent::__construct( 'optgroup', $id, '', $other_attributes );
+		parent::__construct( 'optgroup', $id, '', $other_attributes, $children );
 	}
 }
 
@@ -437,15 +565,15 @@ class Optgroup_Tag extends Base_Html_Tag {
  *
  * @package axis_framework\form\tag
  */
-class Option_Tag extends Base_Html_Tag {
+class Option_Tag extends Base_Tag {
 
 	// option tag does not have 'name' attribute
-	public function __construct( $id = '', $value = '', $selected = FALSE, array $other_attributes = array() ) {
+	public function __construct( $id = '', $value = '', $selected = FALSE, array $other_attributes = array(), array $children = array() ) {
 
 		$other_attributes['value'] = $value;
 		$other_attributes['selected'] = $selected;
 
-		parent::__construct( 'option', $id, '', $other_attributes );
+		parent::__construct( 'option', $id, '', $other_attributes, $children );
 	}
 }
 
@@ -455,10 +583,10 @@ class Option_Tag extends Base_Html_Tag {
  *
  * @package axis_framework\form\tag
  */
-class Textarea_Tag extends Base_Html_Tag {
+class Textarea_Tag extends Base_Tag {
 
-	public function __construct( $id, $name, array $other_attributes = array() ) {
+	public function __construct( $id, $name, array $other_attributes = array(), array $children = array() ) {
 
-		parent::__construct( 'textarea', $id, $name, $other_attributes );
+		parent::__construct( 'textarea', $id, $name, $other_attributes, $children );
 	}
 }
