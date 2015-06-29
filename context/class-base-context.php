@@ -39,36 +39,59 @@ abstract class Base_Context {
 		}
 	}
 
+	/**
+	 * @return Dispatch
+	 */
 	public function get_dispatch() {
 
 		return $this->dispatch;
 	}
 
+	/**
+	 * @param string $context_name
+	 *
+	 * @return Base_Context|null
+	 */
 	public function get_context( $context_name ) {
 
 		return $this->dispatch->get_context( $context_name );
 	}
 
+	/**
+	 * @param Dispatch $dispatch
+	 */
 	public function set_dispatch( Dispatch $dispatch ) {
 
 		$this->dispatch = $dispatch;
 	}
 
+	/**
+	 * @param string $context_name
+	 */
 	public function set_context_name( $context_name ) {
 
 		$this->context_name = $context_name;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function get_context_name() {
 
 		return $this->context_name;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function get_context_id() {
 
 		return $this->context_identifier;
 	}
 
+	/**
+	 *
+	 */
 	private function set_context_id() {
 
 		$this->context_identifier = $this->context_name . '-' . spl_object_hash( $this );
@@ -77,6 +100,10 @@ abstract class Base_Context {
 	/**
 	 * helper function for add_action() callback. Get control object and make it run.
 	 * Also takes care of output, and finishing.
+	 * Note - priority of parameters, when they are all true:
+	 *  $output_buffering
+	 *  $die
+	 *  $need_return
 	 *
 	 * @param string $namespace        control class namespace
 	 * @param string $control_name     control name for loader
@@ -85,19 +112,22 @@ abstract class Base_Context {
 	 * @param bool   $output_buffering set TRUE when callback for shortcodes, or set FALSE
 	 * @param bool   $die              set TRUE when callback for ajax. If $output_buffering is TRUE, this parameter is
 	 *                                 unused.
+	 * @param bool $need_return        set TRUE when callback requires return value.
 	 *
 	 * @return callable callback function for add_action()
 	 */
-	protected function control_helper(
+	public function control_helper(
 		$namespace,
 		$control_name,
 		$control_function,
 		array $construct_param = array(),
 		$output_buffering = FALSE,
-		$die = FALSE
+		$die = FALSE,
+		$need_return = FALSE
 	) {
 
-		return function() use ( $namespace, $control_name, $control_function, $construct_param, $output_buffering, $die ) {
+		return
+			function () use ( $namespace, $control_name, $control_function, $construct_param, $output_buffering, $die, $need_return ) {
 
 			$args = func_get_args();
 
@@ -107,7 +137,7 @@ abstract class Base_Context {
 				$control->enable_output_buffer();
 			}
 
-			call_user_func_array( array( &$control, $control_function ), $args );
+				$return = call_user_func_array( array( &$control, $control_function ), $args );
 
 			if ( $output_buffering ) {
 				return $control->get_output_buffer();
@@ -116,6 +146,10 @@ abstract class Base_Context {
 			if ( $die ) {
 				die();
 			}
+
+				if( $need_return ) {
+					return $return;
+				}
 		};
 	}
 
@@ -130,7 +164,7 @@ abstract class Base_Context {
 	 *
 	 * @return callable
 	 */
-	protected function ajax_helper(
+	public function ajax_helper(
 		$namespace,
 		$control_name,
 		$control_function,
@@ -150,7 +184,7 @@ abstract class Base_Context {
 	 *
 	 * @return callable
 	 */
-	protected function shortcode_helper(
+	public function shortcode_helper(
 		$namespace,
 		$control_name,
 		$control_function,
