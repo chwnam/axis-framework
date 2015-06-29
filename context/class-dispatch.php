@@ -1,26 +1,44 @@
 <?php
-/**
- * Base dispatch
- */
-
 namespace axis_framework\context;
 
 use axis_framework\core\Loader;
 use axis_framework\core\Loader_Trait;
 
 
+/**
+ * Class Dispatch
+ *
+ * Plugin starter, and class based context manager.
+ *
+ * @package axis_framework\context
+ */
 class Dispatch {
 
 	use Loader_Trait;
 
+	/**
+	 * @var array
+	 */
 	private $callback_contexts = array();
+
+	/**
+	 * @var string
+	 */
 	private $plugin_main_file = '';
 
+	/**
+	 * @return void
+	 */
 	public function reset_context() {
 
 		$this->callback_contexts = array();
 	}
 
+	/**
+	 * @param string $context_name
+	 *
+	 * @return \axis_framework\context\Base_Context|null
+	 */
 	public function get_context( $context_name ) {
 
 		if( !isset( $this->callback_contexts[ $context_name ] ) ) {
@@ -30,16 +48,29 @@ class Dispatch {
 		return $this->callback_contexts[ $context_name ];
 	}
 
+	/**
+	 * @return string
+	 */
 	public function get_main_file() {
 
 		return $this->plugin_main_file;
 	}
 
-	public function set_context( $context_name, $context ) {
+	/**
+	 * @param \axis_framework\context\Base_Context $context
+	 */
+	public function set_context( Base_Context $context ) {
 
-		$this->callback_contexts[ $context_name ] = $context;
+		if( $context instanceof Base_Context ) {
+			$this->callback_contexts[ $context->get_context_name() ] = $context;
+		}
 	}
 
+	/**
+	 * @param       $main_file_path
+	 * @param       $context_namespace
+	 * @param array $loader_component_override
+	 */
 	public function setup(
 		$main_file_path,
 		$context_namespace,
@@ -58,29 +89,70 @@ class Dispatch {
 		}
 
 		$context_files = scandir( $context_directory );
-		if( is_array( $context_files ) ) {
-			foreach( $context_files as $context_file ) {
-				$path = $context_directory .  '/' . $context_file;
-				$matches = array();
-				if( file_exists( $path ) && is_file( $path ) && preg_match( '/^class-(.+)-context\.php$/', $context_file, $matches ) ) {
+		if( !is_array( $context_files ) ) {
+			return;
+		}
+
+		// compact-style contexts
+		$compact_contexts = array();
+
+		foreach( $context_files as $context_file ) {
+
+			$path    = $context_directory . '/' . $context_file;
+			$matches = array();
+
+			if( !file_exists( $path ) || !is_file( $path ) ) {
+				continue;
+			}
+
+			if( preg_match( '/^(class-)?(.+)-context\.php$/', $context_file, $matches ) ) {
+
+				if( !empty( $matches[1] ) ) {
 					$this->set_context(
-						$matches[1],  // context_name
 						$this->loader->context(
 							$context_namespace,
-							$matches[1], // context name
+							$matches[2], // context name
 							array( 'loader' => $this->loader, 'dispatch' => $this )
 						)
 					);
+				} else {
+					$compact_contexts[] = $path;
 				}
 			}
 		}
 
+		// compact style context initialization
+		if( !empty( $compact_contexts ) ) {
+			require_once 'short-context-wrapper.php';
+			if( !\Short_Context_Wrapper::has_empty_context( $this->get_main_file() ) ) {
+				\Short_Context_Wrapper::set_empty_context(
+					new Empty_Context(
+						array(
+							'loader'       => $this->loader,
+							'dispatch'     => $this,
+							'context_name' => 'empty-context',
+						)
+					),
+					$this->get_main_file()
+				);
+			}
+			foreach( $compact_contexts as $compact_context ) {
+
+				/** @noinspection PhpIncludeInspection */
+				include_once( $compact_context );
+			}
+		}
+
+		// class-based context initialization
 		foreach( $this->callback_contexts as $context ) {
 			/** @var \axis_framework\context\Base_Context $context */
 			$context->init_context();
 		}
 	}
 
+	/**
+	 * Disable deactivation of Axis Framework
+	 */
 	public static function lock_axis_framework() {
 
 		$axis_main_file   = AXIS_FRAMEWORK_MAIN_FILE;
