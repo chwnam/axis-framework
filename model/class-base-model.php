@@ -2,16 +2,17 @@
 
 namespace axis_framework\model;
 
-use axis_framework\control;
-use axis_framework\core;
+use axis_framework\control\Base_Control;
+use axis_framework\core\Loader_Trait;
+use axis_framework\core\util;
 
 
-core\util\check_abspath(); // check abspath or inclusion fatal error.
+util\check_abspath(); // check abspath or inclusion fatal error.
 
 
 abstract class Base_Model {
 
-	use core\Loader_Trait;
+	use Loader_Trait;
 
 	/** @var \axis_framework\control\Base_Control */
 	protected $control = NULL;
@@ -29,7 +30,7 @@ abstract class Base_Model {
 		}
 	}
 
-	public function set_control( control\Base_Control $control ) {
+	public function set_control( Base_Control $control ) {
 
 		$this->control = $control;
 	}
