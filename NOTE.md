@@ -1,4 +1,7 @@
 # Ver 0.21.0000
+2015년 07월 01일
+entity model 의 join 구현 issue
+
 2015년 06월 30일
 short-style context 구조 마련. 기존의 경우 모든 context가 명시적으로 클래스 선언이 이루어져야 했으나, short style 식으로 작성하면
  기존 워드프레스 api와 매우 유사하면서도 control 객체를 활용 가능한 형태로 코드 전개가 가능하다. 

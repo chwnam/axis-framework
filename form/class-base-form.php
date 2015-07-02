@@ -54,7 +54,7 @@ abstract class Base_Form {
 		return $this->validate( $data );
 	}
 
-	public function do_form() {
+	public function do_form( $add_nonce_field = TRUE ) {
 
 		$structure = $this->get_structure();
 		$compose   = new tag\Form_Compose();
@@ -69,7 +69,9 @@ abstract class Base_Form {
 			/** @var \axis_framework\form\tag\Base_Tag $child */
 			$output_code .= $child->render( TRUE, $output );
 		}
-		$output_code .= $this->nonce_field( $referer, $output );
+		if( $add_nonce_field ) {
+			$output_code .= $this->nonce_field( $referer, $output );
+		}
 		$output_code .= $form->end_tag( $output );
 
 		return $output ? $output_code : NULL;

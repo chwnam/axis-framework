@@ -12,11 +12,14 @@ class Form_Compose {
 
 	public function compose( array $structures ) {
 
+		$id      = $this->get_value( $structures, 'id' );
+		$name    = $this->get_value( $structures, 'name' );
+		$enctype = $this->get_value( $structures, 'enctype' );
 		$comment = $this->get_value( $structures, 'comment' );
 		$method  = $this->get_value( $structures, 'method' );
 		$action  = $this->get_value( $structures, 'action' );
 
-		$form = new Form_Tag( '', '', '',
+		$form = new Form_Tag( $id, $name, $enctype,
 			array(
 				'method' => $method,
 				'action' => $action,
@@ -47,9 +50,10 @@ class Form_Compose {
 
 		switch ( $type ) {
 			case 'text':
-				$container = $this->_compose_text( $structure );
+				return $this->_compose_text( $structure );
 
-				return $container;
+			case 'hidden':
+				return $this->_compose_hidden( $structure );
 
 			case 'submit':
 				return $this->_compose_submit( $structure );
@@ -103,6 +107,14 @@ class Form_Compose {
 		}
 
 		return new Text_Node( '' );
+	}
+
+	private function _compose_hidden( array &$structure ) {
+
+		$name  = $this->get_value( $structure, 'name' );
+		$value = $this->get_value( $structure, 'value' );
+
+		return new Input_Tag( '', $name, 'hidden', array( 'value' => $value ) );
 	}
 
 	private function _compose_submit( array &$structure ) {
