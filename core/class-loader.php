@@ -239,8 +239,8 @@ class Loader {
 	 */
 	public function wp_table( $table ) {
 
-		$path  = AXIS_FRAMEWORK_PATH . '/models/wp-tables' . '/class-' . $table . '-model.php';
-		$model = '\\axis_framework\\includes\\model\\' . ucfirst( $table ) . '_Model';
+		$path  = AXIS_FRAMEWORK_PATH . '/model/wp-table' . '/class-' . $table . '-model.php';
+		$model = '\\axis_framework\\model\\' . ucfirst( $table ) . '_Model';
 
 		/** @noinspection PhpIncludeInspection */
 		require_once( $path );
